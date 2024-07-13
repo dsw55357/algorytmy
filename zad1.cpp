@@ -8,6 +8,10 @@ Aby znaleźć otoczkę wypukłą dla skończonego zbioru punktów na płaszczyź
 
 */
 
+// skorzystam z olcPixelGameEngine w celu wizualizacji działania algorytmu
+#define OLC_PGE_APPLICATION
+#include "olcPixelGameEngine.h"
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -18,80 +22,115 @@ struct Point {
     int x, y;
 };
 
-// Funkcja do znalezienia punktu o najmniejszej współrzędnej y (jeśli jest kilka, to najmniejszej współrzędnej x)
-Point findLowestPoint(std::vector<Point>& points) {
-    Point lowest = points[0];
-    for (const auto& point : points) {
-        if (point.y < lowest.y || (point.y == lowest.y && point.x < lowest.x)) {
-            lowest = point;
-        }
+
+class ConvexHullVisualizer : public olc::PixelGameEngine {
+public:
+    ConvexHullVisualizer() {
+        sAppName = "Convex Hull Visualization";
     }
-    return lowest;
-}
 
-// Funkcja do obliczania orientacji trzech punktów
-// 0 -> punkty są kolinearne
-// 1 -> zakręt w prawo
-// 2 -> zakręt w lewo
-int orientation(const Point& p, const Point& q, const Point& r) {
-    int val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
-    if (val == 0) return 0; // kolinearne
-    return (val > 0) ? 1 : 2; // prawy lub lewy zakręt
-}
+private:
+    std::vector<Point> points;
+    std::vector<Point> hull;
+    bool computed = false;
 
-// Funkcja do sortowania punktów według kąta z punktem bazowym
-bool compare(const Point& p1, const Point& p2, const Point& base) {
-    int o = orientation(base, p1, p2);
-    if (o == 0) // kolinearne
-        return (std::hypot(base.x - p1.x, base.y - p1.y) < std::hypot(base.x - p2.x, base.y - p2.y));
-    return (o == 2); // lewy zakręt
-}
-
-// Funkcja do znajdowania otoczki wypukłej za pomocą algorytmu Grahama
-std::vector<Point> convexHull(std::vector<Point>& points) {
-    if (points.size() < 3) return {};
-
-    Point base = findLowestPoint(points);
-    std::sort(points.begin(), points.end(), [&](const Point& p1, const Point& p2) {
-        return compare(p1, p2, base);
-    });
-
-    std::stack<Point> hull;
-    hull.push(points[0]);
-    hull.push(points[1]);
-
-    for (size_t i = 2; i < points.size(); ++i) {
-        while (hull.size() > 1) {
-            Point top = hull.top();
-            hull.pop();
-            if (orientation(hull.top(), top, points[i]) != 1) { // dopóki jest lewy zakręt
-                hull.push(top);
-                break;
+    // Funkcja do znalezienia punktu o najmniejszej współrzędnej y (jeśli jest kilka, to najmniejszej współrzędnej x)
+    Point findLowestPoint(std::vector<Point>& points) {
+        Point lowest = points[0];
+        for (const auto& point : points) {
+            if (point.y < lowest.y || (point.y == lowest.y && point.x < lowest.x)) {
+                lowest = point;
             }
         }
-        hull.push(points[i]);
+        return lowest;
     }
 
-    std::vector<Point> result;
-    while (!hull.empty()) {
-        result.push_back(hull.top());
-        hull.pop();
+    // Funkcja do obliczania orientacji trzech punktów
+    // 0 -> punkty są kolinearne
+    // 1 -> zakręt w prawo
+    // 2 -> zakręt w lewo
+    int orientation(const Point& p, const Point& q, const Point& r) {
+        int val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+        if (val == 0) return 0; // kolinearne
+        return (val > 0) ? 1 : 2; // prawy lub lewy zakręt
     }
 
-    return result;
-}
+    // Funkcja do sortowania punktów według kąta z punktem bazowym
+    bool compare(const Point& p1, const Point& p2, const Point& base) {
+        int o = orientation(base, p1, p2);
+        if (o == 0) // kolinearne
+            return (std::hypot(base.x - p1.x, base.y - p1.y) < std::hypot(base.x - p2.x, base.y - p2.y));
+        return (o == 2); // lewy zakręt
+    }
+
+    // Funkcja do znajdowania otoczki wypukłej za pomocą algorytmu Grahama
+    std::vector<Point> convexHull(std::vector<Point>& points) {
+        if (points.size() < 3) return {};
+
+        Point base = findLowestPoint(points);
+        std::sort(points.begin(), points.end(), [&](const Point& p1, const Point& p2) {
+            return compare(p1, p2, base);
+        });
+
+        std::stack<Point> hull;
+        hull.push(points[0]);
+        hull.push(points[1]);
+
+        for (size_t i = 2; i < points.size(); ++i) {
+            while (hull.size() > 1) {
+                Point top = hull.top();
+                hull.pop();
+                if (orientation(hull.top(), top, points[i]) != 1) { // dopóki jest lewy zakręt
+                    hull.push(top);
+                    break;
+                }
+            }
+            hull.push(points[i]);
+        }
+
+        std::vector<Point> result;
+        while (!hull.empty()) {
+            result.push_back(hull.top());
+            hull.pop();
+        }
+
+        return result;
+    }
+public:
+    bool OnUserCreate() override {
+        // Punkty do wizualizacji
+        points = {{100, 150}, {200, 250}, {300, 200}, {400, 300}, {250, 400}, {150, 350}, {350, 100}, {450, 150}};
+        return true;
+    }
+
+    bool OnUserUpdate(float fElapsedTime) override {
+        Clear(olc::BLACK);
+
+        // Rysuj punkty
+        for (const auto& point : points) {
+            Draw(point.x, point.y, olc::WHITE);
+        }
+
+        return true;
+    }
+};
 
 int main() {
 
-    std::vector<Point> points = {{0, 3}, {1, 1}, {2, 2}, {4, 4}, {0, 0}, {1, 2}, {3, 1}, {3, 3}};
-    
-    std::vector<Point> hull = convexHull(points);
+    // std::vector<Point> points = {{0, 3}, {1, 1}, {2, 2}, {4, 4}, {0, 0}, {1, 2}, {3, 1}, {3, 3}};
+    // std::vector<Point> hull = convexHull(points);
 
     std::cout << "Otoczka wypukła składa się z punktów: \n";
 
+    ConvexHullVisualizer demo;
+    if (demo.Construct(600, 600, 1, 1))
+        demo.Start();
+
+/*
     for (const auto& point : hull) {
         std::cout << "(" << point.x << ", " << point.y << ")\n";
     }
+*/
 
     return 0;
 }
@@ -106,5 +145,14 @@ orientation: Oblicza orientację trzech punktów, aby sprawdzić, czy tworzą on
 compare: Sortuje punkty według kąta, który tworzą z punktem bazowym.
 convexHull: Implementuje algorytm Grahama do znajdowania otoczki wypukłej.
 main: Testuje algorytm na przykładowym zbiorze punktów i wyświetla wynikową otoczkę wypukłą.
+
+
+### Compiling in Linux
+~~~~~~~~~~~~~~~~~~
+You will need a modern C++ compiler, so update yours!
+To compile use the command:
+
+g++ -o start zad1.cpp -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++17
+
 
 */
