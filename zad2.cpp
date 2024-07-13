@@ -135,12 +135,22 @@ int main() {
 
 
 /*
+Wyjaśnienie:
+
+Klasa przeniesiona została do oddzielnego pliku, co pomoże w organizacji kodu i ułatwi jego utrzymanie. 
+
+Podzieliono kod na dwa pliki:
+Plik nagłówkowy Array.h: Zawiera deklaracje klasy Array oraz metod i zmiennych członkowskich.
+Plik źródłowy Array.cpp: Zawiera definicje metod klasy Array.
+
+Plik główny zad2.cpp: Zawiera funkcję main, która testuje funkcjonalność klasy Array.
+
 
 Kompilacja i uruchomienie
 Aby skompilować program, użyj poniższego polecenia:
 
 sh
 Skopiuj kod
-g++ main.cpp Array.cpp -o main
+g++ zad2.cpp Array.cpp -o main
 
 */
