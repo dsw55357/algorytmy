@@ -106,6 +106,10 @@ public:
     bool OnUserUpdate(float fElapsedTime) override {
         Clear(olc::BLACK);
 
+        bool quit =  false;
+		if (GetKey(olc::Key::ESCAPE).bReleased)
+			quit = true;
+
         // Rysuj punkty
         for (const auto& point : points) {
             Draw(point.x, point.y, olc::WHITE);
@@ -117,7 +121,14 @@ public:
             computed = true;
         }
 
-        return true;
+        // Rysuj otoczkę wypukłą
+        for (size_t i = 0; i < hull.size(); ++i) {
+            Point p1 = hull[i];
+            Point p2 = hull[(i + 1) % hull.size()];
+            DrawLine(p1.x, p1.y, p2.x, p2.y, olc::RED);
+        }
+
+        return !quit;
     }
 };
 
@@ -145,12 +156,15 @@ int main() {
 /*
 
 Wyjaśnienie:
-Struktura Point: Definiuje punkt na płaszczyźnie z współrzędnymi x i y.
-findLowestPoint: Znajduje punkt o najmniejszej współrzędnej y. Jeśli jest kilka takich punktów, wybiera ten o najmniejszej współrzędnej x.
-orientation: Oblicza orientację trzech punktów, aby sprawdzić, czy tworzą one zakręt w prawo, w lewo czy są kolinearne.
-compare: Sortuje punkty według kąta, który tworzą z punktem bazowym.
-convexHull: Implementuje algorytm Grahama do znajdowania otoczki wypukłej.
-main: Testuje algorytm na przykładowym zbiorze punktów i wyświetla wynikową otoczkę wypukłą.
+
+- Struktura Point: Definiuje punkt na płaszczyźnie z współrzędnymi x i y.
+- ConvexHullVisualizer: Klasa dziedzicząca po olc::PixelGameEngine do wizualizacji otoczki wypukłej.
+- findLowestPoint: Znajduje punkt o najmniejszej współrzędnej y. Jeśli jest kilka takich punktów, wybiera ten o najmniejszej współrzędnej x.
+- orientation: Oblicza orientację trzech punktów, aby sprawdzić, czy tworzą one zakręt w prawo, w lewo czy są kolinearne.
+- compare: Sortuje punkty według kąta, który tworzą z punktem bazowym.
+- convexHull: Implementuje algorytm Grahama do znajdowania otoczki wypukłej.
+- OnUserCreate: Funkcja inicjalizująca, która dodaje punkty do wizualizacji.
+- OnUserUpdate: Funkcja aktualizująca, która rysuje punkty i otoczkę wypukłą na ekranie.
 
 
 ### Compiling in Linux
