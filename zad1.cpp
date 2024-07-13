@@ -131,6 +131,11 @@ public:
             Draw(point.x, point.y, olc::WHITE);
         }
 
+        // Rysuj punkty
+        for (const auto& point : points) {
+            FillCircle(point.x, point.y, 2, olc::WHITE);
+        }
+
         // Oblicz otoczkę wypukłą
         if (!computed) {
             hull = convexHull(points);
@@ -151,8 +156,10 @@ public:
 
 	void show_menu() {
 
+        DrawString(8, ScreenHeight()-30, "R - add new random points", olc::GREEN);
+        DrawString(8, ScreenHeight()-15, "ESC - exit", olc::GREEN);
 		DrawString(15, 15, "Znajdowania otoczki wypuklej", olc::WHITE );
-		DrawString(ScreenWidth()-250, ScreenHeight()-15, "Powered by olcPixelGameEngine, 2024(7)", olc::CYAN );
+		DrawString(ScreenWidth()-300, ScreenHeight()-15, "Powered by olcPixelGameEngine, 2024(7)", olc::CYAN );
 	}    
 };
 
@@ -180,6 +187,11 @@ Wyjaśnienie:
 - convexHull: Implementuje algorytm Grahama do znajdowania otoczki wypukłej.
 - OnUserCreate: Funkcja inicjalizująca, która dodaje punkty do wizualizacji.
 - OnUserUpdate: Funkcja aktualizująca, która rysuje punkty i otoczkę wypukłą na ekranie.
+- addRandomPoints: Dodana funkcja, która generuje n losowych punktów w obrębie ekranu i dodaje je do wektora points. Po dodaniu nowych punktów ustawia computed na false, aby wymusić ponowne obliczenie otoczki wypukłej.
+- Obsługa klawisza R: W funkcji OnUserUpdate dodano obsługę klawisza R, który wywołuje funkcję addRandomPoints z argumentem 5, co powoduje dodanie pięciu losowych punktów za każdym razem, gdy klawisz R jest naciśnięty.
+- Rysowanie punktów: Użyto FillCircle do rysowania punktów, aby były one lepiej widoczne na ekranie.
+
+Teraz aplikacja nie tylko pozwala na wizualizację otoczki wypukłej, ale także umożliwia dynamiczne dodawanie nowych punktów w losowy sposób za pomocą klawisza R oraz zamknięcie programu za pomocą klawisza ESC.
 
 
 ### Compiling in Linux
