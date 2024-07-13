@@ -82,11 +82,13 @@ std::vector<Point> convexHull(std::vector<Point>& points) {
 }
 
 int main() {
+
     std::vector<Point> points = {{0, 3}, {1, 1}, {2, 2}, {4, 4}, {0, 0}, {1, 2}, {3, 1}, {3, 3}};
     
     std::vector<Point> hull = convexHull(points);
 
     std::cout << "Otoczka wypukła składa się z punktów: \n";
+
     for (const auto& point : hull) {
         std::cout << "(" << point.x << ", " << point.y << ")\n";
     }
