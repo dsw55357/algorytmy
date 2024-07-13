@@ -96,6 +96,16 @@ private:
 
         return result;
     }
+
+    void addRandomPoints(int n) {
+        for (int i = 0; i < n; ++i) {
+            int x = rand() % ScreenWidth();
+            int y = rand() % ScreenHeight();
+            points.push_back({x, y});
+        }
+        computed = false; // Konieczność ponownego obliczenia otoczki
+    }
+
 public:
     bool OnUserCreate() override {
         // Punkty do wizualizacji
@@ -106,9 +116,15 @@ public:
     bool OnUserUpdate(float fElapsedTime) override {
         Clear(olc::BLACK);
 
+        // Obsługa klawisza ESC do zamknięcia programu
         bool quit =  false;
 		if (GetKey(olc::Key::ESCAPE).bReleased)
 			quit = true;
+
+        // Obsługa klawisza R do dodania losowych punktów
+        if (GetKey(olc::R).bPressed) {
+            addRandomPoints(5); // Dodaj 5 losowych punktów
+        }
 
         // Rysuj punkty
         for (const auto& point : points) {
@@ -128,26 +144,25 @@ public:
             DrawLine(p1.x, p1.y, p2.x, p2.y, olc::RED);
         }
 
+        show_menu();
+
         return !quit;
     }
+
+	void show_menu() {
+
+		DrawString(15, 15, "Znajdowania otoczki wypuklej", olc::WHITE );
+		DrawString(ScreenWidth()-250, ScreenHeight()-15, "Powered by olcPixelGameEngine, 2024(7)", olc::CYAN );
+	}    
 };
 
 int main() {
-
-    // std::vector<Point> points = {{0, 3}, {1, 1}, {2, 2}, {4, 4}, {0, 0}, {1, 2}, {3, 1}, {3, 3}};
-    // std::vector<Point> hull = convexHull(points);
 
     std::cout << "Otoczka wypukła składa się z punktów: \n";
 
     ConvexHullVisualizer demo;
     if (demo.Construct(600, 600, 1, 1))
         demo.Start();
-
-/*
-    for (const auto& point : hull) {
-        std::cout << "(" << point.x << ", " << point.y << ")\n";
-    }
-*/
 
     return 0;
 }
