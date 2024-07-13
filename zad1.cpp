@@ -111,6 +111,12 @@ public:
             Draw(point.x, point.y, olc::WHITE);
         }
 
+        // Oblicz otoczkę wypukłą
+        if (!computed) {
+            hull = convexHull(points);
+            computed = true;
+        }
+
         return true;
     }
 };
