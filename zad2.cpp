@@ -1,25 +1,12 @@
+#define OLC_PGE_APPLICATION
+#include "olcPixelGameEngine.h"
+
 #include <iostream>
 #include "Array.h"
 
 #include "SinglyLinkedList.h"
 
 #include "DoublyLinkedList.h"
-
-/*
-
-Implementacja tablicy jako klasy w C++ jest rzeczywiście elegancka i daje dużą elastyczność. Możemy rozszerzyć tę klasę, dodając więcej funkcji i metod, aby uczynić ją bardziej funkcjonalną. Poniżej dodam kilka dodatkowych metod do klasy Array, takich jak dynamiczne dodawanie elementów, usuwanie elementów, i możliwość zmiany rozmiaru tablicy.
-
-
-Wyjaśnienie:
-- Dynamiczna zmiana rozmiaru: Metoda resize zmienia rozmiar wewnętrznej tablicy, kopiując istniejące elementy do nowej tablicy o większej pojemności.
-- Dodawanie elementów: Metoda add dodaje element na końcu tablicy. Jeśli tablica jest pełna, jej rozmiar jest podwajany.
-- Usuwanie elementów: Metoda remove usuwa element na podanym indeksie i przesuwa pozostałe elementy w lewo.
-- Ustawianie wartości: Metoda set ustawia wartość na danym indeksie.
-- Pobieranie wartości: Metoda get zwraca wartość z danego indeksu.
-- Wyświetlanie tablicy: Metoda display wyświetla zawartość tablicy.
-- Rozmiar tablicy: Metoda getSize zwraca aktualny rozmiar tablicy.
-
-*/
 
 /*
 
@@ -106,6 +93,83 @@ public:
 
 */
 
+class CircleSimulation : public olc::PixelGameEngine {
+public:
+    CircleSimulation() {
+        sAppName = "Circle Simulation";
+    }
+
+private:
+    SinglyLinkedList circles;
+
+public:
+    bool OnUserCreate() override {
+        srand(time(0));
+        for (int i = 0; i < 20; ++i) {
+            float x = rand() % ScreenWidth();
+            float y = rand() % ScreenHeight();
+            float vx = (rand() % 100 - 25) / 1.0f;
+            float vy = (rand() % 100 - 25) / 1.0f;
+            float radius = 10.0f;
+            olc::Pixel color = olc::Pixel(rand() % 256, rand() % 256, rand() % 256); // Losowy kolor
+            circles.insert(Circle(x, y, vx, vy, radius, color));
+        }
+        return true;
+    }
+
+    bool OnUserUpdate(float fElapsedTime) override {
+        Clear(olc::BLACK);
+
+        // Aktualizacja pozycji kółek
+        Node* current = circles.getHead();
+        while (current != nullptr) {
+            if (current->data.active) {
+                current->data.update(fElapsedTime);
+            }
+            current = current->next;
+        }
+
+        // Sprawdzanie kolizji i dezaktywacja kółek
+        Node* node1 = circles.getHead();
+        while (node1 != nullptr) {
+            Node* node2 = node1->next;
+            while (node2 != nullptr) {
+                if (node1->data.active && node2->data.active && node1->data.isColliding(node2->data)) {
+                    node1->data.active = false;
+                    node2->data.active = false;
+                }
+                node2 = node2->next;
+            }
+            node1 = node1->next;
+        }
+ 
+        // Usuwanie dezaktywowanych kółek
+        Node* prev = nullptr;
+        current = circles.getHead();
+        while (current != nullptr) {
+            Node* next = current->next;
+            if (!current->data.active) {
+                circles.remove(prev, current);
+            } else {
+                prev = current;
+            }
+            current = next;
+        }
+
+        // Rysowanie kółek
+        current = circles.getHead();
+        while (current != nullptr) {
+            if (current->data.active) {
+                FillCircle(current->data.x, current->data.y, current->data.radius, current->data.color);
+            }
+            current = current->next;
+        }
+
+        return true;
+    }
+};
+
+
 int main() {
 
 
@@ -124,36 +188,69 @@ Wyjaśnienie:
 
 */
 
-    Array arr;
+    // Array arr;
 
-    // Dodawanie elementów do tablicy
-    for (int i = 0; i < 15; ++i) {
-        arr.add(i + 1);
-    }
+    // // Dodawanie elementów do tablicy
+    // for (int i = 0; i < 15; ++i) {
+    //     arr.add(i + 1);
+    // }
 
-    std::cout << "Tablica po dodaniu elementów: ";
-    arr.display();
+    // std::cout << "Tablica po dodaniu elementów: ";
+    // arr.display();
 
-    // Usuwanie elementu
-    arr.remove(5);
+    // // Usuwanie elementu
+    // arr.remove(5);
 
-    std::cout << "Tablica po usunięciu elementu o indeksie 5: ";
-    arr.display();
+    // std::cout << "Tablica po usunięciu elementu o indeksie 5: ";
+    // arr.display();
 
-    // Ustawianie wartości
-    arr.set(2, 42);
+    // // Ustawianie wartości
+    // arr.set(2, 42);
 
-    std::cout << "Tablica po ustawieniu wartości 42 na indeksie 2: ";
-    arr.display();
+    // std::cout << "Tablica po ustawieniu wartości 42 na indeksie 2: ";
+    // arr.display();
 
-    // Pobieranie wartości
-    int value = arr.get(2);
-    std::cout << "Wartość na indeksie 2: " << value << std::endl;
+    // // Pobieranie wartości
+    // int value = arr.get(2);
+    // std::cout << "Wartość na indeksie 2: " << value << std::endl;
+
+
+    // // Lista jednokierunkowa
+    // SinglyLinkedList list;
+    // list.insert(3);
+    // list.insert(5);
+    // list.insert(7);
+
+    // std::cout << "Lista jednokierunkowa: ";
+    // list.display();
+
+    // list.remove(5);
+    // std::cout << "Po usunięciu 5: ";
+    // list.display();
+
+
+    // // Lista dwukierunkowa
+    // DoublyLinkedList list;
+    // list.insert(3);
+    // list.insert(5);
+    // list.insert(7);
+
+    // std::cout << "Lista dwukierunkowa: ";
+    // list.display();
+
+    // list.remove(5);
+    // std::cout << "Po usunięciu 5: ";
+    // list.display();
+
+
+    CircleSimulation demo;
+    if (demo.Construct(600, 600, 1, 1))
+        demo.Start();
+    return 0;
+
 
     return 0;
 }
-
-
 
 /*
 Wyjaśnienie:
@@ -167,11 +264,60 @@ Plik źródłowy Array.cpp: Zawiera definicje metod klasy Array.
 Plik główny zad2.cpp: Zawiera funkcję main, która testuje funkcjonalność klasy Array.
 
 
-Kompilacja i uruchomienie
+W celu uatrakcyjnienia pracy z listami jednokierunkowymi i dwukierunkowymi, wykorzystaliśmy bibliotekę olcPixelGameEngine do wizualizacji dynamicznych kółek na ekranie. Poniżej przedstawiam podsumowanie naszych działań:
+
+1. **Klasa `Circle`**:
+   - Utworzyliśmy klasę `Circle`, która reprezentuje pojedyncze kółko. Każdy obiekt `Circle` posiada:
+     - Pozycję `(x, y)`.
+     - Prędkość `(vx, vy)`.
+     - Promień `radius`.
+     - Kolor `color`.
+     - Atrybut `active`, który wskazuje, czy kółko jest aktywne (czy powinno być wyświetlane).
+   - Klasa `Circle` zawiera metody:
+     - `update(float fElapsedTime)`: Aktualizuje pozycję kółka na podstawie jego prędkości.
+     - `isColliding(const Circle& other)`: Sprawdza, czy dwa kółka się zderzają.
+
+2. **Lista jednokierunkowa (`SinglyLinkedList`)**:
+   - Utworzyliśmy klasę `SinglyLinkedList`, która zarządza dynamiczną listą jednokierunkową zawierającą obiekty `Circle`.
+   - Klasa `SinglyLinkedList` zawiera:
+     - Wskaźnik `head` na pierwszy element listy.
+     - Metody do zarządzania listą:
+       - `insert(const Circle& value)`: Dodaje nowe kółko na początek listy.
+       - `remove(Node* prevNode, Node* currentNode)`: Usuwa węzeł z listy.
+       - `display() const`: Wyświetla zawartość listy (do debugowania).
+       - `getHead() const`: Zwraca wskaźnik na pierwszy węzeł listy.
+
+3. **Klasa `CircleSimulation`**:
+   - Utworzyliśmy klasę `CircleSimulation`, która dziedziczy po `olc::PixelGameEngine` i zarządza wizualizacją kółek.
+   - Klasa `CircleSimulation` zawiera:
+     - Obiekt `SinglyLinkedList` do przechowywania kółek.
+     - Metody:
+       - `OnUserCreate()`: Inicjalizuje kółka, tworząc je w losowych pozycjach z losowymi prędkościami i kolorami.
+       - `OnUserUpdate(float fElapsedTime)`: Aktualizuje pozycje kółek, sprawdza kolizje, usuwa dezaktywowane kółka i rysuje aktywne kółka na ekranie.
+
+### Kroki, które wykonaliśmy:
+
+1. **Stworzenie klasy `Circle`**:
+   - Klasa ta reprezentuje pojedyncze kółko, zawierając dane dotyczące pozycji, prędkości, promienia, koloru oraz aktywności.
+   - Dodaliśmy metody do aktualizacji pozycji kółka i sprawdzania kolizji.
+
+2. **Stworzenie klasy `SinglyLinkedList`**:
+   - Klasa ta zarządza dynamiczną listą jednokierunkową zawierającą obiekty `Circle`.
+   - Dodaliśmy metody do dodawania, usuwania i wyświetlania kółek.
+
+3. **Stworzenie klasy `CircleSimulation`**:
+   - Klasa ta dziedziczy po `olc::PixelGameEngine` i zarządza wizualizacją kółek.
+   - Inicjalizuje kółka w losowych pozycjach z losowymi prędkościami i kolorami.
+   - Aktualizuje pozycje kółek, sprawdza kolizje, usuwa dezaktywowane kółka i rysuje aktywne kółka na ekranie.
+
+### Kompilacja i uruchomienie
+
 Aby skompilować program, użyj poniższego polecenia:
 
-sh
-Skopiuj kod
-g++ zad2.cpp Array.cpp -o main
+g++ -o start zad2.cpp Array.cpp SinglyLinkedList.cpp -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++17
+
+//g++ zad2.cpp Array.cpp SinglyLinkedList.cpp DoublyLinkedList.cpp -o main
+
+
 
 */
