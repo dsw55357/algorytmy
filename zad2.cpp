@@ -1,6 +1,10 @@
 #include <iostream>
 #include "Array.h"
 
+#include "SinglyLinkedList.h"
+
+#include "DoublyLinkedList.h"
+
 /*
 
 Implementacja tablicy jako klasy w C++ jest rzeczywiście elegancka i daje dużą elastyczność. Możemy rozszerzyć tę klasę, dodając więcej funkcji i metod, aby uczynić ją bardziej funkcjonalną. Poniżej dodam kilka dodatkowych metod do klasy Array, takich jak dynamiczne dodawanie elementów, usuwanie elementów, i możliwość zmiany rozmiaru tablicy.
@@ -103,6 +107,23 @@ public:
 */
 
 int main() {
+
+
+/*
+
+Implementacja tablicy jako klasy w C++. 
+
+Wyjaśnienie:
+- Dynamiczna zmiana rozmiaru: Metoda resize zmienia rozmiar wewnętrznej tablicy, kopiując istniejące elementy do nowej tablicy o większej pojemności.
+- Dodawanie elementów: Metoda add dodaje element na końcu tablicy. Jeśli tablica jest pełna, jej rozmiar jest podwajany.
+- Usuwanie elementów: Metoda remove usuwa element na podanym indeksie i przesuwa pozostałe elementy w lewo.
+- Ustawianie wartości: Metoda set ustawia wartość na danym indeksie.
+- Pobieranie wartości: Metoda get zwraca wartość z danego indeksu.
+- Wyświetlanie tablicy: Metoda display wyświetla zawartość tablicy.
+- Rozmiar tablicy: Metoda getSize zwraca aktualny rozmiar tablicy.
+
+*/
+
     Array arr;
 
     // Dodawanie elementów do tablicy

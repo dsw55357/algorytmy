@@ -4,6 +4,8 @@ Zaprojektuj i zapisz w wybrany sposób algorytm znajdowania otoczki wypukłej dl
 skończonego zbioru punktów na płaszczyźnie, gdzie znane są współrzędne kartezjańskie
 punktów.
 
+Otoczka wypukła (convex hull) zbioru punktów $ P $ to najmniejszy wielokąt wypukły taki, że każdy punkt ze zbioru $ P $ leży albo na brzegu wielokąta albo w jego wnętrzu. W skrócie będziemy zapisywali: CH(P). źródło: http://informatyka.wroc.pl/node/910?page=0,0
+
 Aby znaleźć otoczkę wypukłą dla skończonego zbioru punktów na płaszczyźnie, możemy użyć algorytmu Grahama, który jest jednym z najpopularniejszych algorytmów do tego celu. Algorytm Grahama sortuje punkty według kąta, który tworzą z punktem o najmniejszej współrzędnej y, a następnie konstruuje otoczkę wypukłą poprzez iteracyjne dodawanie punktów i sprawdzanie, czy tworzą one zakręt w lewo lub w prawo.
 
 */
