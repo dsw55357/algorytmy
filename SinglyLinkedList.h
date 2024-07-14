@@ -4,10 +4,8 @@
 #include "Circle.h"
 
 struct Node {
-    // int data;
     Circle data;
     Node* next;
-    //Node(int value) : data(value), next(nullptr) {}
     Node(const Circle& value) : data(value), next(nullptr) {} 
 };
 
@@ -19,9 +17,7 @@ public:
     SinglyLinkedList();
     ~SinglyLinkedList();
     
-    //void insert(int value);
     void insert(const Circle& value);
-    // void remove(int value);
     void remove(Node* prevNode, Node* currentNode);
 
     void display() const;

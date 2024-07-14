@@ -93,6 +93,13 @@ public:
 
 */
 
+enum class Mode {
+    MENU,
+    SINGLY_LINKED_LIST,
+    DOUBLY_LINKED_LIST,
+    ARRAY
+};
+
 class CircleSimulation : public olc::PixelGameEngine {
 public:
     CircleSimulation() {
@@ -101,24 +108,76 @@ public:
 
 private:
     SinglyLinkedList circles;
+    SinglyLinkedList singlyLinkedList;
+    DoublyLinkedList doublyLinkedList;
+    Array circleArray;
+    Mode mode = Mode::MENU;
 
 public:
     bool OnUserCreate() override {
         srand(time(0));
+        // for (int i = 0; i < 20; ++i) {
+        //     float x = rand() % ScreenWidth();
+        //     float y = rand() % ScreenHeight();
+        //     float vx = (rand() % 100 - 25) / 1.0f;
+        //     float vy = (rand() % 100 - 25) / 1.0f;
+        //     float radius = 10.0f;
+        //     olc::Pixel color = olc::Pixel(rand() % 256, rand() % 256, rand() % 256); // Losowy kolor
+        //     circles.insert(Circle(x, y, vx, vy, radius, color));
+        // }
+        return true;
+    }
+
+    void initCircles() {
         for (int i = 0; i < 20; ++i) {
             float x = rand() % ScreenWidth();
             float y = rand() % ScreenHeight();
-            float vx = (rand() % 100 - 25) / 1.0f;
-            float vy = (rand() % 100 - 25) / 1.0f;
+            float vx = (rand() % 200 - 20) / 1.0f; // Większa prędkość
+            float vy = (rand() % 200 - 20) / 1.0f; // Większa prędkość
             float radius = 10.0f;
             olc::Pixel color = olc::Pixel(rand() % 256, rand() % 256, rand() % 256); // Losowy kolor
-            circles.insert(Circle(x, y, vx, vy, radius, color));
+            Circle circle(x, y, vx, vy, radius, color);
+            if (mode == Mode::SINGLY_LINKED_LIST) {
+                singlyLinkedList.insert(circle);
+            } else if (mode == Mode::DOUBLY_LINKED_LIST) {
+                doublyLinkedList.insert(circle);
+            } else if (mode == Mode::ARRAY) {
+               // circleArray.add(circle);
+            }
         }
-        return true;
     }
 
     bool OnUserUpdate(float fElapsedTime) override {
         Clear(olc::BLACK);
+
+        if (mode == Mode::MENU) {
+            DrawString(15, 15, "1. Array", olc::GREEN);
+            DrawString(15, 30, "2. Singly Linked List", olc::GREEN);
+            DrawString(15, 45, "3. Doubly Linked List", olc::GREEN);
+            
+
+            if (GetKey(olc::Key::K2).bPressed) {
+                mode = Mode::SINGLY_LINKED_LIST;
+                initCircles();
+            } else if (GetKey(olc::Key::K3).bPressed) {
+                mode = Mode::DOUBLY_LINKED_LIST;
+                // initCircles();
+            }
+        } else {
+            DrawString(15, 15, "ESC - main menu", olc::GREEN);
+
+            updateCircles(fElapsedTime);
+            renderCircles();
+
+            // Powrót do menu po naciśnięciu klawisza ESC
+            if (GetKey(olc::Key::ESCAPE).bPressed) {
+                mode = Mode::MENU;
+                singlyLinkedList = SinglyLinkedList();
+                doublyLinkedList = DoublyLinkedList();
+            }
+        }
+
+
 
         // Aktualizacja pozycji kółek
         Node* current = circles.getHead();
@@ -157,16 +216,81 @@ public:
         }
 
         // Rysowanie kółek
-        current = circles.getHead();
-        while (current != nullptr) {
-            if (current->data.active) {
-                FillCircle(current->data.x, current->data.y, current->data.radius, current->data.color);
-            }
-            current = current->next;
-        }
+        // current = circles.getHead();
+        // while (current != nullptr) {
+        //     if (current->data.active) {
+        //         FillCircle(current->data.x, current->data.y, current->data.radius, current->data.color);
+        //     }
+        //     current = current->next;
+        // }
 
         return true;
     }
+
+    void updateCircles(float fElapsedTime) {
+        if (mode == Mode::SINGLY_LINKED_LIST) {
+            Node* current = singlyLinkedList.getHead();
+            while (current != nullptr) {
+                if (current->data.active) {
+                    current->data.update(fElapsedTime);
+                }
+                current = current->next;
+            }
+
+            Node* node1 = singlyLinkedList.getHead();
+            while (node1 != nullptr) {
+                Node* node2 = node1->next;
+                while (node2 != nullptr) {
+                    if (node1->data.active && node2->data.active && node1->data.isColliding(node2->data)) {
+                        node1->data.active = false;
+                        node2->data.active = false;
+                    }
+                    node2 = node2->next;
+                }
+                node1 = node1->next;
+            }
+
+            Node* prev = nullptr;
+            current = singlyLinkedList.getHead();
+            while (current != nullptr) {
+                Node* next = current->next;
+                if (!current->data.active) {
+                    singlyLinkedList.remove(prev, current);
+                } else {
+                    prev = current;
+                }
+                current = next;
+            }
+
+        }
+
+    }
+
+
+    void renderCircles() {
+
+        if (mode == Mode::SINGLY_LINKED_LIST) {
+            Node* current = nullptr;
+            current = singlyLinkedList.getHead();
+            while (current != nullptr) {
+                if (current->data.active) {
+                    FillCircle(current->data.x, current->data.y, current->data.radius, current->data.color);
+                }
+                current = current->next;
+            }
+        } else if (mode == Mode::DOUBLY_LINKED_LIST) {
+            DNode* current = nullptr;
+            current = doublyLinkedList.getHead();
+            while (current != nullptr) {
+                if (current->data.active) {
+                    FillCircle(current->data.x, current->data.y, current->data.radius, current->data.color);
+                }
+                current = current->next;
+            }
+        }
+    }
+
+
 };
 
 

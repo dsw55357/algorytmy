@@ -1,11 +1,14 @@
 #ifndef DOUBLYLINKEDLIST_H
 #define DOUBLYLINKEDLIST_H
 
+#include "Circle.h"
+
 struct DNode {
-    int data;
+    Circle data;
     DNode* next;
     DNode* prev;
-    DNode(int value) : data(value), next(nullptr), prev(nullptr) {}
+    DNode(const Circle& value) : data(value), next(nullptr), prev(nullptr) {}
+
 };
 
 class DoublyLinkedList {
@@ -16,9 +19,11 @@ public:
     DoublyLinkedList();
     ~DoublyLinkedList();
     
-    void insert(int value);
-    void remove(int value);
+    void insert(const Circle& value);
+    void remove(DNode* prevNode, DNode* currentNode);
     void display() const;
+    DNode* getHead() const;
+
 };
 
 #endif // DOUBLYLINKEDLIST_H

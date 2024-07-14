@@ -13,7 +13,7 @@ DoublyLinkedList::~DoublyLinkedList() {
     }
 }
 
-void DoublyLinkedList::insert(int value) {
+void DoublyLinkedList::insert(const Circle& value) {
     DNode* newNode = new DNode(value);
     newNode->next = head;
     if (head != nullptr) {
@@ -22,32 +22,35 @@ void DoublyLinkedList::insert(int value) {
     head = newNode;
 }
 
-void DoublyLinkedList::remove(int value) {
-    DNode* current = head;
-    while (current != nullptr && current->data != value) {
-        current = current->next;
-    }
+void DoublyLinkedList::remove(DNode* prevNode, DNode* currentNode) {
+    if (currentNode == nullptr) return;
 
-    if (current == nullptr) return;
-
-    if (current->prev != nullptr) {
-        current->prev->next = current->next;
+    if (currentNode == head) {
+        head = currentNode->next;
+        if (head != nullptr) {
+            head->prev = nullptr;
+        }
+        delete currentNode;
     } else {
-        head = current->next;
+        if (currentNode->next != nullptr) {
+            currentNode->next->prev = currentNode->prev;
+        }
+        if (currentNode->prev != nullptr) {
+            currentNode->prev->next = currentNode->next;
+        }
+        delete currentNode;
     }
-
-    if (current->next != nullptr) {
-        current->next->prev = current->prev;
-    }
-
-    delete current;
 }
 
 void DoublyLinkedList::display() const {
     DNode* current = head;
     while (current != nullptr) {
-        std::cout << current->data << " <-> ";
+        std::cout << "(" << current->data.x << ", " << current->data.y << ") <-> ";
         current = current->next;
     }
     std::cout << "nullptr" << std::endl;
+}
+
+DNode* DoublyLinkedList::getHead() const {
+    return head;
 }
