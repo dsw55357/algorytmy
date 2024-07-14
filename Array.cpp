@@ -2,8 +2,18 @@
 #include <iostream>
 #include <stdexcept>
 
+// void Array::resize(int new_capacity) {
+//     int* new_data = new int[new_capacity];
+//     for (int i = 0; i < size; ++i) {
+//         new_data[i] = data[i];
+//     }
+//     delete[] data;
+//     data = new_data;
+//     capacity = new_capacity;
+// }
+
 void Array::resize(int new_capacity) {
-    int* new_data = new int[new_capacity];
+    Circle* new_data = new Circle[new_capacity];
     for (int i = 0; i < size; ++i) {
         new_data[i] = data[i];
     }
@@ -16,7 +26,7 @@ void Array::resize(int new_capacity) {
 Array::Array(int initial_capacity) {
     size = 0;
     capacity = initial_capacity;
-    data = new int[capacity];
+    data = new Circle[capacity];
 }
 
 // Destruktor
@@ -25,7 +35,14 @@ Array::~Array() {
 }
 
 // Metoda do dodawania elementu
-void Array::add(int value) {
+// void Array::add(int value) {
+//     if (size == capacity) {
+//         resize(capacity * 2);
+//     }
+//     data[size++] = value;
+// }
+
+void Array::add(const Circle& value) {
     if (size == capacity) {
         resize(capacity * 2);
     }
@@ -44,30 +61,37 @@ void Array::remove(int index) {
 }
 
 // Metoda do ustawiania wartości
-void Array::set(int index, int value) {
-    if (index >= 0 && index < size) {
-        data[index] = value;
-    } else {
-        throw std::out_of_range("Index out of range");
-    }
-}
+// void Array::set(int index, int value) {
+//     if (index >= 0 && index < size) {
+//         data[index] = value;
+//     } else {
+//         throw std::out_of_range("Index out of range");
+//     }
+// }
 
 // Metoda do pobierania wartości
-int Array::get(int index) const {
-    if (index >= 0 && index < size) {
-        return data[index];
-    } else {
+// int Array::get(int index) const {
+//     if (index >= 0 && index < size) {
+//         return data[index];
+//     } else {
+//         throw std::out_of_range("Index out of range");
+//     }
+// }
+
+Circle& Array::get(int index) const {
+    if (index < 0 || index >= size) {
         throw std::out_of_range("Index out of range");
     }
+    return data[index];
 }
 
 // Metoda do wyświetlania tablicy
-void Array::display() const {
-    for (int i = 0; i < size; ++i) {
-        std::cout << data[i] << " ";
-    }
-    std::cout << std::endl;
-}
+// void Array::display() const {
+//     for (int i = 0; i < size; ++i) {
+//         std::cout << data[i] << " ";
+//     }
+//     std::cout << std::endl;
+// }
 
 // Metoda do zwracania rozmiaru tablicy
 int Array::getSize() const {

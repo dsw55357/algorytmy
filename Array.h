@@ -1,9 +1,11 @@
 #ifndef ARRAY_H
 #define ARRAY_H
 
+#include "Circle.h"
+
 class Array {
 private:
-    int* data;
+    Circle* data;
     int size;
     int capacity;
 
@@ -18,7 +20,8 @@ public:
     ~Array();
 
     // Metoda do dodawania elementu
-    void add(int value);
+    // void add(int value);
+    void add(const Circle& value);
 
     // Metoda do usuwania elementu na danym indeksie
     void remove(int index);
@@ -27,7 +30,8 @@ public:
     void set(int index, int value);
 
     // Metoda do pobierania wartości
-    int get(int index) const;
+    // int get(int index) const;
+    Circle& get(int index) const;
 
     // Metoda do wyświetlania tablicy
     void display() const;

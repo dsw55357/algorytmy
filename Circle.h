@@ -12,6 +12,10 @@ public:
     olc::Pixel color;
     bool active;
 
+    Circle()
+        : x(0), y(0), vx(0), vy(0), radius(0), color(olc::WHITE), active(false) {}
+
+
     Circle(float x, float y, float vx, float vy, float radius, olc::Pixel color)
         : x(x), y(y), vx(vx), vy(vy), radius(radius), color(color), active(true) {}
 

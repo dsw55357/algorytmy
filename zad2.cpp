@@ -142,29 +142,37 @@ public:
             } else if (mode == Mode::DOUBLY_LINKED_LIST) {
                 doublyLinkedList.insert(circle);
             } else if (mode == Mode::ARRAY) {
-               // circleArray.add(circle);
+               circleArray.add(circle);
             }
         }
     }
 
     bool OnUserUpdate(float fElapsedTime) override {
+        
         Clear(olc::BLACK);
+        bool quit =  false;
 
         if (mode == Mode::MENU) {
             DrawString(15, 15, "1. Array", olc::GREEN);
             DrawString(15, 30, "2. Singly Linked List", olc::GREEN);
             DrawString(15, 45, "3. Doubly Linked List", olc::GREEN);
-            
 
-            if (GetKey(olc::Key::K2).bPressed) {
+            DrawString(15, 60, "q - exit", olc::GREEN);
+            
+            if (GetKey(olc::Key::K1).bPressed) {
+                mode = Mode::ARRAY;
+                initCircles();
+            } else if (GetKey(olc::Key::K2).bPressed) {
                 mode = Mode::SINGLY_LINKED_LIST;
                 initCircles();
             } else if (GetKey(olc::Key::K3).bPressed) {
                 mode = Mode::DOUBLY_LINKED_LIST;
-                // initCircles();
+                initCircles();
+            } else if (GetKey(olc::Key::Q).bReleased) {
+			    quit = true;
             }
         } else {
-            DrawString(15, 15, "ESC - main menu", olc::GREEN);
+            DrawString(15, 15, "ESC - back to main menu", olc::GREEN);
 
             updateCircles(fElapsedTime);
             renderCircles();
@@ -174,46 +182,47 @@ public:
                 mode = Mode::MENU;
                 singlyLinkedList = SinglyLinkedList();
                 doublyLinkedList = DoublyLinkedList();
+                circleArray = Array();
             }
         }
 
 
 
-        // Aktualizacja pozycji kółek
-        Node* current = circles.getHead();
-        while (current != nullptr) {
-            if (current->data.active) {
-                current->data.update(fElapsedTime);
-            }
-            current = current->next;
-        }
+        // // Aktualizacja pozycji kółek
+        // Node* current = circles.getHead();
+        // while (current != nullptr) {
+        //     if (current->data.active) {
+        //         current->data.update(fElapsedTime);
+        //     }
+        //     current = current->next;
+        // }
 
-        // Sprawdzanie kolizji i dezaktywacja kółek
-        Node* node1 = circles.getHead();
-        while (node1 != nullptr) {
-            Node* node2 = node1->next;
-            while (node2 != nullptr) {
-                if (node1->data.active && node2->data.active && node1->data.isColliding(node2->data)) {
-                    node1->data.active = false;
-                    node2->data.active = false;
-                }
-                node2 = node2->next;
-            }
-            node1 = node1->next;
-        }
+        // // Sprawdzanie kolizji i dezaktywacja kółek
+        // Node* node1 = circles.getHead();
+        // while (node1 != nullptr) {
+        //     Node* node2 = node1->next;
+        //     while (node2 != nullptr) {
+        //         if (node1->data.active && node2->data.active && node1->data.isColliding(node2->data)) {
+        //             node1->data.active = false;
+        //             node2->data.active = false;
+        //         }
+        //         node2 = node2->next;
+        //     }
+        //     node1 = node1->next;
+        // }
  
-        // Usuwanie dezaktywowanych kółek
-        Node* prev = nullptr;
-        current = circles.getHead();
-        while (current != nullptr) {
-            Node* next = current->next;
-            if (!current->data.active) {
-                circles.remove(prev, current);
-            } else {
-                prev = current;
-            }
-            current = next;
-        }
+        // // Usuwanie dezaktywowanych kółek
+        // Node* prev = nullptr;
+        // current = circles.getHead();
+        // while (current != nullptr) {
+        //     Node* next = current->next;
+        //     if (!current->data.active) {
+        //         circles.remove(prev, current);
+        //     } else {
+        //         prev = current;
+        //     }
+        //     current = next;
+        // }
 
         // Rysowanie kółek
         // current = circles.getHead();
@@ -224,7 +233,7 @@ public:
         //     current = current->next;
         // }
 
-        return true;
+        return !quit;
     }
 
     void updateCircles(float fElapsedTime) {
@@ -261,9 +270,63 @@ public:
                 }
                 current = next;
             }
+        } else if (mode == Mode::DOUBLY_LINKED_LIST) {
+            DNode* current = doublyLinkedList.getHead();
+            while (current != nullptr) {
+                if (current->data.active) {
+                    current->data.update(fElapsedTime);
+                }
+                current = current->next;
+            }
 
+            DNode* node1 = doublyLinkedList.getHead();
+            while (node1 != nullptr) {
+                DNode* node2 = node1->next;
+                while (node2 != nullptr) {
+                    if (node1->data.active && node2->data.active && node1->data.isColliding(node2->data)) {
+                        node1->data.active = false;
+                        node2->data.active = false;
+                    }
+                    node2 = node2->next;
+                }
+                node1 = node1->next;
+            }
+
+            DNode* prev = nullptr;
+            current = doublyLinkedList.getHead();
+            while (current != nullptr) {
+                DNode* next = current->next;
+                if (!current->data.active) {
+                    doublyLinkedList.remove(prev, current);
+                } else {
+                    prev = current;
+                }
+                current = next;
+            }
+        } else if (mode == Mode::ARRAY) {
+            for (int i = 0; i < circleArray.getSize(); ++i) {
+                if (circleArray.get(i).active) {
+                    circleArray.get(i).update(fElapsedTime);
+                }
+            }
+
+            for (int i = 0; i < circleArray.getSize(); ++i) {
+                for (int j = i + 1; j < circleArray.getSize(); ++j) {
+                    if (circleArray.get(i).active && circleArray.get(j).active && circleArray.get(i).isColliding(circleArray.get(j))) {
+                        circleArray.get(i).active = false;
+                        circleArray.get(j).active = false;
+                    }
+                }
+            }
+
+            for (int i = 0; i < circleArray.getSize();) {
+                if (!circleArray.get(i).active) {
+                    circleArray.remove(i);
+                } else {
+                    ++i;
+                }
+            }
         }
-
     }
 
 
@@ -286,6 +349,12 @@ public:
                     FillCircle(current->data.x, current->data.y, current->data.radius, current->data.color);
                 }
                 current = current->next;
+            }
+        } else if (mode == Mode::ARRAY) {
+            for (int i = 0; i < circleArray.getSize(); ++i) {
+                if (circleArray.get(i).active) {
+                    FillCircle(circleArray.get(i).x, circleArray.get(i).y, circleArray.get(i).radius, circleArray.get(i).color);
+                }
             }
         }
     }
@@ -438,7 +507,7 @@ W celu uatrakcyjnienia pracy z listami jednokierunkowymi i dwukierunkowymi, wyko
 
 Aby skompilować program, użyj poniższego polecenia:
 
-g++ -o start zad2.cpp Array.cpp SinglyLinkedList.cpp -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++17
+g++ -o start zad2.cpp Array.cpp SinglyLinkedList.cpp DoublyLinkedList.cpp  -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++17
 
 //g++ zad2.cpp Array.cpp SinglyLinkedList.cpp DoublyLinkedList.cpp -o main
 
