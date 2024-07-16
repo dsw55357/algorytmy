@@ -2,6 +2,8 @@
 #include "olcPixelGameEngine.h"
 
 #include <iostream>
+#include <chrono>
+
 #include "Array.h"
 
 #include "SinglyLinkedList.h"
@@ -100,6 +102,12 @@ enum class Mode {
     ARRAY
 };
 
+/*
+
+Klasa CircleSimulation zarządza wizualizacją kółek, umożliwiając użytkownikowi wybór między listą jednokierunkową, dwukierunkową i tablicą dynamiczną.
+
+*/
+
 class CircleSimulation : public olc::PixelGameEngine {
 public:
     CircleSimulation() {
@@ -112,24 +120,16 @@ private:
     DoublyLinkedList doublyLinkedList;
     Array circleArray;
     Mode mode = Mode::MENU;
+    std::string performanceMessage {".."};
 
 public:
     bool OnUserCreate() override {
         srand(time(0));
-        // for (int i = 0; i < 20; ++i) {
-        //     float x = rand() % ScreenWidth();
-        //     float y = rand() % ScreenHeight();
-        //     float vx = (rand() % 100 - 25) / 1.0f;
-        //     float vy = (rand() % 100 - 25) / 1.0f;
-        //     float radius = 10.0f;
-        //     olc::Pixel color = olc::Pixel(rand() % 256, rand() % 256, rand() % 256); // Losowy kolor
-        //     circles.insert(Circle(x, y, vx, vy, radius, color));
-        // }
         return true;
     }
 
     void initCircles() {
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 30; ++i) {
             float x = rand() % ScreenWidth();
             float y = rand() % ScreenHeight();
             float vx = (rand() % 200 - 20) / 1.0f; // Większa prędkość
@@ -157,7 +157,7 @@ public:
             DrawString(15, 30, "2. Singly Linked List", olc::GREEN);
             DrawString(15, 45, "3. Doubly Linked List", olc::GREEN);
 
-            DrawString(15, 60, "q - exit", olc::GREEN);
+            DrawString(15, 65, "q - exit", olc::GREEN);
             
             if (GetKey(olc::Key::K1).bPressed) {
                 mode = Mode::ARRAY;
@@ -173,9 +173,9 @@ public:
             }
         } else {
             DrawString(15, 15, "ESC - back to main menu", olc::GREEN);
-
             updateCircles(fElapsedTime);
             renderCircles();
+
 
             // Powrót do menu po naciśnięciu klawisza ESC
             if (GetKey(olc::Key::ESCAPE).bPressed) {
@@ -186,7 +186,7 @@ public:
             }
         }
 
-
+        DrawString(ScreenWidth()-300, ScreenHeight()-15, "Powered by olcPixelGameEngine, 2024(7)", olc::CYAN );
 
         // // Aktualizacja pozycji kółek
         // Node* current = circles.getHead();
@@ -237,7 +237,12 @@ public:
     }
 
     void updateCircles(float fElapsedTime) {
+        using namespace std::chrono;
+
         if (mode == Mode::SINGLY_LINKED_LIST) {
+
+            auto start = high_resolution_clock::now();
+
             Node* current = singlyLinkedList.getHead();
             while (current != nullptr) {
                 if (current->data.active) {
@@ -270,7 +275,17 @@ public:
                 }
                 current = next;
             }
+            
+            auto end = high_resolution_clock::now();
+            auto duration = duration_cast<microseconds>(end - start).count();
+            performanceMessage = "Singly Linked List insertions took " + std::to_string(duration) + " us";
+            std::cout << duration << std::endl;
+            DrawString(15, 45, performanceMessage, olc::YELLOW);
+
         } else if (mode == Mode::DOUBLY_LINKED_LIST) {
+            using namespace std::chrono;
+            const auto start{std::chrono::steady_clock::now()};
+
             DNode* current = doublyLinkedList.getHead();
             while (current != nullptr) {
                 if (current->data.active) {
@@ -303,7 +318,18 @@ public:
                 }
                 current = next;
             }
+
+            const auto end{std::chrono::steady_clock::now()};
+            //const std::chrono::duration<double> elapsed_seconds{end - start};
+            auto duration = duration_cast<microseconds>(end - start).count();
+            performanceMessage = "Doubly Linked List insertions took " + std::to_string(duration) + " us";
+            DrawString(15, 45, performanceMessage, olc::YELLOW);
+
         } else if (mode == Mode::ARRAY) {
+
+            using namespace std::chrono;
+            const auto start{std::chrono::steady_clock::now()};
+
             for (int i = 0; i < circleArray.getSize(); ++i) {
                 if (circleArray.get(i).active) {
                     circleArray.get(i).update(fElapsedTime);
@@ -326,6 +352,14 @@ public:
                     ++i;
                 }
             }
+
+            const auto end{std::chrono::steady_clock::now()};
+            //const std::chrono::duration<double> elapsed_seconds{end - start};
+            auto duration = duration_cast<microseconds>(end - start).count();
+            performanceMessage = "Array insertions took " + std::to_string(duration) + " us";
+            DrawString(15, 45, performanceMessage, olc::YELLOW);
+
+
         }
     }
 
