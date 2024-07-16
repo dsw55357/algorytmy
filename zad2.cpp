@@ -10,6 +10,9 @@
 
 #include "DoublyLinkedList.h"
 
+#include "ArrayLinkedList.h"
+
+
 /*
 
 class Array {
@@ -99,7 +102,8 @@ enum class Mode {
     MENU,
     SINGLY_LINKED_LIST,
     DOUBLY_LINKED_LIST,
-    ARRAY
+    ARRAY,
+    ARRAY_LINKED_LIST
 };
 
 /*
@@ -119,6 +123,9 @@ private:
     SinglyLinkedList singlyLinkedList;
     DoublyLinkedList doublyLinkedList;
     Array circleArray;
+    ArrayLinkedList arrayLinkedList;
+
+    
     Mode mode = Mode::MENU;
     std::string performanceMessage {".."};
 
@@ -143,6 +150,8 @@ public:
                 doublyLinkedList.insert(circle);
             } else if (mode == Mode::ARRAY) {
                circleArray.add(circle);
+            } else if (mode == Mode::ARRAY_LINKED_LIST) {
+                arrayLinkedList.insert(circle);
             }
         }
     }
@@ -156,8 +165,10 @@ public:
             DrawString(15, 15, "1. Array", olc::GREEN);
             DrawString(15, 30, "2. Singly Linked List", olc::GREEN);
             DrawString(15, 45, "3. Doubly Linked List", olc::GREEN);
+            DrawString(15, 60, "4. Array Based Linked List", olc::GREEN);
 
-            DrawString(15, 65, "q - exit", olc::GREEN);
+
+            DrawString(15, 80, "q - exit", olc::GREEN);
             
             if (GetKey(olc::Key::K1).bPressed) {
                 mode = Mode::ARRAY;
@@ -167,6 +178,9 @@ public:
                 initCircles();
             } else if (GetKey(olc::Key::K3).bPressed) {
                 mode = Mode::DOUBLY_LINKED_LIST;
+                initCircles();
+            } else if (GetKey(olc::Key::K4).bPressed) {
+                mode = Mode::ARRAY_LINKED_LIST;
                 initCircles();
             } else if (GetKey(olc::Key::Q).bReleased) {
 			    quit = true;
@@ -183,6 +197,8 @@ public:
                 singlyLinkedList = SinglyLinkedList();
                 doublyLinkedList = DoublyLinkedList();
                 circleArray = Array();
+                arrayLinkedList = ArrayLinkedList();
+
             }
         }
 
@@ -359,8 +375,32 @@ public:
             performanceMessage = "Array insertions took " + std::to_string(duration) + " us";
             DrawString(15, 45, performanceMessage, olc::YELLOW);
 
+    } else if (mode == Mode::ARRAY_LINKED_LIST) {
+            for (int i = 0; i < arrayLinkedList.getSize(); ++i) {
+                if (arrayLinkedList.get(i).active) {
+                    arrayLinkedList.get(i).update(fElapsedTime);
+                }
+            }
 
+            for (int i = 0; i < arrayLinkedList.getSize(); ++i) {
+                for (int j = i + 1; j < arrayLinkedList.getSize(); ++j) {
+                    if (arrayLinkedList.get(i).active && arrayLinkedList.get(j).active && arrayLinkedList.get(i).isColliding(arrayLinkedList.get(j))) {
+                        arrayLinkedList.get(i).active = false;
+                        arrayLinkedList.get(j).active = false;
+                    }
+                }
+            }
+
+            for (int i = 0; i < arrayLinkedList.getSize();) {
+                if (!arrayLinkedList.get(i).active) {
+                    arrayLinkedList.remove(i);
+                } else {
+                    ++i;
+                }
+            }
         }
+
+
     }
 
 
@@ -388,6 +428,12 @@ public:
             for (int i = 0; i < circleArray.getSize(); ++i) {
                 if (circleArray.get(i).active) {
                     FillCircle(circleArray.get(i).x, circleArray.get(i).y, circleArray.get(i).radius, circleArray.get(i).color);
+                }
+            }
+        } else if (mode == Mode::ARRAY_LINKED_LIST) {
+            for (int i = 0; i < arrayLinkedList.getSize(); ++i) {
+                if (arrayLinkedList.get(i).active) {
+                    FillCircle(arrayLinkedList.get(i).x, arrayLinkedList.get(i).y, arrayLinkedList.get(i).radius, arrayLinkedList.get(i).color);
                 }
             }
         }
@@ -541,7 +587,9 @@ W celu uatrakcyjnienia pracy z listami jednokierunkowymi i dwukierunkowymi, wyko
 
 Aby skompilować program, użyj poniższego polecenia:
 
-g++ -o start zad2.cpp Array.cpp SinglyLinkedList.cpp DoublyLinkedList.cpp  -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++17
+g++ -o start zad2.cpp Array.cpp SinglyLinkedList.cpp DoublyLinkedList.cpp ArrayLinkedList.cpp  -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++20
+
+// g++ -o start zad2.cpp Array.cpp SinglyLinkedList.cpp DoublyLinkedList.cpp  -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++17
 
 //g++ zad2.cpp Array.cpp SinglyLinkedList.cpp DoublyLinkedList.cpp -o main
 
