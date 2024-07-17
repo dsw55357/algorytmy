@@ -376,6 +376,10 @@ public:
             DrawString(15, 45, performanceMessage, olc::YELLOW);
 
     } else if (mode == Mode::ARRAY_LINKED_LIST) {
+
+            using namespace std::chrono;
+            const auto start{std::chrono::steady_clock::now()};    
+
             for (int i = 0; i < arrayLinkedList.getSize(); ++i) {
                 if (arrayLinkedList.get(i).active) {
                     arrayLinkedList.get(i).update(fElapsedTime);
@@ -398,6 +402,12 @@ public:
                     ++i;
                 }
             }
+
+            const auto end{std::chrono::steady_clock::now()};
+            auto duration = duration_cast<microseconds>(end - start).count();
+            performanceMessage = "ARRAY LINKED LIST insertions took " + std::to_string(duration) + " us";
+            DrawString(15, 45, performanceMessage, olc::YELLOW);
+
         }
 
 
