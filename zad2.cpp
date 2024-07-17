@@ -198,7 +198,6 @@ public:
             updateCircles(fElapsedTime);
             renderCircles();
 
-
             // Powrót do menu po naciśnięciu klawisza ESC
             if (GetKey(olc::Key::ESCAPE).bPressed) {
                 mode = Mode::MENU;
@@ -305,6 +304,9 @@ public:
             performanceMessage = "Singly Linked List insertions took " + std::to_string(duration) + " us";
             std::cout << duration << std::endl;
             DrawString(15, 45, performanceMessage, olc::YELLOW);
+            // Wyświetlenie liczby aktualnie wyświetlanych obiektów
+            DrawString(10, ScreenWidth()-50, "Number of Circles: " + std::to_string(singlyLinkedList.getSize()), olc::CYAN);
+
 
         } else if (mode == Mode::DOUBLY_LINKED_LIST) {
             using namespace std::chrono;
@@ -348,6 +350,9 @@ public:
             auto duration = duration_cast<microseconds>(end - start).count();
             performanceMessage = "Doubly Linked List insertions took " + std::to_string(duration) + " us";
             DrawString(15, 45, performanceMessage, olc::YELLOW);
+            // Wyświetlenie liczby aktualnie wyświetlanych obiektów
+            DrawString(10, ScreenWidth()-50, "Number of Circles: " + std::to_string(doublyLinkedList.getSize()), olc::CYAN);
+
 
         } else if (mode == Mode::ARRAY) {
 
@@ -382,6 +387,10 @@ public:
             auto duration = duration_cast<microseconds>(end - start).count();
             performanceMessage = "Array insertions took " + std::to_string(duration) + " us";
             DrawString(15, 45, performanceMessage, olc::YELLOW);
+            // Wyświetlenie liczby aktualnie wyświetlanych obiektów
+            DrawString(10, ScreenWidth()-50, "Number of Circles: " + std::to_string(circleArray.getSize()), olc::CYAN);
+
+
 
     } else if (mode == Mode::ARRAY_LINKED_LIST) {
 
@@ -414,6 +423,10 @@ public:
             auto duration = duration_cast<microseconds>(end - start).count();
             performanceMessage = "ARRAY LINKED LIST insertions took " + std::to_string(duration) + " us";
             DrawString(15, 45, performanceMessage, olc::YELLOW);
+            // Wyświetlenie liczby aktualnie wyświetlanych obiektów
+            DrawString(10, ScreenWidth()-50, "Number of Circles: " + std::to_string(arrayLinkedList.getSize()), olc::CYAN);
+
+
     } else if (mode == Mode::ARRAY_DOUBLY_LINKED_LIST) {
 
             using namespace std::chrono;
@@ -446,6 +459,11 @@ public:
             auto duration = duration_cast<microseconds>(end - start).count();
             performanceMessage = "ARRAY DOUBLY LINKED LIST insertions took " + std::to_string(duration) + " us";
             DrawString(15, 45, performanceMessage, olc::YELLOW);
+
+            // Wyświetlenie liczby aktualnie wyświetlanych obiektów
+            DrawString(10, ScreenWidth()-50, "Number of Circles: " + std::to_string(arrayDoublyLinkedList.getSize()), olc::CYAN);
+
+
         }
 
 

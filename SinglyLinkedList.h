@@ -22,6 +22,8 @@ public:
 
     void display() const;
     Node* getHead() const;
+
+    int getSize() const;
 };
 
 #endif // SINGLYLINKEDLIST_H

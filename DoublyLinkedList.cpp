@@ -13,6 +13,17 @@ DoublyLinkedList::~DoublyLinkedList() {
     }
 }
 
+int DoublyLinkedList::getSize() const {
+    DNode* current = head;
+    int c {0};
+    while (current != nullptr) {
+        c++;
+        current = current->next;    
+    }
+    
+    return c;
+}
+
 void DoublyLinkedList::insert(const Circle& value) {
     DNode* newNode = new DNode(value);
     newNode->next = head;

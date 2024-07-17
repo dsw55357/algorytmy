@@ -13,6 +13,17 @@ SinglyLinkedList::~SinglyLinkedList() {
     }
 }
 
+int SinglyLinkedList::getSize() const {
+    Node* current = head;
+    int c {0};
+    while (current != nullptr) {
+        c++;
+        current = current->next;    
+    }
+    
+    return c;
+}
+
 //void SinglyLinkedList::insert(int value) {
 void SinglyLinkedList::insert(const Circle& value) {
     Node* newNode = new Node(value);

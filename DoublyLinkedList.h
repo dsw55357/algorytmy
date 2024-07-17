@@ -24,6 +24,8 @@ public:
     void display() const;
     DNode* getHead() const;
 
+    int getSize() const;
+
 };
 
 #endif // DOUBLYLINKEDLIST_H
