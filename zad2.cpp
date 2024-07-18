@@ -14,6 +14,7 @@
 
 #include "ArrayDoublyLinkedList.h"
 
+#include "MaxHeap.h"
 
 /*
 
@@ -106,7 +107,9 @@ enum class Mode {
     DOUBLY_LINKED_LIST,
     ARRAY,
     ARRAY_LINKED_LIST,
-    ARRAY_DOUBLY_LINKED_LIST
+    ARRAY_DOUBLY_LINKED_LIST,
+    MAX_HEAP
+
 };
 
 /*
@@ -128,6 +131,11 @@ private:
     Array circleArray;
     ArrayLinkedList arrayLinkedList;
     ArrayDoublyLinkedList arrayDoublyLinkedList;
+    MaxHeap maxHeap;
+    std::vector<Circle> originalCircles;
+    std::vector<Circle> sortedCircles;
+
+
     
     Mode mode = Mode::MENU;
     std::string performanceMessage {".."};
@@ -140,7 +148,7 @@ public:
 
     void initCircles() {
         for (int i = 0; i < 30; ++i) {
-            float x = rand() % ScreenWidth();
+            float x = rand() % ScreenWidth()/2;
             float y = rand() % ScreenHeight();
             float vx = (rand() % 200 - 20) / 1.0f; // Większa prędkość
             float vy = (rand() % 200 - 20) / 1.0f; // Większa prędkość
@@ -157,6 +165,9 @@ public:
                 arrayLinkedList.insert(circle);
             } else if (mode == Mode::ARRAY_DOUBLY_LINKED_LIST) {
                 arrayDoublyLinkedList.insert(circle);
+            } else if (mode == Mode::MAX_HEAP) {
+                maxHeap.insert(circle);
+                originalCircles.push_back(circle);
             }
         }
     }
@@ -172,8 +183,9 @@ public:
             DrawString(15, 45, "3. Doubly Linked List", olc::GREEN);
             DrawString(15, 60, "4. Array Singly Linked List", olc::GREEN);
             DrawString(15, 75, "5. Array Doubly Linked List", olc::GREEN);
+            DrawString(15, 90, "6. maxHeap", olc::GREEN);
 
-            DrawString(15, 90, "q - exit", olc::GREEN);
+            DrawString(15, 110, "q - exit", olc::GREEN);
             
             if (GetKey(olc::Key::K1).bPressed) {
                 mode = Mode::ARRAY;
@@ -190,10 +202,23 @@ public:
             }  else if (GetKey(olc::Key::K5).bPressed) {
                 mode = Mode::ARRAY_DOUBLY_LINKED_LIST;
                 initCircles();
+            } else if (GetKey(olc::Key::K6).bPressed) {
+                mode = Mode::MAX_HEAP;
+                maxHeap = MaxHeap();
+                originalCircles.clear();
+                sortedCircles.clear();
+                initCircles();
+                // Wyodrębnij wszystkie elementy z kopca, aby je posortować
+                while (!maxHeap.isEmpty()) {
+                    sortedCircles.push_back(maxHeap.extractMax());
+                }
+                
             } else if (GetKey(olc::Key::Q).bReleased) {
 			    quit = true;
-            }
+            } 
+
         } else {
+            
             DrawString(15, 15, "ESC - back to main menu", olc::GREEN);
             updateCircles(fElapsedTime);
             renderCircles();
@@ -206,6 +231,9 @@ public:
                 circleArray = Array();
                 arrayLinkedList = ArrayLinkedList();
                 arrayDoublyLinkedList = ArrayDoublyLinkedList();
+                maxHeap = MaxHeap();
+                originalCircles.clear();
+                sortedCircles.clear();
             }
         }
 
@@ -464,8 +492,28 @@ public:
             DrawString(10, ScreenWidth()-50, "Number of Circles: " + std::to_string(arrayDoublyLinkedList.getSize()), olc::CYAN);
 
 
-        }
+        } else if (mode == Mode::MAX_HEAP) {
+            // for (int i = 0; i < maxHeap.getSize(); ++i) {
+            //     const Circle& circle = maxHeap.getMax();
+            //     if (circle.active) {
+            //         const_cast<Circle&>(circle).update(fElapsedTime);
+            //     }
+            // }
 
+            // // Kolizje i usuwanie elementów w kopcu to nietypowe operacje,
+            // // dla uproszczenia załóżmy, że wyciągamy elementy z kopca tylko w przypadku usunięcia
+
+            // for (int i = 0; i < maxHeap.getSize();) {
+            //     const Circle& circle = maxHeap.getMax();
+            //     if (!circle.active) {
+            //         maxHeap.extractMax();
+            //     } else {
+            //         ++i;
+            //     }
+
+            // }
+            DrawLine(ScreenWidth() / 2, 0, ScreenWidth() / 2, ScreenHeight(), olc::GREEN);
+        }
 
     }
 
@@ -507,6 +555,25 @@ public:
                 if (arrayDoublyLinkedList.get(i).active) {
                     FillCircle(arrayDoublyLinkedList.get(i).x, arrayDoublyLinkedList.get(i).y, arrayDoublyLinkedList.get(i).radius, arrayDoublyLinkedList.get(i).color);
                 }
+            }
+        } else if (mode == Mode::MAX_HEAP) {
+
+            // Wyświetlenie wszystkich kółek w oryginalnych pozycjach, po lewej stronie
+            for (const Circle& circle : originalCircles) {
+                FillCircle(circle.x, circle.y, circle.radius, circle.color);
+            }
+
+            // a posortowane po prawej stronie
+            // int offsetX = ScreenWidth() / 2;
+            // const auto& sortedCircles = maxHeap.getHeap();
+            // for (size_t i = 0; i < sortedCircles.size(); ++i) {
+            //     const Circle& circle = sortedCircles[i];
+            //     FillCircle(offsetX + circle.x, circle.y, circle.radius, circle.color);
+            // }
+                // Wyświetlenie kółek posortowanych według sumy składowych RGB koloru
+            int offsetX = ScreenWidth() / 2;
+            for (const Circle& circle : sortedCircles) {
+                FillCircle(offsetX + circle.x, circle.y, circle.radius, circle.color);
             }
         }
     }
@@ -655,11 +722,19 @@ W celu uatrakcyjnienia pracy z listami jednokierunkowymi i dwukierunkowymi, wyko
    - Inicjalizuje kółka w losowych pozycjach z losowymi prędkościami i kolorami.
    - Aktualizuje pozycje kółek, sprawdza kolizje, usuwa dezaktywowane kółka i rysuje aktywne kółka na ekranie.
 
+
+
+###
+zad.2 ad.f
+realizacja kopca, który porządkuje elementy klasy Circle na podstawie sumy składowych koloru (R, G, B) w kolejności od najwyższej do najniższej. 
+Pionowa zielona linia dzieli ekran na elementy nieposortowane od posortowanych.
+
+
 ### Kompilacja i uruchomienie
 
 Aby skompilować program, użyj poniższego polecenia:
 
-g++ -o start zad2.cpp Array.cpp SinglyLinkedList.cpp DoublyLinkedList.cpp ArrayLinkedList.cpp ArrayDoublyLinkedList.cpp  -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++20
+g++ -o start zad2.cpp Array.cpp SinglyLinkedList.cpp DoublyLinkedList.cpp ArrayLinkedList.cpp ArrayDoublyLinkedList.cpp MaxHeap.h -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++20
 
 // g++ -o start zad2.cpp Array.cpp SinglyLinkedList.cpp DoublyLinkedList.cpp  -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++17
 
