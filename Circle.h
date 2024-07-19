@@ -39,24 +39,25 @@ public:
         return color.r + color.g + color.b;
     }
 
-    bool operator<(const Circle& other) const {
-        std::cout << colorSum() << ", " << other.colorSum() << std::endl;
-        return colorSum() < other.colorSum(); // porównanie na podstawie sumy składowych koloru
-    }
-
-    bool operator>(const Circle& other) const {
-        std::cout << colorSum() << ", " << other.colorSum() << std::endl;
-        return colorSum() > other.colorSum(); // porównanie na podstawie sumy składowych koloru
-    }
-
-
     // bool operator<(const Circle& other) const {
-    //     return radius < other.radius; // porównanie na podstawie promienia
+    //     std::cout << colorSum() << ", " << other.colorSum() << std::endl;
+    //     return colorSum() < other.colorSum(); // porównanie na podstawie sumy składowych koloru
     // }
 
     // bool operator>(const Circle& other) const {
-    //     return radius > other.radius; // porównanie na podstawie promienia
+    //     std::cout << colorSum() << ", " << other.colorSum() << std::endl;
+    //     return colorSum() > other.colorSum(); // porównanie na podstawie sumy składowych koloru
     // }
+
+    bool operator<(const Circle& other) const {
+        std::cout << radius << ", " << other.radius << std::endl;
+        return radius < other.radius; // porównanie na podstawie promienia
+    }
+
+    bool operator>(const Circle& other) const {
+        std::cout << radius << ", " << other.radius << std::endl;
+        return radius > other.radius; // porównanie na podstawie promienia
+    }
 
     // bool operator<=(const Circle& other) const {
     //     return radius <= other.radius;

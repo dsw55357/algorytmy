@@ -152,7 +152,7 @@ public:
             float y = rand() % ScreenHeight();
             float vx = (rand() % 200 - 20) / 1.0f; // Większa prędkość
             float vy = (rand() % 200 - 20) / 1.0f; // Większa prędkość
-            float radius = 10.0f;
+            float radius = (rand() % 20) + 5; // Losowa średnica od 5 do 25
             olc::Pixel color = olc::Pixel(rand() % 256, rand() % 256, rand() % 256); // Losowy kolor
             Circle circle(x, y, vx, vy, radius, color);
             if (mode == Mode::SINGLY_LINKED_LIST) {
@@ -208,10 +208,11 @@ public:
                 originalCircles.clear();
                 sortedCircles.clear();
                 initCircles();
+
                 // Wyodrębnij wszystkie elementy z kopca, aby je posortować
                 while (!maxHeap.isEmpty()) {
                     sortedCircles.push_back(maxHeap.extractMax());
-                }
+                }                
                 
             } else if (GetKey(olc::Key::Q).bReleased) {
 			    quit = true;
@@ -557,10 +558,17 @@ public:
                 }
             }
         } else if (mode == Mode::MAX_HEAP) {
-
+            int x = 50;
+            int y = 70; // Startowa współrzędna Y
             // Wyświetlenie wszystkich kółek w oryginalnych pozycjach, po lewej stronie
             for (const Circle& circle : originalCircles) {
-                FillCircle(circle.x, circle.y, circle.radius, circle.color);
+                // FillCircle(circle.x, circle.y, circle.radius, circle.color);
+                FillCircle(x, y, circle.radius, circle.color);
+                y += (circle.radius * 2) + 10; // Zwiększanie Y, aby umieścić kolejne kółka poniżej, dodając odstęp 10
+                if (y >= 500) {
+                    x += (circle.radius * 2) + 10;
+                    y = 70;
+                }
             }
 
             // a posortowane po prawej stronie
@@ -570,10 +578,19 @@ public:
             //     const Circle& circle = sortedCircles[i];
             //     FillCircle(offsetX + circle.x, circle.y, circle.radius, circle.color);
             // }
-                // Wyświetlenie kółek posortowanych według sumy składowych RGB koloru
+            
+            // Wyświetlenie kółek posortowanych według promienia
             int offsetX = ScreenWidth() / 2;
+            x = 50;
+            y = 70; // Startowa współrzędna Y
+            DrawString(offsetX + x, 15, "Pokopcowane..", olc::CYAN);
             for (const Circle& circle : sortedCircles) {
-                FillCircle(offsetX + circle.x, circle.y, circle.radius, circle.color);
+                FillCircle(offsetX + x, y, circle.radius, circle.color); // 50 to współrzędna X
+                y += (circle.radius * 2) + 10; // Zwiększanie Y, aby umieścić kolejne kółka poniżej, dodając odstęp 10
+                if (y >= 500) {
+                    x += (circle.radius * 2) + 10;
+                    y = 70;
+                }
             }
         }
     }
@@ -656,7 +673,7 @@ Wyjaśnienie:
 
 
     CircleSimulation demo;
-    if (demo.Construct(600, 600, 1, 1))
+    if (demo.Construct(800, 600, 1, 1))
         demo.Start();
     return 0;
 
