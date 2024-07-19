@@ -743,8 +743,8 @@ W celu uatrakcyjnienia pracy z listami jednokierunkowymi i dwukierunkowymi, wyko
 
 ###
 zad.2 ad.f
-realizacja kopca, który porządkuje elementy klasy Circle na podstawie sumy składowych koloru (R, G, B) w kolejności od najwyższej do najniższej. 
-Pionowa zielona linia dzieli ekran na elementy nieposortowane od posortowanych.
+realizacja kopca, który porządkuje elementy klasy Circle na podstawie promienia okręgu w kolejności od najwyższej do najniższej. 
+Pionowa zielona linia dzieli ekran na elementy nieposortowane (lewa strona ekranu) od posortowanych (prawa strona ekranu).
 
 
 ### Kompilacja i uruchomienie
