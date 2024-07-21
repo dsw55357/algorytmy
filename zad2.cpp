@@ -18,6 +18,8 @@
 #include "SinglyLinkedListQueue.h"
 
 #include "ArrayStack.h"
+#include "SinglyLinkedListStack.h"
+
 
 
 #include "MaxHeap.h"
@@ -117,7 +119,8 @@ enum class Mode {
     MAX_HEAP,
     ARRAY_QUEUE,
     LIST_QUEUE,
-    STACK
+    STACK,
+    STACK_LIST 
 
 };
 
@@ -145,6 +148,7 @@ private:
     SinglyLinkedListQueue<Circle> listQueue;
 
     ArrayStack arrayStack;
+    SinglyLinkedListStack listStack;
 
     MaxHeap maxHeap;
     std::vector<Circle> originalCircles;
@@ -152,6 +156,9 @@ private:
     
     Mode mode = Mode::MENU;
     std::string performanceMessage {".."};
+
+    std::string errorMessage; // Dodana zmienna do przechowywania komunikatu o błędzie
+
 
 public:
     bool OnUserCreate() override {
@@ -190,6 +197,8 @@ public:
                 listQueue.enqueue(circle);
             }  else if (mode == Mode::STACK) {
                 arrayStack.push(circle);
+            } else if (mode == Mode::STACK_LIST) {
+                listStack.push(circle);
             }
         }
     }
@@ -209,9 +218,9 @@ public:
             DrawString(15, 105, "7. Array Queue", olc::GREEN);
             DrawString(15, 120, "8. List Queue", olc::GREEN);
             DrawString(15, 135, "9. Implementacja Stosu (realizacja za pomocą tablicy)", olc::GREEN);
+            DrawString(15, 150, "0. Implementacja Stosu (realizacja za pomocą listy)", olc::GREEN);
 
-
-            DrawString(15, 155, "q - exit", olc::GREEN);
+            DrawString(15, 170, "Q - exit", olc::GREEN);
             
             if (GetKey(olc::Key::K1).bPressed) {
                 mode = Mode::ARRAY;
@@ -248,7 +257,11 @@ public:
             } else if (GetKey(olc::Key::K9).bPressed) {
                 mode = Mode::STACK;
                 arrayStack.clear(); // Resetowanie stosu
-                initCircles();             
+                initCircles();      
+            } else if (GetKey(olc::Key::K0).bPressed) {
+                mode = Mode::STACK_LIST;
+                listStack.clear(); // Resetowanie stosu
+                initCircles();      
             } else if (GetKey(olc::Key::Q).bReleased) {
 			    quit = true;
             } 
@@ -576,67 +589,82 @@ public:
             });
 
         } else if (mode == Mode::STACK) {
-
-            // Obsługa klawisza R do dodania losowych punktów
-            if (GetKey(olc::A).bPressed) {
-                addRandomPoint(arrayStack, 1); // Dodaj 1 punkt
-            }
-            // Obsługa klawisza D do usunięcie elementu
-            if (GetKey(olc::D).bPressed) {
-                popPoint(arrayStack, 1); // Usuń punkt
-            }
-
-            // Aktualizacja kółek w stosie
-            arrayStack.forEach([fElapsedTime](Circle& circle) {
-                if (circle.active) {
-                    circle.update(fElapsedTime);
+            try {
+                // Obsługa klawisza R do dodania losowych punktów
+                if (GetKey(olc::A).bPressed) {
+                    // Dodaj 1 punkt
+                    arrayStack.push(addRandomPoint(1));
                 }
-            });
+                // Obsługa klawisza D do usunięcie elementu
+                if (GetKey(olc::D).bPressed) {
+                    // popPoint(arrayStack, 1); // Usuń punkt
+                    arrayStack.pop();
+                }
+                DrawString(15, ScreenHeight()-15, "A - dodaj / D - zdejmij ze stosu", olc::GREY, 1);
+                // Aktualizacja kółek w stosie
+                arrayStack.forEach([fElapsedTime](Circle& circle) {
+                    if (circle.active) {
+                        circle.update(fElapsedTime);
+                    }
+                });
+            } catch (const std::runtime_error& e) {
+                errorMessage = e.what(); // Przechwycenie wyjątku i zapisanie komunikatu
+            }
 
-            // // Sprawdzanie kolizji i dezaktywacja kółek
-            // arrayStack.forEach([this](Circle& circle1) {
-            //     arrayStack.forEach([&circle1](Circle& circle2) {
-            //         if (&circle1 != &circle2 && circle1.active && circle2.active && circle1.isColliding(circle2)) {
-            //             circle1.active = false;
-            //             //circle2.active = false;
-            //         }
-            //     });
-            // });
+            // Wyświetlenie komunikatu o błędzie, jeśli istnieje
+            if (!errorMessage.empty()) {
+                if (arrayStack.size() > 0) {
+                    errorMessage.clear();
+                } else {
+                    DrawString(ScreenWidth()/2, ScreenHeight()/2, errorMessage, olc::RED, 2);
+                }
+            }
 
-            // // Usuwanie nieaktywnych kółek
-            // arrayStack.forEach([this](Circle& circle) {
-            //     if (circle.active) {
-            //         arrayStack.pop();
-            //     }
-            // });
+        } else if (mode == Mode::STACK_LIST) {
+            try {
+                // Obsługa klawisza R do dodania losowych punktów
+                if (GetKey(olc::A).bPressed) {
+                    // Dodaj 1 punkt
+                    listStack.push(addRandomPoint(1));
+                }
+                // Obsługa klawisza D do usunięcie elementu
+                if (GetKey(olc::D).bPressed) {
+                    // popPoint(arrayStack, 1); 
+                    // Usuń punkt
+                    listStack.pop();
+                }
+                DrawString(15, ScreenHeight()-15, "A - dodaj / D - zdejmij ze stosu", olc::GREY, 1);
+                // Aktualizacja kółek w stosie
+                listStack.forEach([fElapsedTime](Circle& circle) {
+                    if (circle.active) {
+                        circle.update(fElapsedTime);
+                    }
+                });
+            } catch (const std::runtime_error& e) {
+                errorMessage = e.what(); // Przechwycenie wyjątku i zapisanie komunikatu
+            }
+
+            // Wyświetlenie komunikatu o błędzie, jeśli istnieje
+            if (!errorMessage.empty()) {
+                if (listStack.getSize() > 0) {
+                    errorMessage.clear();
+                } else {
+                    DrawString(ScreenWidth()/2, ScreenHeight()/2, errorMessage, olc::RED, 2);
+                }
+            }
+
+
 
         } else if (mode == Mode::MAX_HEAP) {
-            // for (int i = 0; i < maxHeap.getSize(); ++i) {
-            //     const Circle& circle = maxHeap.getMax();
-            //     if (circle.active) {
-            //         const_cast<Circle&>(circle).update(fElapsedTime);
-            //     }
-            // }
-
-            // // Kolizje i usuwanie elementów w kopcu to nietypowe operacje,
-            // // dla uproszczenia załóżmy, że wyciągamy elementy z kopca tylko w przypadku usunięcia
-
-            // for (int i = 0; i < maxHeap.getSize();) {
-            //     const Circle& circle = maxHeap.getMax();
-            //     if (!circle.active) {
-            //         maxHeap.extractMax();
-            //     } else {
-            //         ++i;
-            //     }
-
-            // }
             DrawLine(ScreenWidth() / 2, 0, ScreenWidth() / 2, ScreenHeight(), olc::GREEN);
         }
 
     }
 
-    void addRandomPoint(ArrayStack &arrayStack, int n=1) {
-        for (int i = 0; i < n; ++i) {
+
+    // Circle addRandomPoint(ArrayStack &arrayStack, int n=1) {
+    Circle addRandomPoint( int n=1) {
+        // for (int i = 0; i < n; ++i) {
             int x = rand() % ScreenWidth();
             int y = rand() % ScreenHeight();
             float vx = (rand() % 200 - 20) / 1.0f; // Większa prędkość
@@ -644,13 +672,13 @@ public:
             float radius = (rand() % 20) + 5; // Losowa średnica od 5 do 25
             olc::Pixel color = olc::Pixel(rand() % 256, rand() % 256, rand() % 256); // Losowy kolor
             Circle circle(x, y, vx, vy, radius, color);           
-            arrayStack.push(circle);
-        }
+        // }
+        return circle;
     }
 
-    void popPoint(ArrayStack &arrayStack, int n=1) {
-        arrayStack.pop();
-    }
+    // void popPoint(ArrayStack &arrayStack, int n=1) {
+    //     arrayStack.pop();
+    // }
 
 
     void renderCircles() {
@@ -709,6 +737,14 @@ public:
 
             DrawString(ScreenWidth() - 200, 15, "Zajetosc stosu: " + std::to_string(arrayStack.size()), olc::YELLOW); 
 
+        } else if (mode == Mode::STACK_LIST) {
+        // listStack
+            listStack.forEach([this](const Circle& circle) {
+                FillCircle(circle.x, circle.y, circle.radius, circle.color);
+            });
+
+            DrawString(ScreenWidth() - 200, 15, "Zajetosc stosu: " + std::to_string(listStack.getSize()), olc::YELLOW); 
+        
         } else if (mode == Mode::MAX_HEAP) {
             int x = 50;
             int y = 70; // Startowa współrzędna Y
@@ -897,7 +933,7 @@ realizacja kolejki za pomocą listy jednokierunkowej, musimy najpierw zaimplemen
 ###
 zad.2 ad.e
 - Stos (realizacja za pomocą tablicy)
-
+- Stos (realizacja za pomocą listy)
 
 ###
 zad.2 ad.f
