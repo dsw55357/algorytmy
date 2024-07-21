@@ -616,7 +616,17 @@ public:
                 if (arrayStack.size() > 0) {
                     errorMessage.clear();
                 } else {
-                    DrawString(ScreenWidth()/2, ScreenHeight()/2, errorMessage, olc::RED, 2);
+                    // DrawString(ScreenWidth()/2, ScreenHeight()/2, errorMessage, olc::RED, 2);
+                    uint32_t scale = 2;
+                    // Get the size of the text
+                    olc::vi2d textSize = GetTextSize(errorMessage);
+
+                    // Calculate the position to draw the text so that it is centered
+                    int textX = ScreenWidth()/2 - (textSize.x * scale) / 2;
+                    int textY = ScreenHeight()/2 - (textSize.y * scale) / 2;
+
+                    // Draw the text
+                    DrawString(textX, textY, errorMessage, olc::RED, scale);
                 }
             }
 
@@ -649,7 +659,17 @@ public:
                 if (listStack.getSize() > 0) {
                     errorMessage.clear();
                 } else {
-                    DrawString(ScreenWidth()/2, ScreenHeight()/2, errorMessage, olc::RED, 2);
+                    uint32_t scale = 2;
+                    // Get the size of the text
+                    olc::vi2d textSize = GetTextSize(errorMessage);
+
+                    // Calculate the position to draw the text so that it is centered
+                    int textX = ScreenWidth()/2 - (textSize.x * scale) / 2;
+                    int textY = ScreenHeight()/2 - (textSize.y * scale) / 2;
+
+                    // Draw the text
+                    DrawString(textX, textY, errorMessage, olc::RED, scale);
+                    //DrawString(ScreenWidth()/2, ScreenHeight()/2, errorMessage, olc::RED, 2);
                 }
             }
 
@@ -947,6 +967,6 @@ Pionowa zielona linia dzieli ekran na elementy nieposortowane (lewa strona ekran
 
 Aby skompilować program, użyj poniższego polecenia:
 
-g++ -o start zad2.cpp Array.cpp SinglyLinkedList.cpp DoublyLinkedList.cpp ArrayLinkedList.cpp ArrayDoublyLinkedList.cpp MaxHeap.cpp Queue.cpp SinglyLinkedListQueue.cpp ArrayStack.h  -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++20
+g++ -o start zad2.cpp Array.cpp SinglyLinkedList.cpp DoublyLinkedList.cpp ArrayLinkedList.cpp ArrayDoublyLinkedList.cpp MaxHeap.cpp Queue.cpp SinglyLinkedListQueue.cpp ArrayStack.h SinglyLinkedListStack.h  -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++20
 
 */
