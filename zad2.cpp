@@ -14,6 +14,8 @@
 
 #include "ArrayDoublyLinkedList.h"
 
+#include "Queue.h"
+
 #include "MaxHeap.h"
 
 /*
@@ -108,7 +110,8 @@ enum class Mode {
     ARRAY,
     ARRAY_LINKED_LIST,
     ARRAY_DOUBLY_LINKED_LIST,
-    MAX_HEAP
+    MAX_HEAP,
+    ARRAY_QUEUE,
 
 };
 
@@ -131,11 +134,12 @@ private:
     Array circleArray;
     ArrayLinkedList arrayLinkedList;
     ArrayDoublyLinkedList arrayDoublyLinkedList;
+
+    CircleQueue arrayQueue;
+
     MaxHeap maxHeap;
     std::vector<Circle> originalCircles;
     std::vector<Circle> sortedCircles;
-
-
     
     Mode mode = Mode::MENU;
     std::string performanceMessage {".."};
@@ -147,6 +151,7 @@ public:
     }
 
     void initCircles() {
+        std::cout << "initCircles() " << std::endl;
         for (int i = 0; i < 30; ++i) {
             float x = rand() % ScreenWidth()/2;
             float y = rand() % ScreenHeight();
@@ -168,6 +173,10 @@ public:
             } else if (mode == Mode::MAX_HEAP) {
                 maxHeap.insert(circle);
                 originalCircles.push_back(circle);
+            } // ARRAY_QUEUE 
+              else if (mode == Mode::ARRAY_QUEUE) {
+                arrayQueue.enqueue(circle);
+                // std::cout << "initCircles() " << i << std::endl;
             }
         }
     }
@@ -184,8 +193,9 @@ public:
             DrawString(15, 60, "4. Array Singly Linked List", olc::GREEN);
             DrawString(15, 75, "5. Array Doubly Linked List", olc::GREEN);
             DrawString(15, 90, "6. maxHeap", olc::GREEN);
+            DrawString(15, 105, "7. Array Queue", olc::GREEN);
 
-            DrawString(15, 110, "q - exit", olc::GREEN);
+            DrawString(15, 125, "q - exit", olc::GREEN);
             
             if (GetKey(olc::Key::K1).bPressed) {
                 mode = Mode::ARRAY;
@@ -208,12 +218,16 @@ public:
                 originalCircles.clear();
                 sortedCircles.clear();
                 initCircles();
-
                 // Wyodrębnij wszystkie elementy z kopca, aby je posortować
                 while (!maxHeap.isEmpty()) {
                     sortedCircles.push_back(maxHeap.extractMax());
-                }                
-                
+                }     
+            }           
+            else if (GetKey(olc::Key::K7).bPressed) {
+                std::cout << "OnUserUpdate() " << std::endl;
+                mode = Mode::ARRAY_QUEUE;
+                //arrayQueue = CircleQueue(100); // Resetowanie kolejki
+                initCircles();             
             } else if (GetKey(olc::Key::Q).bReleased) {
 			    quit = true;
             } 
@@ -232,6 +246,7 @@ public:
                 circleArray = Array();
                 arrayLinkedList = ArrayLinkedList();
                 arrayDoublyLinkedList = ArrayDoublyLinkedList();
+                //arrayQueue = CircleQueue(100); // 
                 maxHeap = MaxHeap();
                 originalCircles.clear();
                 sortedCircles.clear();
@@ -492,6 +507,54 @@ public:
             // Wyświetlenie liczby aktualnie wyświetlanych obiektów
             DrawString(10, ScreenWidth()-50, "Number of Circles: " + std::to_string(arrayDoublyLinkedList.getSize()), olc::CYAN);
 
+        } else if (mode == Mode::ARRAY_QUEUE) {
+            // std::cout << "updateCircles() " << std::endl;
+            // Aktualizacja kółek w kolejce
+            arrayQueue.forEach([fElapsedTime](Circle& circle) {
+                if (circle.active) {                  
+                    circle.update(fElapsedTime);
+                }
+            });
+
+
+            arrayQueue.forEach([this](Circle& circle1) {
+                arrayQueue.forEach([&circle1](Circle& circle2) {
+                    if (&circle1 != &circle2 && circle1.active && circle2.active && circle1.isColliding(circle2)) {
+                        circle1.active = false;
+                        circle2.active = false;
+                    }
+                });
+            });
+
+/*
+
+            for (int i = 0; i < circleArray.getSize(); ++i) {
+                for (int j = i + 1; j < circleArray.getSize(); ++j) {
+                    if (circleArray.get(i).active && circleArray.get(j).active && circleArray.get(i).isColliding(circleArray.get(j))) {
+                        circleArray.get(i).active = false;
+                        circleArray.get(j).active = false;
+                    }
+                }
+            }
+
+            for (int i = 0; i < circleArray.getSize();) {
+                if (!circleArray.get(i).active) {
+                    circleArray.remove(i);
+                } else {
+                    ++i;
+                }
+            }
+
+
+            if (&circle1 != &circle2 && circle1.active && circle2.active && circle1.isColliding(circle2)) {
+
+*/
+
+
+
+            arrayQueue.removeIf([](const Circle& circle) {
+                return !circle.active;
+            });    
 
         } else if (mode == Mode::MAX_HEAP) {
             // for (int i = 0; i < maxHeap.getSize(); ++i) {
@@ -557,6 +620,11 @@ public:
                     FillCircle(arrayDoublyLinkedList.get(i).x, arrayDoublyLinkedList.get(i).y, arrayDoublyLinkedList.get(i).radius, arrayDoublyLinkedList.get(i).color);
                 }
             }
+        } else if (mode == Mode::ARRAY_QUEUE) {
+            // Wyświetlenie kółek na ekranie
+            arrayQueue.forEach([this](const Circle& circle) {
+                FillCircle(circle.x, circle.y, circle.radius, circle.color);
+            });
         } else if (mode == Mode::MAX_HEAP) {
             int x = 50;
             int y = 70; // Startowa współrzędna Y
@@ -740,6 +808,10 @@ W celu uatrakcyjnienia pracy z listami jednokierunkowymi i dwukierunkowymi, wyko
    - Aktualizuje pozycje kółek, sprawdza kolizje, usuwa dezaktywowane kółka i rysuje aktywne kółka na ekranie.
 
 
+###
+zad.2 ad.d
+Kolejkę (realizacja za pomocą tablicy)
+możemy teraz zająć się implementacją kolejki za pomocą tablicy. Kolejka to struktura danych, w której elementy są dodawane na końcu (enqueue) i usuwane z początku (dequeue). Kolejkę zaimplementujemy w oparciu o tablicę.
 
 ###
 zad.2 ad.f
