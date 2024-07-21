@@ -15,6 +15,8 @@
 #include "ArrayDoublyLinkedList.h"
 
 #include "Queue.h"
+#include "SinglyLinkedListQueue.h"
+
 
 #include "MaxHeap.h"
 
@@ -112,6 +114,7 @@ enum class Mode {
     ARRAY_DOUBLY_LINKED_LIST,
     MAX_HEAP,
     ARRAY_QUEUE,
+    LIST_QUEUE
 
 };
 
@@ -136,6 +139,8 @@ private:
     ArrayDoublyLinkedList arrayDoublyLinkedList;
 
     CircleQueue arrayQueue;
+    SinglyLinkedListQueue<Circle> listQueue;
+
 
     MaxHeap maxHeap;
     std::vector<Circle> originalCircles;
@@ -177,6 +182,8 @@ public:
               else if (mode == Mode::ARRAY_QUEUE) {
                 arrayQueue.enqueue(circle);
                 // std::cout << "initCircles() " << i << std::endl;
+            }  else if (mode == Mode::LIST_QUEUE) {
+                listQueue.enqueue(circle);
             }
         }
     }
@@ -194,8 +201,9 @@ public:
             DrawString(15, 75, "5. Array Doubly Linked List", olc::GREEN);
             DrawString(15, 90, "6. maxHeap", olc::GREEN);
             DrawString(15, 105, "7. Array Queue", olc::GREEN);
+            DrawString(15, 120, "8. List Queue", olc::GREEN);
 
-            DrawString(15, 125, "q - exit", olc::GREEN);
+            DrawString(15, 140, "q - exit", olc::GREEN);
             
             if (GetKey(olc::Key::K1).bPressed) {
                 mode = Mode::ARRAY;
@@ -222,13 +230,17 @@ public:
                 while (!maxHeap.isEmpty()) {
                     sortedCircles.push_back(maxHeap.extractMax());
                 }     
-            }           
-            else if (GetKey(olc::Key::K7).bPressed) {
-                std::cout << "OnUserUpdate() " << std::endl;
+            } else if (GetKey(olc::Key::K7).bPressed) {
                 mode = Mode::ARRAY_QUEUE;
                 //arrayQueue = CircleQueue(100); // Resetowanie kolejki
                 initCircles();             
-            } else if (GetKey(olc::Key::Q).bReleased) {
+            } else if (GetKey(olc::Key::K8).bPressed) {
+                mode = Mode::LIST_QUEUE;
+                initCircles();             
+            }
+            
+            
+             else if (GetKey(olc::Key::Q).bReleased) {
 			    quit = true;
             } 
 
@@ -508,6 +520,7 @@ public:
             DrawString(10, ScreenWidth()-50, "Number of Circles: " + std::to_string(arrayDoublyLinkedList.getSize()), olc::CYAN);
 
         } else if (mode == Mode::ARRAY_QUEUE) {
+            // Kolejka - realizacja za pomocą tablicy
             // std::cout << "updateCircles() " << std::endl;
             // Aktualizacja kółek w kolejce
             arrayQueue.forEach([fElapsedTime](Circle& circle) {
@@ -526,35 +539,32 @@ public:
                 });
             });
 
-/*
-
-            for (int i = 0; i < circleArray.getSize(); ++i) {
-                for (int j = i + 1; j < circleArray.getSize(); ++j) {
-                    if (circleArray.get(i).active && circleArray.get(j).active && circleArray.get(i).isColliding(circleArray.get(j))) {
-                        circleArray.get(i).active = false;
-                        circleArray.get(j).active = false;
-                    }
-                }
-            }
-
-            for (int i = 0; i < circleArray.getSize();) {
-                if (!circleArray.get(i).active) {
-                    circleArray.remove(i);
-                } else {
-                    ++i;
-                }
-            }
-
-
-            if (&circle1 != &circle2 && circle1.active && circle2.active && circle1.isColliding(circle2)) {
-
-*/
-
-
-
             arrayQueue.removeIf([](const Circle& circle) {
                 return !circle.active;
             });    
+
+        } else if (mode == Mode::LIST_QUEUE) {
+           // Aktualizacja kółek w kolejce
+            listQueue.forEach([fElapsedTime](Circle& circle) {
+                if (circle.active) {
+                    circle.update(fElapsedTime);
+                }
+            });
+
+            // Sprawdzanie kolizji i dezaktywacja kółek
+            listQueue.forEach([this](Circle& circle1) {
+                listQueue.forEach([&circle1](Circle& circle2) {
+                    if (&circle1 != &circle2 && circle1.active && circle2.active && circle1.isColliding(circle2)) {
+                        circle1.active = false;
+                        circle2.active = false;
+                    }
+                });
+            });
+
+            // Usuwanie nieaktywnych kółek
+            listQueue.removeIf([](const Circle& circle) {
+                return !circle.active;
+            });
 
         } else if (mode == Mode::MAX_HEAP) {
             // for (int i = 0; i < maxHeap.getSize(); ++i) {
@@ -625,6 +635,11 @@ public:
             arrayQueue.forEach([this](const Circle& circle) {
                 FillCircle(circle.x, circle.y, circle.radius, circle.color);
             });
+        } else if (mode == Mode::LIST_QUEUE) {
+            // Wyświetlenie kółek na ekranie
+            listQueue.forEach([this](const Circle& circle) {
+                FillCircle(circle.x, circle.y, circle.radius, circle.color);
+            });
         } else if (mode == Mode::MAX_HEAP) {
             int x = 50;
             int y = 70; // Startowa współrzędna Y
@@ -638,14 +653,6 @@ public:
                     y = 70;
                 }
             }
-
-            // a posortowane po prawej stronie
-            // int offsetX = ScreenWidth() / 2;
-            // const auto& sortedCircles = maxHeap.getHeap();
-            // for (size_t i = 0; i < sortedCircles.size(); ++i) {
-            //     const Circle& circle = sortedCircles[i];
-            //     FillCircle(offsetX + circle.x, circle.y, circle.radius, circle.color);
-            // }
             
             // Wyświetlenie kółek posortowanych według promienia
             int offsetX = ScreenWidth() / 2;
@@ -810,8 +817,13 @@ W celu uatrakcyjnienia pracy z listami jednokierunkowymi i dwukierunkowymi, wyko
 
 ###
 zad.2 ad.d
-Kolejkę (realizacja za pomocą tablicy)
-możemy teraz zająć się implementacją kolejki za pomocą tablicy. Kolejka to struktura danych, w której elementy są dodawane na końcu (enqueue) i usuwane z początku (dequeue). Kolejkę zaimplementujemy w oparciu o tablicę.
+- Kolejkę (realizacja za pomocą tablicy):
+Kolejka to struktura danych, w której elementy są dodawane na końcu (enqueue) i usuwane z początku (dequeue). Kolejkę zaimplementujemy w oparciu o tablicę.
+Kod zarządza aktualizacją, wykrywaniem kolizji oraz usuwaniem nieaktywnych elementów
+
+- Kolejkę (realizacja za pomocą listy):
+realizacja kolejki za pomocą listy jednokierunkowej, musimy najpierw zaimplementować klasę listy jednokierunkowej. Następnie użyjemy tej klasy do zarządzania kółkami w symulacji. 
+
 
 ###
 zad.2 ad.f
@@ -823,7 +835,7 @@ Pionowa zielona linia dzieli ekran na elementy nieposortowane (lewa strona ekran
 
 Aby skompilować program, użyj poniższego polecenia:
 
-g++ -o start zad2.cpp Array.cpp SinglyLinkedList.cpp DoublyLinkedList.cpp ArrayLinkedList.cpp ArrayDoublyLinkedList.cpp MaxHeap.h -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++20
+g++ -o start zad2.cpp Array.cpp SinglyLinkedList.cpp DoublyLinkedList.cpp ArrayLinkedList.cpp ArrayDoublyLinkedList.cpp MaxHeap.cpp Queue.cpp  -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++20
 
 // g++ -o start zad2.cpp Array.cpp SinglyLinkedList.cpp DoublyLinkedList.cpp  -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++17
 
