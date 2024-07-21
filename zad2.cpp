@@ -17,6 +17,8 @@
 #include "Queue.h"
 #include "SinglyLinkedListQueue.h"
 
+#include "ArrayStack.h"
+
 
 #include "MaxHeap.h"
 
@@ -114,7 +116,8 @@ enum class Mode {
     ARRAY_DOUBLY_LINKED_LIST,
     MAX_HEAP,
     ARRAY_QUEUE,
-    LIST_QUEUE
+    LIST_QUEUE,
+    STACK
 
 };
 
@@ -141,6 +144,7 @@ private:
     CircleQueue arrayQueue;
     SinglyLinkedListQueue<Circle> listQueue;
 
+    ArrayStack arrayStack;
 
     MaxHeap maxHeap;
     std::vector<Circle> originalCircles;
@@ -184,6 +188,8 @@ public:
                 // std::cout << "initCircles() " << i << std::endl;
             }  else if (mode == Mode::LIST_QUEUE) {
                 listQueue.enqueue(circle);
+            }  else if (mode == Mode::STACK) {
+                arrayStack.push(circle);
             }
         }
     }
@@ -202,8 +208,10 @@ public:
             DrawString(15, 90, "6. maxHeap", olc::GREEN);
             DrawString(15, 105, "7. Array Queue", olc::GREEN);
             DrawString(15, 120, "8. List Queue", olc::GREEN);
+            DrawString(15, 135, "9. Implementacja Stosu (realizacja za pomocą tablicy)", olc::GREEN);
 
-            DrawString(15, 140, "q - exit", olc::GREEN);
+
+            DrawString(15, 155, "q - exit", olc::GREEN);
             
             if (GetKey(olc::Key::K1).bPressed) {
                 mode = Mode::ARRAY;
@@ -237,10 +245,11 @@ public:
             } else if (GetKey(olc::Key::K8).bPressed) {
                 mode = Mode::LIST_QUEUE;
                 initCircles();             
-            }
-            
-            
-             else if (GetKey(olc::Key::Q).bReleased) {
+            } else if (GetKey(olc::Key::K9).bPressed) {
+                mode = Mode::STACK;
+                arrayStack.clear(); // Resetowanie stosu
+                initCircles();             
+            } else if (GetKey(olc::Key::Q).bReleased) {
 			    quit = true;
             } 
 
@@ -566,6 +575,41 @@ public:
                 return !circle.active;
             });
 
+        } else if (mode == Mode::STACK) {
+
+            // Obsługa klawisza R do dodania losowych punktów
+            if (GetKey(olc::A).bPressed) {
+                addRandomPoint(arrayStack, 1); // Dodaj 1 punkt
+            }
+            // Obsługa klawisza D do usunięcie elementu
+            if (GetKey(olc::D).bPressed) {
+                popPoint(arrayStack, 1); // Usuń punkt
+            }
+
+            // Aktualizacja kółek w stosie
+            arrayStack.forEach([fElapsedTime](Circle& circle) {
+                if (circle.active) {
+                    circle.update(fElapsedTime);
+                }
+            });
+
+            // // Sprawdzanie kolizji i dezaktywacja kółek
+            // arrayStack.forEach([this](Circle& circle1) {
+            //     arrayStack.forEach([&circle1](Circle& circle2) {
+            //         if (&circle1 != &circle2 && circle1.active && circle2.active && circle1.isColliding(circle2)) {
+            //             circle1.active = false;
+            //             //circle2.active = false;
+            //         }
+            //     });
+            // });
+
+            // // Usuwanie nieaktywnych kółek
+            // arrayStack.forEach([this](Circle& circle) {
+            //     if (circle.active) {
+            //         arrayStack.pop();
+            //     }
+            // });
+
         } else if (mode == Mode::MAX_HEAP) {
             // for (int i = 0; i < maxHeap.getSize(); ++i) {
             //     const Circle& circle = maxHeap.getMax();
@@ -589,6 +633,23 @@ public:
             DrawLine(ScreenWidth() / 2, 0, ScreenWidth() / 2, ScreenHeight(), olc::GREEN);
         }
 
+    }
+
+    void addRandomPoint(ArrayStack &arrayStack, int n=1) {
+        for (int i = 0; i < n; ++i) {
+            int x = rand() % ScreenWidth();
+            int y = rand() % ScreenHeight();
+            float vx = (rand() % 200 - 20) / 1.0f; // Większa prędkość
+            float vy = (rand() % 200 - 20) / 1.0f; // Większa prędkość
+            float radius = (rand() % 20) + 5; // Losowa średnica od 5 do 25
+            olc::Pixel color = olc::Pixel(rand() % 256, rand() % 256, rand() % 256); // Losowy kolor
+            Circle circle(x, y, vx, vy, radius, color);           
+            arrayStack.push(circle);
+        }
+    }
+
+    void popPoint(ArrayStack &arrayStack, int n=1) {
+        arrayStack.pop();
     }
 
 
@@ -640,6 +701,14 @@ public:
             listQueue.forEach([this](const Circle& circle) {
                 FillCircle(circle.x, circle.y, circle.radius, circle.color);
             });
+        } else if (mode == Mode::STACK) {
+            // Wyświetlenie kółek na ekranie
+            arrayStack.forEach([this](const Circle& circle) {
+                FillCircle(circle.x, circle.y, circle.radius, circle.color);
+            });
+
+            DrawString(ScreenWidth() - 200, 15, "Zajetosc stosu: " + std::to_string(arrayStack.size()), olc::YELLOW); 
+
         } else if (mode == Mode::MAX_HEAP) {
             int x = 50;
             int y = 70; // Startowa współrzędna Y
@@ -748,7 +817,7 @@ Wyjaśnienie:
 
 
     CircleSimulation demo;
-    if (demo.Construct(800, 600, 1, 1))
+    if (demo.Construct(600, 600, 1, 1))
         demo.Start();
     return 0;
 
@@ -826,21 +895,22 @@ realizacja kolejki za pomocą listy jednokierunkowej, musimy najpierw zaimplemen
 
 
 ###
+zad.2 ad.e
+- Stos (realizacja za pomocą tablicy)
+
+
+###
 zad.2 ad.f
 realizacja kopca, który porządkuje elementy klasy Circle na podstawie promienia okręgu w kolejności od najwyższej do najniższej. 
 Pionowa zielona linia dzieli ekran na elementy nieposortowane (lewa strona ekranu) od posortowanych (prawa strona ekranu).
+
+
 
 
 ### Kompilacja i uruchomienie
 
 Aby skompilować program, użyj poniższego polecenia:
 
-g++ -o start zad2.cpp Array.cpp SinglyLinkedList.cpp DoublyLinkedList.cpp ArrayLinkedList.cpp ArrayDoublyLinkedList.cpp MaxHeap.cpp Queue.cpp  -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++20
-
-// g++ -o start zad2.cpp Array.cpp SinglyLinkedList.cpp DoublyLinkedList.cpp  -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++17
-
-//g++ zad2.cpp Array.cpp SinglyLinkedList.cpp DoublyLinkedList.cpp -o main
-
-
+g++ -o start zad2.cpp Array.cpp SinglyLinkedList.cpp DoublyLinkedList.cpp ArrayLinkedList.cpp ArrayDoublyLinkedList.cpp MaxHeap.cpp Queue.cpp SinglyLinkedListQueue.cpp ArrayStack.h  -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++20
 
 */
