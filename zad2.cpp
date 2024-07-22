@@ -120,8 +120,7 @@ enum class Mode {
     ARRAY_QUEUE,
     LIST_QUEUE,
     STACK,
-    STACK_LIST 
-
+    STACK_LIST
 };
 
 /*
