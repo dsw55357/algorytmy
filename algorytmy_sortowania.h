@@ -5,6 +5,8 @@
 
 #include "matrix.h"
 
+void SortowanieBabelkowe(std::vector<triangle>& triangles);
 void SortowaniePrzezWstawianie(std::vector<triangle>& triangles);
+
 
 #endif // ALGORYTMY_SORTOWANIA_H

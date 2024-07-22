@@ -54,7 +54,7 @@ Last Updated: 29/07/2018
 #include <fstream>
 #include <strstream>
 #include <algorithm>
-
+#include <chrono>
 #include "algorytmy_sortowania.h"
 
 using namespace std;
@@ -83,7 +83,7 @@ private:
 	float fTheta;	// Spins World transform
 
 	Mode mode = Mode::MENU;
-
+	std::string performanceMessage {"."};	
 public:
 	bool OnUserCreate() override
 	{
@@ -110,7 +110,7 @@ public:
             DrawString(15, 170, "Q - exit", olc::GREEN);
             
             if (GetKey(olc::Key::K1).bPressed) {
-                //mode = Mode::ARRAY;
+                mode = Mode::ALGORYTM_A;
 			} else if (GetKey(olc::Key::K2).bPressed) {
                 mode = Mode::ALGORYTM_B;
             }
@@ -120,8 +120,7 @@ public:
             } 
 		} else {
 			DrawString(15, 15, "ESC - back to main menu", olc::GREEN);
-			if (GetKey(olc::Key::ESCAPE).bReleased) {
-				
+			if (GetKey(olc::Key::ESCAPE).bReleased) {		
 				mode = Mode::MENU;
 			} 
 		}
@@ -254,6 +253,8 @@ public:
 		}
 
 	if ((mode == Mode::MENU)) {
+		using namespace std::chrono;
+		const auto start{std::chrono::steady_clock::now()};
 		// Sort triangles from back to front
 		sort(vecTrianglesToRaster.begin(), vecTrianglesToRaster.end(), [](triangle &t1, triangle &t2)
 		{
@@ -261,9 +262,32 @@ public:
 			float z2 = (t2.p[0].z + t2.p[1].z + t2.p[2].z) / 3.0f;
 			return z1 > z2;
 		});
+		const auto end{std::chrono::steady_clock::now()};
+        auto duration = duration_cast<microseconds>(end - start).count();
+        performanceMessage = "Czas: " + std::to_string(duration) + " us /std::sort/";
+        DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
+	} else if (mode == Mode::ALGORYTM_A) { // Sortowanie bąbelkowe
+		using namespace std::chrono;
+		const auto start{std::chrono::steady_clock::now()};
 
-	} else if (mode == Mode::ALGORYTM_B) {
+		DrawString(15, 30, "Sortowanie babelkowe", olc::YELLOW);
+		SortowanieBabelkowe(vecTrianglesToRaster);
+
+		const auto end{std::chrono::steady_clock::now()};
+        auto duration = duration_cast<microseconds>(end - start).count();
+        performanceMessage = "Czas: " + std::to_string(duration) + " us";
+        DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
+	} else if (mode == Mode::ALGORYTM_B) { // Sortowanie przez wstawianie
+		using namespace std::chrono;
+		const auto start{std::chrono::steady_clock::now()};
+
+		DrawString(15, 30, "Sortowanie przez wstawianie", olc::YELLOW);
 		SortowaniePrzezWstawianie(vecTrianglesToRaster);
+		
+		const auto end{std::chrono::steady_clock::now()};
+        auto duration = duration_cast<microseconds>(end - start).count();
+        performanceMessage = "Czas: " + std::to_string(duration) + " us";
+        DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
 	}
 
 		// Clear Screen
@@ -358,8 +382,11 @@ int main()
     return 0;
 }
 
-
 /*
+
+Do urozmaicenia projektu, skorzystałem z biblioteki olcPixelGameEngine i kodu 3D Graphics Part #2 autora Javid9x. Algorytmy sortowania używane są do sortowania trójkątów które rysowane są na scenie.
+
+
 
 g++ -o start3 zad3.cpp matrix.cpp  -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++20^C
 
