@@ -1,4 +1,8 @@
 /*
+
+Dla urozmaicenia projektu, skorzystałem z biblioteki olcPixelGameEngine i kodu 3D Graphics Part #2 autora Javid9x. Algorytmy sortowania używane są do sortowania trójkątów które rysowane są na scenie.
+
+
 OneLoneCoder.com - 3D Graphics Part #2 - Normals, Culling, Lighting & Object Files
 "Tredimensjonal Grafikk" - @Javidx9
 
@@ -383,10 +387,6 @@ int main()
 }
 
 /*
-
-Do urozmaicenia projektu, skorzystałem z biblioteki olcPixelGameEngine i kodu 3D Graphics Part #2 autora Javid9x. Algorytmy sortowania używane są do sortowania trójkątów które rysowane są na scenie.
-
-
 
 g++ -o start3 zad3.cpp matrix.cpp  -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++20^C
 
