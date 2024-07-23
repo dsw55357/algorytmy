@@ -136,3 +136,66 @@ void QuickSort(std::vector<triangle>& triangles, int low, int high)
     }
 }
 
+
+void Merge(std::vector<triangle>& triangles, int left, int mid, int right)
+{
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    std::vector<triangle> L(n1);
+    std::vector<triangle> R(n2);
+
+    for (int i = 0; i < n1; i++)
+        L[i] = triangles[left + i];
+    for (int j = 0; j < n2; j++)
+        R[j] = triangles[mid + 1 + j];
+
+    int i = 0;
+    int j = 0;
+    int k = left;
+
+    while (i < n1 && j < n2)
+    {
+        float z1 = (L[i].p[0].z + L[i].p[1].z + L[i].p[2].z) / 3.0f;
+        float z2 = (R[j].p[0].z + R[j].p[1].z + R[j].p[2].z) / 3.0f;
+
+        if (z1 >= z2)
+        {
+            triangles[k] = L[i];
+            i++;
+        }
+        else
+        {
+            triangles[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1)
+    {
+        triangles[k] = L[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2)
+    {
+        triangles[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+void MergeSort(std::vector<triangle>& triangles, int left, int right)
+{
+    if (left < right)
+    {
+        int mid = left + (right - left) / 2;
+
+        MergeSort(triangles, left, mid);
+        MergeSort(triangles, mid + 1, right);
+
+        Merge(triangles, left, mid, right);
+    }
+}

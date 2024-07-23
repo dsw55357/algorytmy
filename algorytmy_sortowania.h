@@ -53,5 +53,19 @@ Jak działa Quicksort:
 */
 void QuickSort(std::vector<triangle>& triangles, int low, int high);
 
+/*
+
+Sortowanie przez scalanie
+
+Sortowanie przez scalanie (Merge Sort) to algorytm sortowania działający na zasadzie dziel i zwyciężaj. Algorytm dzieli tablicę na mniejsze podtablice, sortuje każdą z nich, a następnie scala posortowane podtablice, aby uzyskać ostateczną, posortowaną tablicę. Jest to algorytm stabilny i efektywny, szczególnie dla dużych zbiorów danych.
+
+Jak działa Merge Sort
+- Podział: Tablica jest rekurencyjnie dzielona na dwie połowy, aż każda podtablica ma jeden element.
+- Scalanie: Posortowane podtablice są scalane, aby utworzyć większe, posortowane tablice, aż do uzyskania jednej, ostatecznej, posortowanej tablicy.
+
+*/
+
+void MergeSort(std::vector<triangle>& triangles, int left, int right);
+
 
 #endif // ALGORYTMY_SORTOWANIA_H
