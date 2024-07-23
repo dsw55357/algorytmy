@@ -23,7 +23,8 @@ enum class Mode {
     MENU,
 	ALGORYTM_A, // Sortowanie bąbelkowe
 	ALGORYTM_B, // Sortowanie przez wstawianie
-	ALGORYTM_C // Sortowanie przez kopcowanie
+	ALGORYTM_C, // Sortowanie przez kopcowanie
+	ALGORYTM_D // Sortowanie Quicksort
 };
 
 class olcEngine3D : public olc::PixelGameEngine
@@ -67,6 +68,7 @@ public:
 			DrawString(15, 15, "1. Sortowanie bąbelkowe", olc::GREEN);
             DrawString(15, 30, "2. Sortowanie przez wstawianie", olc::GREEN);
 			DrawString(15, 45, "3. Sortowanie przez kopcowanie", olc::GREEN);
+			DrawString(15, 60, "4. Quicksort", olc::GREEN);
 
             DrawString(15, 170, "Q - exit", olc::GREEN);
             
@@ -76,6 +78,8 @@ public:
                 mode = Mode::ALGORYTM_B;
             } else if (GetKey(olc::Key::K3).bPressed) {
                 mode = Mode::ALGORYTM_C;
+            } else if (GetKey(olc::Key::K4).bPressed) {
+                mode = Mode::ALGORYTM_D;
             }
 			 else if (GetKey(olc::Key::Q).bPressed) {
 				quit = true;
@@ -263,7 +267,19 @@ public:
         auto duration = duration_cast<microseconds>(end - start).count();
         performanceMessage = "Czas: " + std::to_string(duration) + " us";
         DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
+	} else if (mode == Mode::ALGORYTM_D) { // Sortowanie QuickSort
+		using namespace std::chrono;
+		const auto start{std::chrono::steady_clock::now()};
+
+		DrawString(15, 45, "Sortowanie QuickSort", olc::YELLOW);
+		QuickSort(vecTrianglesToRaster, 0, vecTrianglesToRaster.size() - 1);
+		
+		const auto end{std::chrono::steady_clock::now()};
+        auto duration = duration_cast<microseconds>(end - start).count();
+        performanceMessage = "Czas: " + std::to_string(duration) + " us";
+        DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
 	}
+
 
 		// Clear Screen
 		// Fill(0, 0, ScreenWidth(), ScreenHeight(), PIXEL_SOLID, FG_BLACK);

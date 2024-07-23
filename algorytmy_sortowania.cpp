@@ -106,3 +106,33 @@ void HeapSort(std::vector<triangle>& triangles)
         Heapify(triangles, i, 0);
     }
 }
+
+
+int Partition(std::vector<triangle>& triangles, int low, int high)
+{
+    float pivot_z = (triangles[high].p[0].z + triangles[high].p[1].z + triangles[high].p[2].z) / 3.0f;
+    int i = low - 1;
+
+    for (int j = low; j <= high - 1; j++)
+    {
+        float j_z = (triangles[j].p[0].z + triangles[j].p[1].z + triangles[j].p[2].z) / 3.0f;
+        if (j_z > pivot_z)
+        {
+            i++;
+            std::swap(triangles[i], triangles[j]);
+        }
+    }
+    std::swap(triangles[i + 1], triangles[high]);
+    return i + 1;
+}
+
+void QuickSort(std::vector<triangle>& triangles, int low, int high)
+{
+    if (low < high)
+    {
+        int pi = Partition(triangles, low, high);
+        QuickSort(triangles, low, pi - 1);
+        QuickSort(triangles, pi + 1, high);
+    }
+}
+
