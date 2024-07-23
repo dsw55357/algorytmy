@@ -46,3 +46,63 @@ void SortowanieBabelkowe(std::vector<triangle>& triangles)
             break;
     }
 }
+
+
+void Heapify(std::vector<triangle>& triangles, int n, int i)
+{
+    int largest = i; // Initialize largest as root
+    int left = 2 * i + 1; // left = 2*i + 1
+    int right = 2 * i + 2; // right = 2*i + 2
+
+    float largest_z = (triangles[largest].p[0].z + triangles[largest].p[1].z + triangles[largest].p[2].z) / 3.0f;
+
+    // If left child is larger than root
+    if (left < n)
+    {
+        float left_z = (triangles[left].p[0].z + triangles[left].p[1].z + triangles[left].p[2].z) / 3.0f;
+        if (left_z < largest_z)
+        {
+            largest = left;
+            largest_z = left_z;
+        }
+    }
+
+    // If right child is larger than largest so far
+    if (right < n)
+    {
+        float right_z = (triangles[right].p[0].z + triangles[right].p[1].z + triangles[right].p[2].z) / 3.0f;
+        if (right_z < largest_z)
+        {
+            largest = right;
+            largest_z = right_z;
+        }
+    }
+
+    // If largest is not root
+    if (largest != i)
+    {
+        std::swap(triangles[i], triangles[largest]);
+
+        // Recursively heapify the affected sub-tree
+        Heapify(triangles, n, largest);
+    }
+}
+
+void HeapSort(std::vector<triangle>& triangles)
+{
+    int n = triangles.size();
+
+    // Build heap (rearrange array)
+    for (int i = n / 2 - 1; i >= 0; i--)
+        Heapify(triangles, n, i);
+
+    // One by one extract an element from heap
+    for (int i = n - 1; i > 0; i--)
+    {
+        // Move current root to end
+        std::swap(triangles[0], triangles[i]);
+
+        // Call max heapify on the reduced heap
+        Heapify(triangles, i, 0);
+    }
+}

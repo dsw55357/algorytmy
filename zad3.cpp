@@ -1,54 +1,10 @@
 /*
 
-Dla urozmaicenia projektu, skorzystałem z biblioteki olcPixelGameEngine i kodu 3D Graphics Part #2 autora Javid9x. Algorytmy sortowania używane są do sortowania trójkątów które rysowane są na scenie.
+Algorytmy sortowania używane są do sortowania trójkątów, które rysowane są na scenie.
 
+Dla urozmaicenia projektu, skorzystałem z biblioteki olcPixelGameEngine i kodu "3D Graphics Part #2" autora Javid9x, 
+dostępnego na github: https://github.com/OneLoneCoder/Javidx9/tree/master/ConsoleGameEngine/BiggerProjects/Engine3D. 
 
-OneLoneCoder.com - 3D Graphics Part #2 - Normals, Culling, Lighting & Object Files
-"Tredimensjonal Grafikk" - @Javidx9
-
-License
-~~~~~~~
-One Lone Coder Console Game Engine  Copyright (C) 2018  Javidx9
-This program comes with ABSOLUTELY NO WARRANTY.
-This is free software, and you are welcome to redistribute it
-under certain conditions; See license for details.
-Original works located at:
-https://www.github.com/onelonecoder
-https://www.onelonecoder.com
-https://www.youtube.com/javidx9
-GNU GPLv3
-https://github.com/OneLoneCoder/videos/blob/master/LICENSE
-
-From Javidx9 :)
-~~~~~~~~~~~~~~~
-Hello! Ultimately I don't care what you use this for. It's intended to be
-educational, and perhaps to the oddly minded - a little bit of fun.
-Please hack this, change it and use it in any way you see fit. You acknowledge
-that I am not responsible for anything bad that happens as a result of
-your actions. However this code is protected by GNU GPLv3, see the license in the
-github repo. This means you must attribute me if you use it. You can view this
-license here: https://github.com/OneLoneCoder/videos/blob/master/LICENSE
-Cheers!
-
-Background
-~~~~~~~~~~
-3D Graphics is an interesting, visually pleasing suite of algorithms. This is the
-first video in a series that will demonstrate the fundamentals required to 
-build your own software based 3D graphics systems.
-
-Video
-~~~~~
-https://youtu.be/ih20l3pJoeU
-https://youtu.be/XgMWc6LumG4
-
-Author
-~~~~~~
-Twitter: @javidx9
-Blog: http://www.onelonecoder.com
-Discord: https://discord.gg/WhwHUMV
-
-
-Last Updated: 29/07/2018
 */
 
 
@@ -65,8 +21,9 @@ using namespace std;
 
 enum class Mode {
     MENU,
-	ALGORYTM_A,
-	ALGORYTM_B // Sortowanie przez wstawianie
+	ALGORYTM_A, // Sortowanie bąbelkowe
+	ALGORYTM_B, // Sortowanie przez wstawianie
+	ALGORYTM_C // Sortowanie przez kopcowanie
 };
 
 class olcEngine3D : public olc::PixelGameEngine
@@ -76,7 +33,6 @@ public:
 	{
 		sAppName = "Algorytmy sortowania";
 	}
-
 
 private:
 	mesh meshCube;
@@ -110,6 +66,7 @@ public:
         if (mode == Mode::MENU) {
 			DrawString(15, 15, "1. Sortowanie bąbelkowe", olc::GREEN);
             DrawString(15, 30, "2. Sortowanie przez wstawianie", olc::GREEN);
+			DrawString(15, 45, "3. Sortowanie przez kopcowanie", olc::GREEN);
 
             DrawString(15, 170, "Q - exit", olc::GREEN);
             
@@ -117,9 +74,10 @@ public:
                 mode = Mode::ALGORYTM_A;
 			} else if (GetKey(olc::Key::K2).bPressed) {
                 mode = Mode::ALGORYTM_B;
+            } else if (GetKey(olc::Key::K3).bPressed) {
+                mode = Mode::ALGORYTM_C;
             }
 			 else if (GetKey(olc::Key::Q).bPressed) {
-                //mode = Mode::ARRAY;
 				quit = true;
             } 
 		} else {
@@ -256,6 +214,8 @@ public:
 			}
 		}
 
+	// Sortujesz trójkąty, różnymi algorytmami sortowania
+
 	if ((mode == Mode::MENU)) {
 		using namespace std::chrono;
 		const auto start{std::chrono::steady_clock::now()};
@@ -287,6 +247,17 @@ public:
 
 		DrawString(15, 30, "Sortowanie przez wstawianie", olc::YELLOW);
 		SortowaniePrzezWstawianie(vecTrianglesToRaster);
+		
+		const auto end{std::chrono::steady_clock::now()};
+        auto duration = duration_cast<microseconds>(end - start).count();
+        performanceMessage = "Czas: " + std::to_string(duration) + " us";
+        DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
+	} else if (mode == Mode::ALGORYTM_C) { // Sortowanie przez kopcowanie
+		using namespace std::chrono;
+		const auto start{std::chrono::steady_clock::now()};
+
+		DrawString(15, 30, "Sortowanie przez kopcowanie", olc::YELLOW);
+		HeapSort(vecTrianglesToRaster);
 		
 		const auto end{std::chrono::steady_clock::now()};
         auto duration = duration_cast<microseconds>(end - start).count();
@@ -388,6 +359,6 @@ int main()
 
 /*
 
-g++ -o start3 zad3.cpp matrix.cpp  -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++20^C
+g++ -o start3 zad3.cpp matrix.cpp algorytmy_sortowania.cpp -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++20^C
 
 */
