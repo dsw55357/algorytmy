@@ -68,4 +68,12 @@ Jak działa Merge Sort
 void MergeSort(std::vector<triangle>& triangles, int left, int right);
 
 
+/*
+
+Implementacja testu wydajności algorytmów sortowania
+Dla prostoty i łatwości implementacji, wykonamy sekwencyjne testowanie algorytmów sortowania. 
+
+*/
+
+
 #endif // ALGORYTMY_SORTOWANIA_H

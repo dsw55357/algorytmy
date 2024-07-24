@@ -16,6 +16,7 @@ dostępnego na github: https://github.com/OneLoneCoder/Javidx9/tree/master/Conso
 #include <algorithm>
 #include <chrono>
 #include "algorytmy_sortowania.h"
+#include "algorytmy_testowanie.h"
 
 using namespace std;
 
@@ -25,7 +26,9 @@ enum class Mode {
 	ALGORYTM_B, // Sortowanie przez wstawianie
 	ALGORYTM_C, // Sortowanie przez kopcowanie
 	ALGORYTM_D, // Sortowanie Quicksort
-	ALGORYTM_E // Sortowanie przez scalanie
+	ALGORYTM_E, // Sortowanie przez scalanie
+
+	ALGORYTM_TEST // Testowania wydajnosci algorytmów
 };
 
 class olcEngine3D : public olc::PixelGameEngine
@@ -66,12 +69,13 @@ public:
         bool quit =  false;
 
         if (mode == Mode::MENU) {
-			DrawString(15, 15, "1. Sortowanie bąbelkowe", olc::GREEN);
+			DrawString(15, 15, "1. Sortowanie babelkowe", olc::GREEN);
             DrawString(15, 30, "2. Sortowanie przez wstawianie", olc::GREEN);
 			DrawString(15, 45, "3. Sortowanie przez kopcowanie", olc::GREEN);
 			DrawString(15, 60, "4. Quicksort", olc::GREEN);
 			DrawString(15, 75, "5. Sortowanie przez scalanie", olc::GREEN);
 
+			DrawString(15, 155, "T - Testowania wydajnosci", olc::CYAN);
             DrawString(15, 170, "Q - exit", olc::GREEN);
             
             if (GetKey(olc::Key::K1).bPressed) {
@@ -85,7 +89,11 @@ public:
             } else if (GetKey(olc::Key::K5).bPressed) {
                 mode = Mode::ALGORYTM_E;
             }
-			 else if (GetKey(olc::Key::Q).bPressed) {
+			
+			
+			else if (GetKey(olc::Key::T).bPressed) {
+				mode = Mode::ALGORYTM_TEST;
+            } else if (GetKey(olc::Key::Q).bPressed) {
 				quit = true;
             } 
 		} else {
@@ -94,6 +102,13 @@ public:
 				mode = Mode::MENU;
 			} 
 		}
+
+		if ((mode == Mode::ALGORYTM_TEST)) {
+
+			DrawString(15, 15, "ESC - back to main menu", olc::GREEN);
+			DrawString(15, 45, "Porownanie wydajnosci roznych algorytmow sortowania", olc::YELLOW);
+
+		} else {
 
 		// Set up "World Tranmsform" though not updating theta 
 		// makes this a bit redundant
@@ -295,11 +310,6 @@ public:
         DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
 	}
 
-		// Clear Screen
-		// Fill(0, 0, ScreenWidth(), ScreenHeight(), PIXEL_SOLID, FG_BLACK);
-        // Draw Screen
-		//Clear(olc::DARK_BLUE);
-
 		// Loop through all transformed, viewed, projected, and sorted triangles
 		for (auto &triToRaster : vecTrianglesToRaster)
 		{
@@ -373,6 +383,7 @@ public:
 			}
 		}
 
+	} // 
 
 		return !quit;
 	}
