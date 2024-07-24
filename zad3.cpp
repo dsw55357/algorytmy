@@ -49,6 +49,10 @@ private:
 
 	Mode mode = Mode::MENU;
 	std::string performanceMessage {"."};	
+
+	std::vector<double> durations;
+    std::vector<std::string> names;
+
 public:
 	bool OnUserCreate() override
 	{
@@ -58,6 +62,19 @@ public:
 		// Projection Matrix
 		matProj = Matrix_MakeProjection(90.0f, (float)ScreenHeight() / (float)ScreenWidth(), 0.1f, 1000.0f);
 
+ 		names.push_back("Sortowanie babelkowe");
+		durations.push_back(100.0);
+		names.push_back("Sortowanie przez wstawianie");
+		durations.push_back(70.0);
+		names.push_back("Sortowanie przez kopcowanie");
+		durations.push_back(450.0);
+		names.push_back("Quicksort");
+		durations.push_back(20.0);
+		names.push_back("Sortowanie przez scalanie");
+		durations.push_back(350.0);
+
+		names.push_back("std::sort");
+		durations.push_back(10.0);
 
 		return true;
 	}
@@ -107,6 +124,15 @@ public:
 
 			DrawString(15, 15, "ESC - back to main menu", olc::GREEN);
 			DrawString(15, 45, "Porownanie wydajnosci roznych algorytmow sortowania", olc::YELLOW);
+
+			float barWidth = ScreenWidth() / (durations.size() * 2);
+			float maxDuration = *std::max_element(durations.begin(), durations.end());
+
+			for (size_t i = 0; i < durations.size(); ++i) {
+				float barHeight = (durations[i] / maxDuration) * ScreenHeight() * 0.8f;
+				FillRect(i * 2 * barWidth, ScreenHeight() - barHeight, barWidth, barHeight, olc::RED);
+				DrawString(i * 2 * barWidth, ScreenHeight() - barHeight - 10, names[i], olc::WHITE);
+			}
 
 		} else {
 
@@ -237,78 +263,90 @@ public:
 			}
 		}
 
-	// Sortujesz trójkąty, różnymi algorytmami sortowania
+		// Sortujesz trójkąty, różnymi algorytmami sortowania
 
-	if ((mode == Mode::MENU)) {
-		using namespace std::chrono;
-		const auto start{std::chrono::steady_clock::now()};
-		// Sort triangles from back to front
-		sort(vecTrianglesToRaster.begin(), vecTrianglesToRaster.end(), [](triangle &t1, triangle &t2)
-		{
-			float z1 = (t1.p[0].z + t1.p[1].z + t1.p[2].z) / 3.0f;
-			float z2 = (t2.p[0].z + t2.p[1].z + t2.p[2].z) / 3.0f;
-			return z1 > z2;
-		});
-		const auto end{std::chrono::steady_clock::now()};
-        auto duration = duration_cast<microseconds>(end - start).count();
-        performanceMessage = "Czas: " + std::to_string(duration) + " us /std::sort/";
-        DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
-	} else if (mode == Mode::ALGORYTM_A) { // Sortowanie bąbelkowe
-		using namespace std::chrono;
-		const auto start{std::chrono::steady_clock::now()};
+		if ((mode == Mode::MENU)) {
+			using namespace std::chrono;
+			const auto start{std::chrono::steady_clock::now()};
+			// Sort triangles from back to front
+			sort(vecTrianglesToRaster.begin(), vecTrianglesToRaster.end(), [](triangle &t1, triangle &t2)
+			{
+				float z1 = (t1.p[0].z + t1.p[1].z + t1.p[2].z) / 3.0f;
+				float z2 = (t2.p[0].z + t2.p[1].z + t2.p[2].z) / 3.0f;
+				return z1 > z2;
+			});
+			const auto end{std::chrono::steady_clock::now()};
+			auto duration = duration_cast<microseconds>(end - start).count();
+			// durations.push_back(duration);
 
-		DrawString(15, 30, "Sortowanie babelkowe", olc::YELLOW);
-		SortowanieBabelkowe(vecTrianglesToRaster);
+			performanceMessage = "Czas: " + std::to_string(duration) + " us /std::sort/";
+			DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
+		} else if (mode == Mode::ALGORYTM_A) { // Sortowanie bąbelkowe
+			using namespace std::chrono;
+			const auto start{std::chrono::steady_clock::now()};
 
-		const auto end{std::chrono::steady_clock::now()};
-        auto duration = duration_cast<microseconds>(end - start).count();
-        performanceMessage = "Czas: " + std::to_string(duration) + " us";
-        DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
-	} else if (mode == Mode::ALGORYTM_B) { // Sortowanie przez wstawianie
-		using namespace std::chrono;
-		const auto start{std::chrono::steady_clock::now()};
+			DrawString(15, 30, "Sortowanie babelkowe", olc::YELLOW);
+			SortowanieBabelkowe(vecTrianglesToRaster);
 
-		DrawString(15, 30, "Sortowanie przez wstawianie", olc::YELLOW);
-		SortowaniePrzezWstawianie(vecTrianglesToRaster);
-		
-		const auto end{std::chrono::steady_clock::now()};
-        auto duration = duration_cast<microseconds>(end - start).count();
-        performanceMessage = "Czas: " + std::to_string(duration) + " us";
-        DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
-	} else if (mode == Mode::ALGORYTM_C) { // Sortowanie przez kopcowanie
-		using namespace std::chrono;
-		const auto start{std::chrono::steady_clock::now()};
+			const auto end{std::chrono::steady_clock::now()};
+			auto duration = duration_cast<microseconds>(end - start).count();
+			// durations.push_back(duration);
 
-		DrawString(15, 30, "Sortowanie przez kopcowanie", olc::YELLOW);
-		HeapSort(vecTrianglesToRaster);
-		
-		const auto end{std::chrono::steady_clock::now()};
-        auto duration = duration_cast<microseconds>(end - start).count();
-        performanceMessage = "Czas: " + std::to_string(duration) + " us";
-        DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
-	} else if (mode == Mode::ALGORYTM_D) { // Sortowanie QuickSort
-		using namespace std::chrono;
-		const auto start{std::chrono::steady_clock::now()};
+			performanceMessage = "Czas: " + std::to_string(duration) + " us";
+			DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
+		} else if (mode == Mode::ALGORYTM_B) { // Sortowanie przez wstawianie
+			using namespace std::chrono;
+			const auto start{std::chrono::steady_clock::now()};
 
-		DrawString(15, 45, "Sortowanie QuickSort", olc::YELLOW);
-		QuickSort(vecTrianglesToRaster, 0, vecTrianglesToRaster.size() - 1);
-		
-		const auto end{std::chrono::steady_clock::now()};
-        auto duration = duration_cast<microseconds>(end - start).count();
-        performanceMessage = "Czas: " + std::to_string(duration) + " us";
-        DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
-	} else if (mode == Mode::ALGORYTM_E) { // Sortowanie przez scalanie
-		using namespace std::chrono;
-		const auto start{std::chrono::steady_clock::now()};
+			DrawString(15, 30, "Sortowanie przez wstawianie", olc::YELLOW);
+			SortowaniePrzezWstawianie(vecTrianglesToRaster);
+			
+			const auto end{std::chrono::steady_clock::now()};
+			auto duration = duration_cast<microseconds>(end - start).count();
+			// durations.push_back(duration);
 
-		DrawString(15, 45, "Sortowanie przez scalanie", olc::YELLOW);
-		MergeSort(vecTrianglesToRaster, 0, vecTrianglesToRaster.size() - 1);
-		
-		const auto end{std::chrono::steady_clock::now()};
-        auto duration = duration_cast<microseconds>(end - start).count();
-        performanceMessage = "Czas: " + std::to_string(duration) + " us";
-        DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
-	}
+			performanceMessage = "Czas: " + std::to_string(duration) + " us";
+			DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
+		} else if (mode == Mode::ALGORYTM_C) { // Sortowanie przez kopcowanie
+			using namespace std::chrono;
+			const auto start{std::chrono::steady_clock::now()};
+
+			DrawString(15, 30, "Sortowanie przez kopcowanie", olc::YELLOW);
+			HeapSort(vecTrianglesToRaster);
+			
+			const auto end{std::chrono::steady_clock::now()};
+			auto duration = duration_cast<microseconds>(end - start).count();
+			// durations.push_back(duration);
+
+			performanceMessage = "Czas: " + std::to_string(duration) + " us";
+			DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
+		} else if (mode == Mode::ALGORYTM_D) { // Sortowanie QuickSort
+			using namespace std::chrono;
+			const auto start{std::chrono::steady_clock::now()};
+
+			DrawString(15, 45, "Sortowanie QuickSort", olc::YELLOW);
+			QuickSort(vecTrianglesToRaster, 0, vecTrianglesToRaster.size() - 1);
+			
+			const auto end{std::chrono::steady_clock::now()};
+			auto duration = duration_cast<microseconds>(end - start).count();
+			// durations.push_back(duration);
+
+			performanceMessage = "Czas: " + std::to_string(duration) + " us";
+			DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
+		} else if (mode == Mode::ALGORYTM_E) { // Sortowanie przez scalanie
+			using namespace std::chrono;
+			const auto start{std::chrono::steady_clock::now()};
+
+			DrawString(15, 45, "Sortowanie przez scalanie", olc::YELLOW);
+			MergeSort(vecTrianglesToRaster, 0, vecTrianglesToRaster.size() - 1);
+			
+			const auto end{std::chrono::steady_clock::now()};
+			auto duration = duration_cast<microseconds>(end - start).count();
+			// durations.push_back(duration);
+			
+			performanceMessage = "Czas: " + std::to_string(duration) + " us";
+			DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
+		}
 
 		// Loop through all transformed, viewed, projected, and sorted triangles
 		for (auto &triToRaster : vecTrianglesToRaster)
