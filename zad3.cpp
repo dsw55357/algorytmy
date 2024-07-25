@@ -189,8 +189,15 @@ public:
 					FillRect(barX, barY, barWidth, barHeight, olc::RED);
 					// DrawString(barX, barY - 10, names[i], olc::WHITE);
 					// Rysowanie etykiet obok słupków z numeracją
-					std::string label = std::to_string(i + 1) + ". " + names[i];
+					std::string label = std::to_string(i + 1) + "."  + names[i];
+					// Sformatowanie wartości czasowej do jednego miejsca po przecinku
+            		std::ostringstream oss;
+            		oss << std::fixed << std::setprecision(1) << durations[i];
 					DrawString(barX, barY - 10, std::to_string(i + 1), olc::WHITE);
+					DrawString(barX, ScreenHeight() - margin/2, oss.str(), olc::WHITE);
+					if (i == durations.size()-1) {
+						DrawString(barX + barWidth, ScreenHeight() - margin/2, "ms", olc::WHITE);
+					}
 					float labelY = 2 * margin + i * 15; //spacing;
 					DrawString(ScreenWidth()/2, labelY, label, olc::WHITE);					
 				}

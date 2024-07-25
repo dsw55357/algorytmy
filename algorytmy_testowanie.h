@@ -27,9 +27,8 @@ auto testSortingAlgorithm(std::function<void(std::vector<triangle>&)> sortFunc, 
     sortFunc(triangles);
     auto end = std::chrono::high_resolution_clock::now();
     //std::chrono::duration<double> duration = end - start;
-    auto duration = duration_cast<microseconds>(end - start).count();
-    //return duration.count();
-    // std::cout << duration << std::endl;
+    auto duration = duration_cast<milliseconds>(end - start).count();
+
     return duration;
 }
 
