@@ -129,6 +129,7 @@ public:
 			DrawString(15, 15, "ESC - back to main menu", olc::GREEN);
 			DrawString(15, 45, "Porownanie wydajnosci roznych algorytmow sortowania", olc::YELLOW);
 			DrawString(15, 60, "1. 1000 trojkatow", olc::CYAN);
+			DrawString(15, 75, "2. 5000 trojkatow", olc::CYAN);
 
 			if (GetKey(olc::Key::K1).bReleased) {
 				const int numTriangles = 1000; // 
@@ -151,21 +152,49 @@ public:
 					durations.push_back(testSortingAlgorithm(algorithm.second, triangles));
 					names.push_back(algorithm.first);
 				}
+			} else if (GetKey(olc::Key::K2).bReleased) {
+				const int numTriangles = 5000; // 
+				durations.clear();
+				names.clear();
+        		std::vector<triangle> triangles;
+        		generateRandomTriangles(triangles, numTriangles);
 
-				//durations[0] = testSortowanieBabelkowe(triangles);
-				//std::cout << Mode::ALGORYTM_A << " : "<< durations[0] << "[" << durations.size() << "]" << std::endl;
+				std::vector<std::pair<std::string, std::function<void(std::vector<triangle>&)>>> sortingAlgorithms = {
+					{"Sortowanie babelkowe", testSortowanieBabelkowe},
+					{"Sortowanie przez wstawianie", testSortowaniePrzezWstawianie},
+					{"Sortowanie przez kopcowanie", testHeapSort},
+					{"Quicksort", testQuickSort},
+					{"Sortowanie przez scalanie", testMergeSort},
+					{"std::sort", testStdSort}
+				};
+
+				for (auto& algorithm : sortingAlgorithms) {
+					durations.push_back(testSortingAlgorithm(algorithm.second, triangles));
+					names.push_back(algorithm.first);
+				}				
 			}
 
-			std::cout << durations.size() << std::endl;
 			if (durations.size() > 0) {
-				float barWidth = ScreenWidth() / (durations.size() * 2);
+
+				const float margin = 50.0f; // Margines od krawędzi okna
+				float barWidth = (ScreenWidth() - 2 * margin) / (durations.size() * 2);
 				float maxDuration = *std::max_element(durations.begin(), durations.end());
+		        float spacing = (ScreenHeight() - 2 * margin) / 0.5 * durations.size(); // Odstęp między opisami
 
 				for (size_t i = 0; i < durations.size(); ++i) {
-					float barHeight = (durations[i] / maxDuration) * ScreenHeight() * 0.8f;
-					FillRect(i * 2 * barWidth, ScreenHeight() - barHeight, barWidth, barHeight, olc::RED);
-					DrawString(i * 2 * barWidth, ScreenHeight() - barHeight - 10, names[i], olc::WHITE);
+					float barHeight = (durations[i] / maxDuration) * (ScreenHeight() - 2 * margin) * 0.8f;
+					float barX = margin + i * 2 * barWidth;
+					float barY = ScreenHeight() - margin - barHeight;
+
+					FillRect(barX, barY, barWidth, barHeight, olc::RED);
+					// DrawString(barX, barY - 10, names[i], olc::WHITE);
+					// Rysowanie etykiet obok słupków z numeracją
+					std::string label = std::to_string(i + 1) + ". " + names[i];
+					DrawString(barX, barY - 10, std::to_string(i + 1), olc::WHITE);
+					float labelY = 2 * margin + i * 15; //spacing;
+					DrawString(ScreenWidth()/2, labelY, label, olc::WHITE);					
 				}
+
 			}
 
 		} else {
@@ -457,8 +486,9 @@ public:
 
 	} // 
 
+	if ((mode != Mode::ALGORYTM_TEST)) {
 		DrawString(ScreenWidth()-300, ScreenHeight()-15, "Powered by olcPixelGameEngine, 2024(7)", olc::CYAN );
-
+	}
 		return !quit;
 	}
 
