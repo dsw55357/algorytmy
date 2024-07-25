@@ -62,19 +62,19 @@ public:
 		// Projection Matrix
 		matProj = Matrix_MakeProjection(90.0f, (float)ScreenHeight() / (float)ScreenWidth(), 0.1f, 1000.0f);
 
- 		names.push_back("Sortowanie babelkowe");
-		durations.push_back(100.0);
-		names.push_back("Sortowanie przez wstawianie");
-		durations.push_back(70.0);
-		names.push_back("Sortowanie przez kopcowanie");
-		durations.push_back(450.0);
-		names.push_back("Quicksort");
-		durations.push_back(20.0);
-		names.push_back("Sortowanie przez scalanie");
-		durations.push_back(350.0);
+ 		// names.push_back("Sortowanie babelkowe");
+		// durations.push_back(100.0);
+		// names.push_back("Sortowanie przez wstawianie");
+		// durations.push_back(70.0);
+		// names.push_back("Sortowanie przez kopcowanie");
+		// durations.push_back(450.0);
+		// names.push_back("Quicksort");
+		// durations.push_back(20.0);
+		// names.push_back("Sortowanie przez scalanie");
+		// durations.push_back(350.0);
 
-		names.push_back("std::sort");
-		durations.push_back(10.0);
+		// names.push_back("std::sort");
+		// durations.push_back(10.0);
 
 		return true;
 	}
@@ -120,18 +120,52 @@ public:
 			} 
 		}
 
+
+/*
+		Zebrać wyniki do tablicy, a następnie przedstawić je w postaci wykresu słupkowego 
+*/
 		if ((mode == Mode::ALGORYTM_TEST)) {
 
 			DrawString(15, 15, "ESC - back to main menu", olc::GREEN);
 			DrawString(15, 45, "Porownanie wydajnosci roznych algorytmow sortowania", olc::YELLOW);
+			DrawString(15, 60, "1. 1000 trojkatow", olc::CYAN);
 
-			float barWidth = ScreenWidth() / (durations.size() * 2);
-			float maxDuration = *std::max_element(durations.begin(), durations.end());
+			if (GetKey(olc::Key::K1).bReleased) {
+				const int numTriangles = 1000; // 
+				durations.clear();
+				names.clear();
 
-			for (size_t i = 0; i < durations.size(); ++i) {
-				float barHeight = (durations[i] / maxDuration) * ScreenHeight() * 0.8f;
-				FillRect(i * 2 * barWidth, ScreenHeight() - barHeight, barWidth, barHeight, olc::RED);
-				DrawString(i * 2 * barWidth, ScreenHeight() - barHeight - 10, names[i], olc::WHITE);
+        		std::vector<triangle> triangles;
+        		generateRandomTriangles(triangles, numTriangles);
+
+				std::vector<std::pair<std::string, std::function<void(std::vector<triangle>&)>>> sortingAlgorithms = {
+					{"Sortowanie babelkowe", testSortowanieBabelkowe},
+					{"Sortowanie przez wstawianie", testSortowaniePrzezWstawianie},
+					{"Sortowanie przez kopcowanie", testHeapSort},
+					{"Quicksort", testQuickSort},
+					{"Sortowanie przez scalanie", testMergeSort},
+					{"std::sort", testStdSort}
+				};
+
+				for (auto& algorithm : sortingAlgorithms) {
+					durations.push_back(testSortingAlgorithm(algorithm.second, triangles));
+					names.push_back(algorithm.first);
+				}
+
+				//durations[0] = testSortowanieBabelkowe(triangles);
+				//std::cout << Mode::ALGORYTM_A << " : "<< durations[0] << "[" << durations.size() << "]" << std::endl;
+			}
+
+			std::cout << durations.size() << std::endl;
+			if (durations.size() > 0) {
+				float barWidth = ScreenWidth() / (durations.size() * 2);
+				float maxDuration = *std::max_element(durations.begin(), durations.end());
+
+				for (size_t i = 0; i < durations.size(); ++i) {
+					float barHeight = (durations[i] / maxDuration) * ScreenHeight() * 0.8f;
+					FillRect(i * 2 * barWidth, ScreenHeight() - barHeight, barWidth, barHeight, olc::RED);
+					DrawString(i * 2 * barWidth, ScreenHeight() - barHeight - 10, names[i], olc::WHITE);
+				}
 			}
 
 		} else {
@@ -422,6 +456,8 @@ public:
 		}
 
 	} // 
+
+		DrawString(ScreenWidth()-300, ScreenHeight()-15, "Powered by olcPixelGameEngine, 2024(7)", olc::CYAN );
 
 		return !quit;
 	}
