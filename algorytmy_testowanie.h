@@ -3,6 +3,8 @@
 #include <vector>
 #include <chrono>
 #include <string>
+#include <sstream>
+#include <iomanip>
 #include "algorytmy_sortowania.h"
 #include "olcPixelGameEngine.h"
 
@@ -27,7 +29,7 @@ auto testSortingAlgorithm(std::function<void(std::vector<triangle>&)> sortFunc, 
     sortFunc(triangles);
     auto end = std::chrono::high_resolution_clock::now();
     //std::chrono::duration<double> duration = end - start;
-    auto duration = duration_cast<milliseconds>(end - start).count();
+    auto duration = duration_cast<microseconds>(end - start).count();
 
     return duration;
 }
@@ -60,6 +62,11 @@ void testQuickSort(std::vector<triangle>& triangles) {
 void testMergeSort(std::vector<triangle>& triangles) {
 
     MergeSort(triangles, 0, triangles.size() - 1);
+}
+
+void testCountingSort(std::vector<triangle>& triangles) {
+
+    CountingSort(triangles);
 }
 
 void testStdSort(std::vector<triangle>& triangles) {

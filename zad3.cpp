@@ -27,7 +27,7 @@ enum class Mode {
 	ALGORYTM_C, // Sortowanie przez kopcowanie
 	ALGORYTM_D, // Sortowanie Quicksort
 	ALGORYTM_E, // Sortowanie przez scalanie
-
+	ALGORYTM_F, // Sortowanie przez zliczanie
 	ALGORYTM_TEST // Testowania wydajnosci algorytmów
 };
 
@@ -91,6 +91,8 @@ public:
 			DrawString(15, 45, "3. Sortowanie przez kopcowanie", olc::GREEN);
 			DrawString(15, 60, "4. Quicksort", olc::GREEN);
 			DrawString(15, 75, "5. Sortowanie przez scalanie", olc::GREEN);
+			DrawString(15, 90, "6. Sortowanie przez zliczanie", olc::GREEN);
+
 
 			DrawString(15, 155, "T - Testowania wydajnosci", olc::CYAN);
             DrawString(15, 170, "Q - exit", olc::GREEN);
@@ -105,6 +107,8 @@ public:
                 mode = Mode::ALGORYTM_D;
             } else if (GetKey(olc::Key::K5).bPressed) {
                 mode = Mode::ALGORYTM_E;
+            } else if (GetKey(olc::Key::K6).bPressed) {
+                mode = Mode::ALGORYTM_F;
             }
 			
 			
@@ -145,6 +149,7 @@ public:
 					{"Sortowanie przez kopcowanie", testHeapSort},
 					{"Quicksort", testQuickSort},
 					{"Sortowanie przez scalanie", testMergeSort},
+					{"Sortowanie przez zliczanie", testCountingSort},
 					{"std::sort", testStdSort}
 				};
 
@@ -165,6 +170,7 @@ public:
 					{"Sortowanie przez kopcowanie", testHeapSort},
 					{"Quicksort", testQuickSort},
 					{"Sortowanie przez scalanie", testMergeSort},
+					{"Sortowanie przez zliczanie", testCountingSort},
 					{"std::sort", testStdSort}
 				};
 
@@ -192,7 +198,9 @@ public:
 					std::string label = std::to_string(i + 1) + "."  + names[i];
 					// Sformatowanie wartości czasowej do jednego miejsca po przecinku
             		std::ostringstream oss;
-            		oss << std::fixed << std::setprecision(1) << durations[i];
+					auto duration_ms = durations[i] / 1000.0;
+            		oss << std::fixed << std::setprecision(1) << duration_ms;
+
 					DrawString(barX, barY - 10, std::to_string(i + 1), olc::WHITE);
 					DrawString(barX, ScreenHeight() - margin/2, oss.str(), olc::WHITE);
 					if (i == durations.size()-1) {
@@ -201,7 +209,18 @@ public:
 					float labelY = 2 * margin + i * 15; //spacing;
 					DrawString(ScreenWidth()/2, labelY, label, olc::WHITE);					
 				}
+			} else {
+                    uint32_t scale = 2;
+					std::string Message {"Wybierz 1, 2.."};
+                    // Get the size of the text
+                    olc::vi2d textSize = GetTextSize(Message);
 
+                    // Calculate the position to draw the text so that it is centered
+                    int textX = ScreenWidth()/2 - (textSize.x * scale) / 2;
+                    int textY = ScreenHeight()/2 - (textSize.y * scale) / 2;
+
+                    // Draw the text
+                    DrawString(textX, textY, Message, olc::RED, scale);
 			}
 
 		} else {
@@ -409,6 +428,19 @@ public:
 
 			DrawString(15, 45, "Sortowanie przez scalanie", olc::YELLOW);
 			MergeSort(vecTrianglesToRaster, 0, vecTrianglesToRaster.size() - 1);
+			
+			const auto end{std::chrono::steady_clock::now()};
+			auto duration = duration_cast<microseconds>(end - start).count();
+			// durations.push_back(duration);
+			
+			performanceMessage = "Czas: " + std::to_string(duration) + " us";
+			DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
+		} else if (mode == Mode::ALGORYTM_F) { // Sortowanie przez zliczanie
+			using namespace std::chrono;
+			const auto start{std::chrono::steady_clock::now()};
+
+			DrawString(15, 45, "Sortowanie przez zliczanie", olc::YELLOW);
+			CountingSort(vecTrianglesToRaster);
 			
 			const auto end{std::chrono::steady_clock::now()};
 			auto duration = duration_cast<microseconds>(end - start).count();

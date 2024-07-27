@@ -199,3 +199,113 @@ void MergeSort(std::vector<triangle>& triangles, int left, int right)
         Merge(triangles, left, mid, right);
     }
 }
+
+// Funkcja obliczająca średnią głębokość trójkąta
+float calculateAverageDepth(const triangle& tri) {
+    return (tri.p[0].z + tri.p[1].z + tri.p[2].z) / 3.0f;
+}
+
+// Funkcja sortowania trójkątów przez zliczanie
+void CountingSort(std::vector<triangle>& triangles) {
+/*
+
+    if (triangles.empty()) return;
+
+    // Znajdź minimalną i maksymalną wartość głębokości
+    float minDepth = std::numeric_limits<float>::max();
+    float maxDepth = std::numeric_limits<float>::lowest();
+    
+    for (const auto& tri : triangles) {
+        float depth = calculateAverageDepth(tri);
+        if (depth < minDepth) minDepth = depth;
+        if (depth > maxDepth) maxDepth = depth;
+    }
+
+    // Przeskalowanie głębokości do zakresu całkowitego
+    int range = static_cast<int>(std::ceil(maxDepth - minDepth)) + 1;
+    std::vector<int> count(range, 0);
+
+    // Zliczanie wystąpień
+    for (const auto& tri : triangles) {
+        int depthIndex = static_cast<int>(std::floor(calculateAverageDepth(tri) - minDepth));
+        count[depthIndex]++;
+    }
+
+    // Kumulacja zliczeń
+    for (size_t i = 1; i < count.size(); ++i) {
+        count[i] += count[i - 1];
+    }
+
+    // Tworzenie tablicy wyjściowej
+    std::vector<triangle> output(triangles.size());
+    for (int i = triangles.size() - 1; i >= 0; --i) {
+        int depthIndex = static_cast<int>(std::floor(calculateAverageDepth(triangles[i]) - minDepth));
+        output[count[depthIndex] - 1] = triangles[i];
+        count[depthIndex]--;
+    }
+    
+    // Odwrócenie tablicy wyjściowej, aby trójkąty z większą głębokością były na początku
+    //std::reverse(output.begin(), output.end());
+
+    // Przepisanie wyników do tablicy wejściowej
+    triangles = output;
+    */
+
+    if (triangles.empty()) return;
+
+    // Znajdź minimalną i maksymalną wartość głębokości
+    float minDepth = std::numeric_limits<float>::max();
+    float maxDepth = std::numeric_limits<float>::lowest();
+    
+    for (const auto& tri : triangles) {
+        float depth = calculateAverageDepth(tri);
+        if (depth < minDepth) minDepth = depth;
+        if (depth > maxDepth) maxDepth = depth;
+    }
+
+    // Przeskalowanie głębokości do zakresu całkowitego
+    int range = static_cast<int>(std::ceil(maxDepth - minDepth)) + 1;
+    std::vector<int> count(range, 0);
+
+    // Zliczanie wystąpień
+    for (const auto& tri : triangles) {
+        int depthIndex = static_cast<int>(std::floor(calculateAverageDepth(tri) - minDepth));
+        count[depthIndex]++;
+    }
+
+    // Kumulacja zliczeń
+    for (size_t i = 1; i < count.size(); ++i) {
+        count[i] += count[i - 1];
+    }
+
+    // Tworzenie tablicy wyjściowej w porządku malejącym
+    std::vector<triangle> output(triangles.size());
+    for (const auto& tri : triangles) {
+        int depthIndex = static_cast<int>(std::floor(calculateAverageDepth(tri) - minDepth));
+        output[count[depthIndex] - 1] = tri;
+        count[depthIndex]--;
+    }
+
+    // Przepisanie wyników do tablicy wejściowej
+    triangles = output;
+
+/*
+
+Sortowanie przez zliczanie jest generalnie używane do sortowania w porządku rosnącym, ale możemy łatwo dostosować algorytm, aby sortował w porządku malejącym. Wystarczy zmienić sposób wstawiania elementów do tablicy wyjściowej.
+
+Sortowanie przez zliczanie w porządku malejącym
+W sortowaniu przez zliczanie tworzysz tablicę zliczeń, a następnie używasz jej do wstawiania elementów w odpowiednie pozycje w tablicy wyjściowej. Aby uzyskać sortowanie malejące, musimy wstawiać elementy od końca do początku.
+
+Wyjaśnienia
+Obliczanie średniej głębokości: Funkcja calculateAverageDepth oblicza średnią głębokość dla danego trójkąta.
+Znajdowanie zakresu głębokości: Minimalna i maksymalna głębokość są obliczane na podstawie danych trójkątów.
+Zliczanie wystąpień: Głębokości trójkątów są przeskalowane do indeksów i ich wystąpienia są zliczane.
+Kumulacja zliczeń: Tablica zliczeń jest modyfikowana, aby zawierała skumulowane sumy.
+Tworzenie tablicy wyjściowej w porządku malejącym: Trójkąty są wstawiane do tablicy wyjściowej od końca, aby uzyskać porządek malejący.
+Przepisanie wyników: Tablica wynikowa jest kopiowana z powrotem do tablicy wejściowej.
+
+
+
+*/
+
+}

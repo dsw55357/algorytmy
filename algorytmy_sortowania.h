@@ -2,6 +2,9 @@
 #define ALGORYTMY_SORTOWANIA_H
 
 #include <vector>
+#include <algorithm>
+#include <cmath>
+#include <limits>
 
 #include "matrix.h"
 
@@ -70,10 +73,34 @@ void MergeSort(std::vector<triangle>& triangles, int left, int right);
 
 /*
 
+Sortowanie przez zliczanie (Counting Sort)
+Sortowanie przez zliczanie (Counting Sort) jest algorytmem sortowania oparte na kluczach (wartościach), które są małymi liczbami całkowitymi. Jest to algorytm stabilny, ale działa efektywnie tylko wtedy, gdy zakres kluczy (wartości) jest znany i stosunkowo mały.
+
+
+Zasada działania
+- Zliczanie wystąpień: Dla każdej wartości w tablicy wejściowej algorytm zlicza, ile razy dana wartość występuje. Wyniki są zapisywane w tablicy pomocniczej.
+- Kumulacja: Tablica pomocnicza jest następnie modyfikowana tak, aby każda komórka zawierała sumę wartości z poprzednich komórek. W ten sposób tablica pomocnicza będzie zawierać informacje o tym, gdzie każda wartość powinna się znaleźć w tablicy wyjściowej.
+- Tworzenie tablicy wyjściowej: Algorytm przechodzi przez tablicę wejściową i umieszcza każdą wartość na odpowiedniej pozycji w tablicy wyjściowej, korzystając z informacji z tablicy pomocniczej.
+
+Zastosowanie
+Sortowanie przez zliczanie jest szczególnie użyteczne w przypadku:
+
+Sortowania dużych zestawów danych z niewielkim zakresem wartości.
+Sortowania danych całkowitoliczbowych, takich jak oceny egzaminów, wiek osób w populacji itp.
+
+*/
+
+void CountingSort(std::vector<triangle>& triangles);
+
+/*
+
 Implementacja testu wydajności algorytmów sortowania
 Dla prostoty i łatwości implementacji, wykonamy sekwencyjne testowanie algorytmów sortowania. 
 
 */
+
+
+
 
 
 #endif // ALGORYTMY_SORTOWANIA_H
