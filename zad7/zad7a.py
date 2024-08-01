@@ -162,12 +162,15 @@ def main():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
+                if event.key == pygame.K_ESCAPE: # obsługa klawisza ESC, aby umożliwić wyjście z programu.
                     running = False
+                    # Obsługa zdarzenia pygame.MOUSEBUTTONDOWN, które wykrywa kliknięcie lewego przycisku myszy.
             elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Użytkownik może teraz dodawać wierzchołki poprzez kliknięcie myszą, a graf oraz minimalne drzewo rozpinające będą aktualizowane i wyświetlane na bieżąco.
                 if event.button == 1:  # Lewy przycisk myszy
                     pos = event.pos
                     vertex_id = len(vertices)
+                    # Dodawanie nowego wierzchołka do słownika vertices z jego pozycją kliknięcia.
                     vertices[vertex_id] = pos
 
                     # Dodanie nowych krawędzi do grafu
@@ -182,10 +185,13 @@ def main():
                     # draw_menu()
                     # draw_working_message()
 
+                    # Po uruchomieniu programu użytkownik może dodawać wierzchołki, klikając myszą. Gdy dodawany jest nowy wierzchołek i algorytm Kruskala przelicza minimalne drzewo rozpinające (MST), tytuł okna zmienia się na "Pracuję...". Po zakończeniu obliczeń tytuł okna wraca do "Algorytm Kruskala".
+
                     # Zmiana napisu w pasku tytułu na "Pracuję..."
                     pygame.display.set_caption("Algorytm Kruskala - Pracuję...")
 
                     # Przeliczenie MST
+                    # Po dodaniu nowego wierzchołka i nowych krawędzi, wywoływany jest algorytm Kruskala, aby przeliczyć minimalne drzewo rozpinające.
                     mst_edges = kruskal(vertices, edges)
 
                     # Przywrócenie napisu w pasku tytułu
@@ -193,6 +199,7 @@ def main():
 
         WIN.fill(GREY)
         draw_graph(vertices, edges, mst_edges)
+        # menu wyświetlane na ekranie
         draw_menu()
         pygame.display.flip()
 
