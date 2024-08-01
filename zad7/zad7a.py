@@ -51,6 +51,8 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
+CYAN = (0, 255, 255)  # Definicja koloru CYAN
+GREY = (192, 192, 192)
 
 # Klasa reprezentująca krawędź
 class Edge:
@@ -83,7 +85,7 @@ class DisjointSet:
 
 # Funkcja rysująca graf
 def draw_graph(vertices, edges, mst_edges):
-    WIN.fill(WHITE)
+    WIN.fill(GREY)
     
     for edge in edges:
         u, v = edge.u, edge.v
@@ -93,7 +95,7 @@ def draw_graph(vertices, edges, mst_edges):
     for v in vertices:
         pygame.draw.circle(WIN, RED, vertices[v], 5)
     
-    pygame.display.update()
+    # pygame.display.update()
 
 # Algorytm Kruskala
 def kruskal(vertices, edges):
@@ -105,8 +107,11 @@ def kruskal(vertices, edges):
         if disjoint_set.find(edge.u) != disjoint_set.find(edge.v):
             disjoint_set.union(edge.u, edge.v)
             mst.append(edge)
+            WIN.fill(GREY)  # Użycie koloru CYAN
             draw_graph(vertices, edges, mst)
-            pygame.time.wait(500)  # Opóźnienie dla animacji
+            draw_menu()
+            pygame.display.flip()  # Użycie flip zamiast update
+            pygame.time.wait(100)  # Opóźnienie dla animacji
     
     return mst
 
@@ -119,8 +124,16 @@ def draw_menu():
         "Kliknij ESC, aby wyjsc."
     ]
     for i, instruction in enumerate(instructions):
-        text_surface = font.render(instruction, True, BLACK)
+        text_surface = font.render(instruction, True, BLUE)
         WIN.blit(text_surface, (10, 10 + i * 30))
+
+# Funkcja wyświetlająca komunikat o pracy algorytmu
+def draw_working_message():
+    font = pygame.font.Font(None, 36)
+    message = "Pracuję..."
+    text_surface = font.render(message, True, BLACK)
+    WIN.blit(text_surface, (WIDTH // 2 - text_surface.get_width() // 2, HEIGHT // 2 - text_surface.get_height() // 2))
+    pygame.display.flip()
 
 def main():
     running = True
@@ -163,10 +176,22 @@ def main():
                             weight = math.sqrt((vertices[i][0] - pos[0]) ** 2 + (vertices[i][1] - pos[1]) ** 2)
                             edges.append(Edge(i, vertex_id, weight))
 
+                    # # Wyświetlenie komunikatu "Pracuję..."
+                    # WIN.fill(WHITE)
+                    # draw_graph(vertices, edges, mst_edges)
+                    # draw_menu()
+                    # draw_working_message()
+
+                    # Zmiana napisu w pasku tytułu na "Pracuję..."
+                    pygame.display.set_caption("Algorytm Kruskala - Pracuję...")
+
                     # Przeliczenie MST
                     mst_edges = kruskal(vertices, edges)
 
-        WIN.fill(WHITE)
+                    # Przywrócenie napisu w pasku tytułu
+                    pygame.display.set_caption("Algorytm Kruskala")
+
+        WIN.fill(GREY)
         draw_graph(vertices, edges, mst_edges)
         draw_menu()
         pygame.display.flip()
