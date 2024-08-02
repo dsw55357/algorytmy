@@ -41,6 +41,9 @@ BLUE = (0, 0, 255)
 WIDTH, HEIGHT = 800, 600
 FPS = 60
 
+vertices = {}
+edges = {}
+
 # Definicja wierzchołków i krawędzi
 vertices = {
     'A': (100, 100),
@@ -112,6 +115,14 @@ def prim_algorithm(vertices, edges):
 
     return mst_edges
 
+def add_vertex(pos):
+    vertex = chr(ord('A') + len(vertices))
+    vertices[vertex] = pos
+
+def add_edge(u, v, weight):
+    edges[(u, v)] = weight
+    edges[(v, u)] = weight  # Graf nieskierowany
+
 
 def main():
     running = True
@@ -121,6 +132,20 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:  # Lewy przycisk myszy
+                    pos = pygame.mouse.get_pos()
+                    add_vertex(pos)
+                elif event.button == 3:  # Prawy przycisk myszy
+                    pos = pygame.mouse.get_pos()
+                    for vertex, vertex_pos in vertices.items():
+                        if (pos[0] - vertex_pos[0]) ** 2 + (pos[1] - vertex_pos[1]) ** 2 <= 100:
+                            if 'start' not in globals():
+                                global start
+                                start = vertex
+                            else:
+                                add_edge(start, vertex, 1)  # Dodaj krawędź o wadze 1
+                                del globals()['start']
 
         # Rysowanie grafu
         mst_edges = prim_algorithm(vertices, edges)
