@@ -62,16 +62,24 @@ class Edge:
         self.weight = weight
 
 # Klasa reprezentująca zbiór rozłączny (Union-Find)
+# Klasa DisjointSet (znana również jako Union-Find) jest strukturą danych używaną do efektywnego zarządzania rozłącznymi zbiorami. W kontekście algorytmu Kruskala jest używana do śledzenia, które wierzchołki grafu są połączone, aby zapobiec tworzeniu cykli podczas budowania minimalnego drzewa rozpinającego (MST).
 class DisjointSet:
     def __init__(self, vertices):
+        # parent przechowuje rodzica każdego wierzchołka, początkowo każdy wierzchołek jest swoim własnym rodzicem.
         self.parent = {v: v for v in vertices}
+        # rank przechowuje głębokość drzewa dla optymalizacji połączeń.
         self.rank = {v: 0 for v in vertices}
 
+    # Metoda find zwraca korzeń zbioru, do którego należy dany element.
+    # Implementuje "ścieżkę kompresji" (path compression), co przyspiesza przyszłe operacje, ustawiając każdego przodka bezpośrednio jako dziecko korzenia.
     def find(self, item):
         if self.parent[item] != item:
             self.parent[item] = self.find(self.parent[item])
         return self.parent[item]
 
+    # Metoda union łączy dwa zbiory.
+    # Używa "połączenia według rangi" (union by rank), co utrzymuje drzewo płaskim.
+    # Zbiór z mniejszą rangą staje się podzbiorem zbioru z większą rangą. Jeśli rangi są równe, zwiększamy rangę korzenia nowego zbioru.
     def union(self, set1, set2):
         root1 = self.find(set1)
         root2 = self.find(set2)
@@ -82,6 +90,8 @@ class DisjointSet:
                 self.parent[root1] = root2
                 if self.rank[root1] == self.rank[root2]:
                     self.rank[root2] += 1
+# Klasa DisjointSet jest kluczowym komponentem wielu algorytmów grafowych, w tym algorytmu Kruskala. Dzięki metodom find z kompresją ścieżek i union z łączeniem według rangi, klasa ta umożliwia efektywne zarządzanie zbiorami rozłącznymi, co jest niezbędne do sprawdzania połączeń i zapobiegania cyklom w grafie.
+
 
 # Funkcja rysująca graf
 def draw_graph(vertices, edges, mst_edges):
@@ -120,8 +130,8 @@ def draw_menu():
     font = pygame.font.Font(None, 30)
     instructions = [
         "Instrukcje:",
-        "Kliknij lewym przyciskiem myszy, aby dodac wierzcholek.",
-        "Kliknij ESC, aby wyjsc."
+        "1. Kliknij lewym przyciskiem myszy, aby dodac wierzchołek.",
+        "2. Kliknij ESC, aby wyjść."
     ]
     for i, instruction in enumerate(instructions):
         text_surface = font.render(instruction, True, BLUE)
