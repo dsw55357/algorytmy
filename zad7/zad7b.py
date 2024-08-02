@@ -29,6 +29,9 @@ Opis algorytmu
 
 import pygame
 import heapq
+import random
+import math
+
 
 # Definicje kolorów
 WHITE = (255, 255, 255)
@@ -75,12 +78,17 @@ font = pygame.font.SysFont('Arial', 20)
 def draw_graph(screen, vertices, edges, mst_edges):
     screen.fill(WHITE)
     
-    # Rysowanie krawędzi
+    # Rysowanie krawędzi    
     for (u, v), weight in edges.items():
+        if (u, v) in mst_edges or (v, u) in mst_edges:
+            weight_color = RED
+        else:
+            weight_color = BLACK
+
         color = BLUE if (u, v) in mst_edges or (v, u) in mst_edges else BLACK
         pygame.draw.line(screen, color, vertices[u], vertices[v], 2)
         mid_point = ((vertices[u][0] + vertices[v][0]) // 2, (vertices[u][1] + vertices[v][1]) // 2)
-        text = font.render(str(weight), True, BLACK)
+        text = font.render(str(weight), True, weight_color)
         screen.blit(text, mid_point)
     
     # Rysowanie wierzchołków
@@ -118,11 +126,29 @@ def prim_algorithm(vertices, edges):
 def add_vertex(pos):
     vertex = chr(ord('A') + len(vertices))
     vertices[vertex] = pos
+    # Przerysowanie grafu po dodaniu nowego wierzchołka.
+    redraw_graph()
 
-def add_edge(u, v, weight):
+def add_edge(u, v):
+    weight = random.randint(1, 10)  # Losowa waga z przedziału 1-10
     edges[(u, v)] = weight
     edges[(v, u)] = weight  # Graf nieskierowany
 
+# Aktualizowanie pozycji wierzchołków w sposób uporządkowany za każdym razem, gdy dodawany jest nowy wierzchołek. Graf zostanie przerysowany w uporządkowany sposób, a wierzchołki będą rozmieszczane równomiernie na okręgu w centrum okna.
+def redraw_graph():
+    n = len(vertices)
+    if n == 0:
+        return
+
+    radius = min(WIDTH, HEIGHT) // 3
+    angle_gap = 2 * math.pi / n
+    center_x, center_y = WIDTH // 2, HEIGHT // 2
+
+    for i, vertex in enumerate(vertices):
+        angle = i * angle_gap
+        x = int(center_x + radius * math.cos(angle))
+        y = int(center_y + radius * math.sin(angle))
+        vertices[vertex] = (x, y)
 
 def main():
     running = True
@@ -132,8 +158,12 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE: # obsługa klawisza ESC, aby umożliwić wyjście z programu.
+                    running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Lewy przycisk myszy
+                    # Dodanie nowego wierzchołka w miejscu kliknięcia.
                     pos = pygame.mouse.get_pos()
                     add_vertex(pos)
                 elif event.button == 3:  # Prawy przycisk myszy
@@ -144,7 +174,8 @@ def main():
                                 global start
                                 start = vertex
                             else:
-                                add_edge(start, vertex, 1)  # Dodaj krawędź o wadze 1
+                                # Funkcja add_edge(u, v, weight) dodaje krawędź o zadanej wadze między wierzchołkami u i v między dwoma klikniętymi wierzchołkami.
+                                add_edge(start, vertex)  # Dodaj krawędź o losowej wadze
                                 del globals()['start']
 
         # Rysowanie grafu
