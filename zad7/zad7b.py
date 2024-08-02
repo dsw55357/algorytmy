@@ -86,6 +86,33 @@ def draw_graph(screen, vertices, edges, mst_edges):
         text = font.render(vertex, True, BLACK)
         screen.blit(text, (pos[0] - 10, pos[1] - 30))
 
+def prim_algorithm(vertices, edges):
+    if not vertices:
+        return set()
+
+    start_vertex = next(iter(vertices))  # Wybieramy dowolny wierzchołek jako startowy
+    visited = set([start_vertex])
+    edges_to_process = []
+
+    for (u, v), weight in edges.items():
+        if u == start_vertex or v == start_vertex:
+            heapq.heappush(edges_to_process, (weight, u, v))
+
+    mst_edges = set()
+
+    while edges_to_process:
+        weight, u, v = heapq.heappop(edges_to_process)
+        if v not in visited:
+            visited.add(v)
+            mst_edges.add((u, v))
+            for (u_next, v_next), weight in edges.items():
+                if u_next == v or v_next == v:
+                    if u_next not in visited or v_next not in visited:
+                        heapq.heappush(edges_to_process, (weight, u_next, v_next))
+
+    return mst_edges
+
+
 def main():
     running = True
     mst_edges = set()
@@ -96,6 +123,7 @@ def main():
                 running = False
 
         # Rysowanie grafu
+        mst_edges = prim_algorithm(vertices, edges)
         draw_graph(screen, vertices, edges, mst_edges)
         
         pygame.display.flip()
