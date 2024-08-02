@@ -39,6 +39,8 @@ BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
+GREY = (192, 192, 192)
+
 
 # Ustawienia Pygame
 WIDTH, HEIGHT = 800, 600
@@ -76,7 +78,7 @@ clock = pygame.time.Clock()
 font = pygame.font.SysFont('Arial', 20)
 
 def draw_graph(screen, vertices, edges, mst_edges):
-    screen.fill(WHITE)
+    screen.fill(GREY)
     
     # Rysowanie krawędzi    
     for (u, v), weight in edges.items():
@@ -150,6 +152,20 @@ def redraw_graph():
         y = int(center_y + radius * math.sin(angle))
         vertices[vertex] = (x, y)
 
+# Funkcja rysująca menu
+def draw_menu():
+    font = pygame.font.Font(None, 30)
+    instructions = [
+        "Instrukcje:",
+        "1. Kliknij lewym przyciskiem myszy, aby dodac wierzchołek.",
+        "2. Kliknij prawym przyciskiem myszy, aby dodac krawedz.",
+        "3. Kliknij ESC, aby wyjsc."
+    ]
+    for i, instruction in enumerate(instructions):
+        text_surface = font.render(instruction, True, BLUE)
+        screen.blit(text_surface, (10, 10 + i * 30))
+
+
 def main():
     running = True
     mst_edges = set()
@@ -181,7 +197,7 @@ def main():
         # Rysowanie grafu
         mst_edges = prim_algorithm(vertices, edges)
         draw_graph(screen, vertices, edges, mst_edges)
-        
+        draw_menu()
         pygame.display.flip()
         clock.tick(FPS)
 
