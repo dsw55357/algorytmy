@@ -129,7 +129,7 @@ def kruskal(vertices, edges):
 def draw_menu():
     font = pygame.font.Font(None, 30)
     instructions = [
-        "Instrukcje:",
+        "Menu::",
         "1. Kliknij lewym przyciskiem myszy, aby dodac wierzchołek.",
         "2. Kliknij ESC, aby wyjść."
     ]

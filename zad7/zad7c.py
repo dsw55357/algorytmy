@@ -99,41 +99,7 @@ def draw_graph(screen, vertices, edges, mst_edges):
         text = font.render(vertex, True, BLACK)
         screen.blit(text, (pos[0] - 10, pos[1] - 30))
 
-# Algorytm Prima bez użycia kopca może być zaimplementowany w prostszy sposób, ale będzie mniej efektywny pod względem złożoności czasowej. Zamiast kopca możemy użyć listy do zarządzania krawędziami, co spowoduje, że wyszukiwanie minimalnej krawędzi będzie miało złożoność liniową O(n) w każdej iteracji.
-
 def prim_algorithm(vertices, edges):
-    if not vertices:
-        return set()
-
-    start_vertex = next(iter(vertices))  # Wybieramy dowolny wierzchołek jako startowy
-    visited = set([start_vertex])
-    mst_edges = set()
-    edges_to_process = []
-
-    # Dodajemy krawędzie wychodzące ze startowego wierzchołka
-    for (u, v), weight in edges.items():
-        if u == start_vertex or v == start_vertex:
-            edges_to_process.append((weight, u, v))
-
-    while edges_to_process:
-        # Znajdujemy krawędź o minimalnej wadze
-        min_edge = min(edges_to_process, key=lambda e: e[0])
-        edges_to_process.remove(min_edge)
-        weight, u, v = min_edge
-
-        # Jeśli wierzchołek v nie został odwiedzony, dodajemy krawędź do MST
-        if v not in visited:
-            visited.add(v)
-            mst_edges.add((u, v))
-            # Dodajemy krawędzie wychodzące z nowo odwiedzonego wierzchołka
-            for (u_next, v_next), weight in edges.items():
-                if u_next == v or v_next == v:
-                    if u_next not in visited or v_next not in visited:
-                        edges_to_process.append((weight, u_next, v_next))
-
-    return mst_edges
-
-def prim_algorithm_heapq(vertices, edges):
     if not vertices:
         return set()
 
@@ -173,7 +139,7 @@ def add_edge(u, v):
     edges[(v, u)] = weight  # Graf nieskierowany
 
 # Aktualizowanie pozycji wierzchołków w sposób uporządkowany za każdym razem, gdy dodawany jest nowy wierzchołek. Graf zostanie przerysowany w uporządkowany sposób, a wierzchołki będą rozmieszczane równomiernie na okręgu w centrum okna.
-def redraw_graph2():
+def redraw_graph():
     n = len(vertices)
     if n == 0:
         return
@@ -187,23 +153,6 @@ def redraw_graph2():
         x = int(center_x + radius * math.cos(angle))
         y = int(center_y + radius * math.sin(angle))
         vertices[vertex] = (x, y)
-
-def redraw_graph():
-    n = len(vertices)
-    if n == 0:
-        return
-
-    side = int(math.ceil(math.sqrt(n)))
-    gap_x = WIDTH // (side + 1)
-    gap_y = HEIGHT // (side + 1)
-
-    for i, vertex in enumerate(vertices):
-        row = i // side
-        col = i % side
-        x = (col + 1) * gap_x
-        y = (row + 1) * gap_y
-        vertices[vertex] = (x, y)
-
 
 # Funkcja rysująca menu
 def draw_menu():
@@ -222,8 +171,6 @@ def draw_menu():
 def main():
     running = True
     mst_edges = set()
-
-    redraw_graph()
 
     while running:
         for event in pygame.event.get():
