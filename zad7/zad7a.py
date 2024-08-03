@@ -20,7 +20,7 @@ Wyjaśnienie kodu
 - Edge reprezentuje krawędź w grafie.
 - DisjointSet implementuje strukturę zbiorów rozłącznych (Union-Find).
 
-Funkcja draw_graph:
+Funkcja redraw_graph:
 
 - Rysuje graf na ekranie. Krawędzie MST są rysowane na niebiesko, a pozostałe na czarno. - - Wierzchołki są rysowane na czerwono.
 
@@ -94,7 +94,7 @@ class DisjointSet:
 
 
 # Funkcja rysująca graf
-def draw_graph2(vertices, edges, mst_edges):
+def redraw_graph(vertices, edges, mst_edges):
     WIN.fill(GREY)
     
     for edge in edges:
@@ -103,24 +103,7 @@ def draw_graph2(vertices, edges, mst_edges):
         pygame.draw.line(WIN, color, vertices[u], vertices[v], 2)
     
     for v in vertices:
-        pygame.draw.circle(WIN, RED, vertices[v], 5)
-    
-def redraw_graph():
-    n = len(vertices)
-    if n == 0:
-        return
-
-    side = int(math.ceil(math.sqrt(n)))
-    gap_x = WIDTH // (side + 1)
-    gap_y = HEIGHT // (side + 1)
-
-    for i, vertex in enumerate(vertices):
-        row = i // side
-        col = i % side
-        x = (col + 1) * gap_x
-        y = (row + 1) * gap_y
-        vertices[vertex] = (x, y)
-
+        pygame.draw.circle(WIN, RED, vertices[v], 5)  
 
 # Algorytm Kruskala
 def kruskal(vertices, edges):
@@ -133,7 +116,7 @@ def kruskal(vertices, edges):
             disjoint_set.union(edge.u, edge.v)
             mst.append(edge)
             WIN.fill(GREY)  # Użycie koloru CYAN
-            draw_graph(vertices, edges, mst)
+            redraw_graph(vertices, edges, mst)
             draw_menu()
             pygame.display.flip()  # Użycie flip zamiast update
             pygame.time.wait(100)  # Opóźnienie dla animacji
@@ -223,7 +206,7 @@ def main():
                     pygame.display.set_caption("Algorytm Kruskala")
 
         WIN.fill(GREY)
-        draw_graph(vertices, edges, mst_edges)
+        redraw_graph(vertices, edges, mst_edges)
         # menu wyświetlane na ekranie
         draw_menu()
         pygame.display.flip()

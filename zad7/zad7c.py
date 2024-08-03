@@ -189,6 +189,8 @@ def main():
     running = True
     mst_edges = set()
 
+    redraw_graph()
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
