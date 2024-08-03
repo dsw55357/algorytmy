@@ -139,7 +139,7 @@ def add_edge(u, v):
     edges[(v, u)] = weight  # Graf nieskierowany
 
 # Aktualizowanie pozycji wierzchołków w sposób uporządkowany za każdym razem, gdy dodawany jest nowy wierzchołek. Graf zostanie przerysowany w uporządkowany sposób, a wierzchołki będą rozmieszczane równomiernie na okręgu w centrum okna.
-def redraw_graph():
+def redraw_graph2():
     n = len(vertices)
     if n == 0:
         return
@@ -153,6 +153,23 @@ def redraw_graph():
         x = int(center_x + radius * math.cos(angle))
         y = int(center_y + radius * math.sin(angle))
         vertices[vertex] = (x, y)
+
+def redraw_graph():
+    n = len(vertices)
+    if n == 0:
+        return
+
+    side = int(math.ceil(math.sqrt(n)))
+    gap_x = WIDTH // (side + 1)
+    gap_y = HEIGHT // (side + 1)
+
+    for i, vertex in enumerate(vertices):
+        row = i // side
+        col = i % side
+        x = (col + 1) * gap_x
+        y = (row + 1) * gap_y
+        vertices[vertex] = (x, y)
+
 
 # Funkcja rysująca menu
 def draw_menu():

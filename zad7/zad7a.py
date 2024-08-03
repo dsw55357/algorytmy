@@ -94,7 +94,7 @@ class DisjointSet:
 
 
 # Funkcja rysująca graf
-def draw_graph(vertices, edges, mst_edges):
+def draw_graph2(vertices, edges, mst_edges):
     WIN.fill(GREY)
     
     for edge in edges:
@@ -105,7 +105,22 @@ def draw_graph(vertices, edges, mst_edges):
     for v in vertices:
         pygame.draw.circle(WIN, RED, vertices[v], 5)
     
-    # pygame.display.update()
+def redraw_graph():
+    n = len(vertices)
+    if n == 0:
+        return
+
+    side = int(math.ceil(math.sqrt(n)))
+    gap_x = WIDTH // (side + 1)
+    gap_y = HEIGHT // (side + 1)
+
+    for i, vertex in enumerate(vertices):
+        row = i // side
+        col = i % side
+        x = (col + 1) * gap_x
+        y = (row + 1) * gap_y
+        vertices[vertex] = (x, y)
+
 
 # Algorytm Kruskala
 def kruskal(vertices, edges):
