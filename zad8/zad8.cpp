@@ -18,7 +18,6 @@ using namespace std;
 
 bool test {false};
 
-
 struct sNode
 {
     bool bObstacle = false;			// Is the node an obstruction?
