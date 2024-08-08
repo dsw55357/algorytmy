@@ -99,6 +99,15 @@ public:
 				*/
 			}
 
+
+		// Generowanie przeszkód z gęstością 30% (możesz dostosować tę wartość)
+		// fObstacleDensity:
+		// Jest to parametr funkcji, który określa procentową gęstość przeszkód na mapie. 
+		// Na przykład, jeśli fObstacleDensity wynosi 0.3f, to około 30% węzłów będzie przeszkodami.		
+		// Inicjalizacja generatora liczb losowych:
+		// że za każdym razem, gdy uruchomisz program, przeszkody będą rozmieszczane w sposób losowy.
+    	GenerateRandomObstacles(0.3f);
+
 		// Manually positio the start and end markers so they are not nullptr
 		nodeStart = &nodes[(nMapHeight / 2) * nMapWidth + 1];
 		nodeEnd = &nodes[(nMapHeight / 2) * nMapWidth + nMapWidth-2];
@@ -106,6 +115,36 @@ public:
 		return true;
 	}
 
+	// GenerateRandomObstacles(float fObstacleDensity):
+	// Funkcja iteruje przez wszystkie węzły na mapie.
+	// Dla każdego węzła losuje liczbę z przedziału od 0.0 do 1.0.
+	// Jeśli ta liczba jest mniejsza niż fObstacleDensity, węzeł zostaje oznaczony jako przeszkoda (bObstacle = true).
+	// W przeciwnym razie węzeł pozostaje wolny od przeszkód (bObstacle = false).
+	void GenerateRandomObstacles(float fObstacleDensity)
+	{
+		// Ustawienie ziarenka dla generatora liczb 
+		// Inicjalizacja generatora liczb losowych:
+		// Użycie srand(time(nullptr)) zapewnia, że za każdym razem, gdy uruchomisz program, przeszkody będą rozmieszczane w sposób losowy.
+		srand(time(nullptr));
+
+		// Iterujemy po wszystkich węzłach na mapie
+		for (int x = 0; x < nMapWidth; x++)
+		{
+			for (int y = 0; y < nMapHeight; y++)
+			{
+				// Losujemy liczbę z przedziału 0.0 - 1.0 i sprawdzamy, czy jest mniejsza niż podany wskaźnik przeszkód
+				if ((float)rand() / RAND_MAX < fObstacleDensity)
+				{
+					// Ustawiamy dany węzeł jako przeszkodę
+					nodes[y * nMapWidth + x].bObstacle = true;
+				} else
+				{
+					// Jeśli nie, to upewniamy się, że węzeł nie jest przeszkodą
+					nodes[y * nMapWidth + x].bObstacle = false;
+				}
+			}
+		}
+	}
 
 	bool Solve_AStar()
 	{
@@ -195,6 +234,7 @@ public:
 	}
 
 
+
 	bool OnUserUpdate(float fElapsedTime) override
 	{
 		// Clear Screen
@@ -254,8 +294,8 @@ public:
                     nNodeSize-nNodeBorder*2, nNodeSize-nNodeBorder*2,
 					nodes[y * nMapWidth + x].bObstacle ? olc::GREY : olc::BLUE);
 
-                DrawLine(x*nNodeSize + nNodeSize / 2, y*nNodeSize + nNodeSize / 2, x*nNodeSize + nNodeSize, y*nNodeSize + nNodeSize,
-                	olc::YELLOW);
+                // DrawLine(x*nNodeSize + nNodeSize / 2, y*nNodeSize + nNodeSize / 2, x*nNodeSize + nNodeSize, y*nNodeSize + nNodeSize,
+                	// olc::YELLOW);
 
 				// FillCircle(x*nNodeSize + nNodeSize / 2, y*nNodeSize + nNodeSize / 2, 2, olc::GREEN);
             }     
@@ -275,7 +315,7 @@ public:
 			sNode *p = nodeEnd;
 			while (p->parent != nullptr)
 			{
-				std::cout << "while (p->parent != nullptr)" << std::endl;
+				// std::cout << "while (p->parent != nullptr)" << std::endl;
 				FillCircle(p->x*nNodeSize + nNodeSize / 2, p->y*nNodeSize + nNodeSize / 2, 2, olc::GREEN);
 
 				DrawLine(p->x*nNodeSize + nNodeSize / 2, p->y*nNodeSize + nNodeSize / 2,
