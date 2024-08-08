@@ -1,6 +1,7 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+#include <iostream>
 #include <cmath>
 #include <vector>
 #include <string>
@@ -57,8 +58,22 @@ struct mesh
                 int f[3];
                 s >> junk >> f[0] >> f[1] >> f[2];
                 tris.push_back({ verts[f[0] - 1], verts[f[1] - 1], verts[f[2] - 1] });
+
+                std::cout << "{{{" << tris[tris.size()-1].p[0].x << ", "<< tris[tris.size()-1].p[0].y << ", "<< tris[tris.size()-1].p[0].z << "}, {" << tris[tris.size()-1].p[1].x << ", "<< tris[tris.size()-1].p[1].y << ", "<< tris[tris.size()-1].p[1].z << "}, {" << tris[tris.size()-1].p[2].x << ", " << tris[tris.size()-1].p[2].y << ", " << tris[tris.size()-1].p[2].z << "}}}" << std::endl;
             }
         }
+
+        // if (tris.size()>0) {
+        //     // Dodanie przesunięcia do wszystkich wartości głębokości
+        //     for (auto& tri : tris) {
+        //         for (int i = 0; i < 3; i++) {
+        //             tri.p[i].z += 2.0;
+        //         }
+        //     }            
+        // }
+
+        std::cout << tris.size() << std::endl;
+
         return true;
     }
 };

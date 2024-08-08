@@ -100,7 +100,31 @@ Dla prostoty i łatwości implementacji, wykonamy sekwencyjne testowanie algoryt
 */
 
 
+/*
 
+Sortowanie pozycyjne to algorytm sortowania, który sortuje liczby (lub inne dane) na podstawie ich reprezentacji cyfrowej. Algorytm działa poprzez sortowanie liczb w kilku przejściach, każde z nich opiera się na jednej pozycji cyfr, zaczynając od najmniej znaczącej cyfry do najbardziej znaczącej (lub odwrotnie, w zależności od implementacji).
+
+
+Kluczowe cechy sortowania pozycyjnego:
+- Stabilność: Sortowanie pozycyjne jest algorytmem stabilnym, co oznacza, że zachowuje względny porządek równych elementów.
+- Nieporównawcze sortowanie: Radix Sort nie opiera się na porównaniach elementów, co różni go od innych popularnych algorytmów sortujących, takich jak QuickSort czy MergeSort.
+- Złożoność czasowa: Dla n elementów, z których każdy ma k cyfr, złożoność czasowa sortowania pozycyjnego wynosi O(nk). W praktyce, k jest często małe w porównaniu do n, co sprawia, że algorytm może być bardzo efektywny.
+
+Jak działa sortowanie pozycyjne?
+- Wybór bazy: Wybierz bazę (np. 10 dla systemu dziesiętnego), która będzie używana do sortowania cyfr na poszczególnych pozycjach.
+- Sortowanie na podstawie pozycji: Iteruj przez wszystkie pozycje cyfr (np. jedności, dziesiątki, setki), i sortuj elementy na podstawie wartości cyfr na bieżącej pozycji. Do sortowania na każdej pozycji zazwyczaj używa się stabilnego algorytmu sortowania, takiego jak sortowanie przez zliczanie.
+
+Zastosowania
+Sortowanie pozycyjne jest szczególnie efektywne dla danych, które można reprezentować jako liczby całkowite lub inne typy danych o stałej długości. Algorytm jest stosowany w systemach operacyjnych, bazach danych i innych aplikacjach, gdzie potrzebne jest szybkie sortowanie dużych ilości danych liczbowych.
+
+*/
+
+void RadixSort(std::vector<triangle>& triangles);
+
+
+// Funkcja sortująca kubełkowo trójkąty
+
+void bucketSortTriangles(std::vector<triangle>& triangles);
 
 
 #endif // ALGORYTMY_SORTOWANIA_H

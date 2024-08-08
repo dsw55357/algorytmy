@@ -27,6 +27,10 @@ void SortowaniePrzezWstawianie(std::vector<triangle>& triangles)
 
 void SortowanieBabelkowe(std::vector<triangle>& triangles)
 {
+    // for (const auto& triangle : triangles) {
+    //     std::cout << " trojkat " << ", z1:" << triangle.p[0].z << ", z2:" << triangle.p[1].z << ", z3:" << triangle.p[2].z << std::endl;
+    // }
+
     bool swapped;
     for (size_t i = 0; i < triangles.size() - 1; ++i)
     {
@@ -251,7 +255,7 @@ void CountingSort(std::vector<triangle>& triangles) {
     triangles = output;
     */
 
-    if (triangles.empty()) return;
+     if (triangles.empty()) return;
 
     // Znajdź minimalną i maksymalną wartość głębokości
     float minDepth = std::numeric_limits<float>::max();
@@ -264,12 +268,13 @@ void CountingSort(std::vector<triangle>& triangles) {
     }
 
     // Przeskalowanie głębokości do zakresu całkowitego
-    int range = static_cast<int>(std::ceil(maxDepth - minDepth)) + 1;
+    int scaleFactor = 1000;  // Skalowanie wartości głębokości
+    int range = static_cast<int>(std::ceil(maxDepth * scaleFactor - minDepth * scaleFactor)) + 1;
     std::vector<int> count(range, 0);
 
     // Zliczanie wystąpień
     for (const auto& tri : triangles) {
-        int depthIndex = static_cast<int>(std::floor(calculateAverageDepth(tri) - minDepth));
+        int depthIndex = static_cast<int>(std::floor(calculateAverageDepth(tri) * scaleFactor - minDepth * scaleFactor));
         count[depthIndex]++;
     }
 
@@ -281,7 +286,7 @@ void CountingSort(std::vector<triangle>& triangles) {
     // Tworzenie tablicy wyjściowej w porządku malejącym
     std::vector<triangle> output(triangles.size());
     for (const auto& tri : triangles) {
-        int depthIndex = static_cast<int>(std::floor(calculateAverageDepth(tri) - minDepth));
+        int depthIndex = static_cast<int>(std::floor(calculateAverageDepth(tri) * scaleFactor - minDepth * scaleFactor));
         output[count[depthIndex] - 1] = tri;
         count[depthIndex]--;
     }
@@ -289,6 +294,9 @@ void CountingSort(std::vector<triangle>& triangles) {
     // Przepisanie wyników do tablicy wejściowej
     triangles = output;
 
+    // for (auto& tri : triangles) {
+    //     std::cout << "0: " <<tri.p[0].z << ", 1: " <<tri.p[1].z << ", 2: " <<tri.p[2].z << std::endl;
+    // }
 /*
 
 Sortowanie przez zliczanie jest generalnie używane do sortowania w porządku rosnącym, ale możemy łatwo dostosować algorytm, aby sortował w porządku malejącym. Wystarczy zmienić sposób wstawiania elementów do tablicy wyjściowej.
@@ -304,8 +312,254 @@ Kumulacja zliczeń: Tablica zliczeń jest modyfikowana, aby zawierała skumulowa
 Tworzenie tablicy wyjściowej w porządku malejącym: Trójkąty są wstawiane do tablicy wyjściowej od końca, aby uzyskać porządek malejący.
 Przepisanie wyników: Tablica wynikowa jest kopiowana z powrotem do tablicy wejściowej.
 
+*/
+}
 
+/*
+
+Sortowanie pozycyjne
 
 */
+
+// Pomocnicza funkcja do znajdowania maksymalnej wartości w wektorze
+int getMaxDepth(const std::vector<triangle>& triangles) {
+    float maxDepth = std::numeric_limits<float>::lowest();
+    for (const auto& tri : triangles) {
+        float depth = calculateAverageDepth(tri);
+        if (depth > maxDepth) {
+            maxDepth = depth;
+        }
+    }
+    return static_cast<int>(maxDepth * 1000); // Przeskalowanie głębokości do liczb całkowitych
+}
+
+// Pomocnicza funkcja do znajdowania minimalnej wartości w wektorze
+float getMinDepth(const std::vector<triangle>& triangles) {
+    float minDepth = std::numeric_limits<float>::max();
+    for (const auto& tri : triangles) {
+        float depth = calculateAverageDepth(tri);
+        if (depth < minDepth) {
+            minDepth = depth;
+        }
+    }
+    return minDepth;
+}
+
+// Pomocnicza funkcja do sortowania przez zliczanie na podstawie pozycji cyfr
+void countingSortTriangles2(std::vector<triangle>& triangles, int exp) {
+    int n = triangles.size();
+    std::vector<triangle> output(n);
+    int count[10] = {0};
+
+    // Zliczanie wystąpień cyfr
+    for (int i = 0; i < n; i++) {
+        int depth = static_cast<int>(calculateAverageDepth(triangles[i]) * 1000); // Przeskalowanie głębokości do liczb całkowitych
+        // count[(depth / exp) % 10]++;
+        int index = (depth / exp) % 10;
+        if (index < 0 || index >= 10) {
+            std::cerr << "Błąd: indeks " << index << " jest poza zakresem dla depth " << depth << " i exp " << exp << std::endl;
+            continue;
+        }
+        count[index]++;
+    }
+
+    // Kumulacja zliczeń
+    for (int i = 1; i < 10; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // Tworzenie tablicy wyjściowej
+    for (int i = n - 1; i >= 0; i--) {
+        int depth = static_cast<int>(calculateAverageDepth(triangles[i]) * 1000); // Przeskalowanie głębokości do liczb całkowitych
+        // output[count[(depth / exp) % 10] - 1] = triangles[i];
+        // count[(depth / exp) % 10]--;
+        int index = (depth / exp) % 10;
+        if (index < 0 || index >= 10) {
+            std::cerr << "Błąd: indeks " << index << " jest poza zakresem dla depth " << depth << " i exp " << exp << std::endl;
+            continue;
+        }
+        output[count[index] - 1] = triangles[i];
+        count[index]--;
+    }
+
+    // std::reverse(output.begin(), output.end());
+
+    // Przepisanie wyników do tablicy wejściowej
+    for (int i = 0; i < n; i++) {
+        triangles[i] = output[i];
+    }
+}
+
+
+// Pomocnicza funkcja do sortowania przez zliczanie na podstawie pozycji cyfr
+void countingSortTriangles(std::vector<triangle>& triangles, int exp, float minDepth) {
+    int n = triangles.size();
+    std::vector<triangle> output(n);
+    int count[10] = {0};
+
+    // Zliczanie wystąpień cyfr
+    for (int i = 0; i < n; i++) {
+        int depth = static_cast<int>((calculateAverageDepth(triangles[i]) - minDepth) * 1000); // Przeskalowanie głębokości do liczb całkowitych
+        count[(depth / exp) % 10]++;
+    }
+
+    // Kumulacja zliczeń
+    for (int i = 1; i < 10; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // Tworzenie tablicy wyjściowej
+    for (int i = n - 1; i >= 0; i--) {
+        int depth = static_cast<int>((calculateAverageDepth(triangles[i]) - minDepth) * 1000); // Przeskalowanie głębokości do liczb całkowitych
+        output[count[(depth / exp) % 10] - 1] = triangles[i];
+        count[(depth / exp) % 10]--;
+    }
+
+    // std::reverse(output.begin(), output.end());
+
+    // Przepisanie wyników do tablicy wejściowej
+    for (int i = 0; i < n; i++) {
+        triangles[i] = output[i];
+    }
+}
+
+void RadixSort(std::vector<triangle>& triangles) {
+    // int m = getMaxDepth(triangles);
+    float minDepth = getMinDepth(triangles);
+    float maxDepth = getMaxDepth(triangles);
+    float offset = minDepth < 0 ? -minDepth : 0;
+    int m = static_cast<int>((maxDepth - minDepth) * 1000);
+
+    // Dodanie przesunięcia do wszystkich wartości głębokości
+    for (auto& tri : triangles) {
+        for (int i = 0; i < 3; i++) {
+            tri.p[i].z += offset;
+        }
+    }
+
+    for (int exp = 1; m / exp > 0; exp *= 10) {
+        // countingSortTriangles(triangles, exp);
+        countingSortTriangles(triangles, exp, minDepth);
+    }
+
+}
+
+/*
+
+!! Sortowanie przez zliczanie (i sortowanie pozycyjne) jest głównie zaprojektowane do pracy z liczbami nieujemnymi.  !!
+
+ sortowanie pozycyjne (Radix Sort) często korzysta z sortowania przez zliczanie (Counting Sort) jako kroku pomocniczego do sortowania liczb na poszczególnych pozycjach cyfry. Jest to dlatego, że sortowanie przez zliczanie jest stabilne i działa w czasie liniowym, co sprawia, że jest idealne do sortowania cyfr na poszczególnych pozycjach bez zmiany kolejności elementów o tych samych wartościach cyfr.
+
+Dlaczego sortowanie przez zliczanie jest używane w Radix Sort?
+- Stabilność: Sortowanie przez zliczanie jest stabilne, co oznacza, że nie zmienia względnego porządku elementów o tej samej wartości. To jest kluczowe w Radix Sort, ponieważ musimy zachować porządek sortowania według mniej znaczących cyfr, kiedy sortujemy według bardziej znaczących cyfr.
+- Złożoność czasowa: Sortowanie przez zliczanie działa w czasie liniowym O(n + k), gdzie n to liczba elementów, a k to zakres wartości. W Radix Sort sortujemy cyfry, więc k jest stałe i małe (np. 10 dla systemu dziesiętnego), co sprawia, że jest bardzo efektywne.
+ - Bezpośrednie zastosowanie: Można bezpośrednio użyć sortowania przez zliczanie do sortowania cyfr na każdej pozycji, co upraszcza implementację Radix Sort.
+
+*/
+
+// Funkcja sortująca kubełkowo trójkąty
+// void bucketSortTriangles(std::vector<triangle>& triangles) {
+//     int n = triangles.size();
+//     if (n <= 0)
+//         return;
+
+//     // Znajdź minimalną i maksymalną wartość głębokości
+//     float minDepth = std::numeric_limits<float>::max();
+//     float maxDepth = std::numeric_limits<float>::lowest();
+    
+//     for (const auto& tri : triangles) {
+//         float depth = calculateAverageDepth(tri);
+//         if (depth < minDepth) minDepth = depth;
+//         if (depth > maxDepth) maxDepth = depth;
+//     }
+
+//     // Przeskalowanie głębokości
+//     minDepth *= 1000;
+//     maxDepth *= 1000;
+    
+//     // Tworzymy n pustych kubełków
+//     std::vector<std::vector<triangle>> buckets(n);
+
+//     // Umieszczamy trójkąty w odpowiednich kubełkach
+//     for (const auto& tri : triangles) {
+//         int bucketIndex = static_cast<int>(n * (calculateAverageDepth(tri) * 1000 - minDepth) / (maxDepth - minDepth + 1));
+//         buckets[bucketIndex].push_back(tri);
+//     }
+
+//     // Sortujemy każdy kubełek
+//     for (auto& bucket : buckets) {
+//         std::sort(bucket.begin(), bucket.end(), [](const triangle& t1, const triangle& t2) {
+//             return calculateAverageDepth(t1) > calculateAverageDepth(t2);
+//         });
+//     }
+
+//     // Scalanie wszystkich kubełków do tablicy wynikowej
+//     int index = 0;
+//     for (const auto& bucket : buckets) {
+//         for (const auto& tri : bucket) {
+//             triangles[index++] = tri;
+//         }
+//     }
+
+//     std::sort(triangles.begin(), triangles.end(), [](const triangle& t1, const triangle& t2) {
+//             return calculateAverageDepth(t1) > calculateAverageDepth(t2);
+//         });
+// }
+
+void bucketSortTriangles(std::vector<triangle>& triangles) {
+
+    int n = triangles.size();
+    if (n <= 0)
+        return;
+
+    // for (const auto& triangle : triangles) {
+    //     std::cout << " trojkat " << ", z1:" << triangle.p[0].z << ", z2:" << triangle.p[1].z << ", z3:" << triangle.p[2].z << std::endl;
+    // }
+
+    // Znajdź minimalną i maksymalną wartość głębokości
+    float minDepth = std::numeric_limits<float>::max();
+    float maxDepth = std::numeric_limits<float>::lowest();
+    
+    for (const auto& tri : triangles) {
+        float depth = calculateAverageDepth(tri);
+        if (depth < minDepth) minDepth = depth;
+        if (depth > maxDepth) maxDepth = depth;
+        std::cout << " trojkat >> " << ", minDepth:" << minDepth << ", maxDepth:" << maxDepth << std::endl;
+        std::cout << " trojkat >> " << ", z1:" << tri.p[0].z << ", z2:" << tri.p[1].z << ", z3:" << tri.p[2].z << std::endl;
+    }
+
+    // Przeskalowanie głębokości do zakresu całkowitego
+    minDepth *= 100000;
+    maxDepth *= 100000;
+    
+    int range = static_cast<int>(std::ceil(maxDepth - minDepth)) + 1;
+    // std::cout << "Range : " << range << std::endl;
+    std::vector<int> count(range, 0);
+
+    // Zliczanie wystąpień
+    for (const auto& tri : triangles) {
+        int depthIndex = static_cast<int>(std::floor(calculateAverageDepth(tri) * 100000 - minDepth));
+        count[depthIndex]++;
+    }
+
+    // Kumulacja zliczeń
+    for (size_t i = 1; i < count.size(); ++i) {
+        count[i] += count[i - 1];
+    }
+
+    // Tworzenie tablicy wyjściowej w porządku malejącym
+    std::vector<triangle> output(triangles.size());
+    for (int i = n - 1; i >= 0; --i) {
+        int depthIndex = static_cast<int>(std::floor(calculateAverageDepth(triangles[i]) * 100000 - minDepth));
+        output[--count[depthIndex]] = triangles[i];
+        // std::cout << count[depthIndex] << " trojkat " << calculateAverageDepth(triangles[i]) << ", z1:" << triangles[i].p[0].z << ", z2:" << triangles[i].p[1].z << ", z3:" << triangles[i].p[2].z << std::endl;
+    }
+
+    // Przepisanie wyników do tablicy wejściowej
+    // std::cout << count.size() << std::endl;
+    //triangles = output;
+    triangles.clear();
+    std::copy(output.begin(), output.end(),
+              std::back_inserter(triangles));
 
 }

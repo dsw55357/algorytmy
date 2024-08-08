@@ -20,6 +20,9 @@ dostępnego na github: https://github.com/OneLoneCoder/Javidx9/tree/master/Conso
 
 using namespace std;
 
+bool test {false};
+bool test2 {false};
+
 enum class Mode {
     MENU,
 	ALGORYTM_A, // Sortowanie bąbelkowe
@@ -28,6 +31,8 @@ enum class Mode {
 	ALGORYTM_D, // Sortowanie Quicksort
 	ALGORYTM_E, // Sortowanie przez scalanie
 	ALGORYTM_F, // Sortowanie przez zliczanie
+	ALGORYTM_G, // Sortowanie pozycyjne
+	ALGORYTM_H, // Sortowanie kubełkowe
 	ALGORYTM_TEST // Testowania wydajnosci algorytmów
 };
 
@@ -62,20 +67,6 @@ public:
 		// Projection Matrix
 		matProj = Matrix_MakeProjection(90.0f, (float)ScreenHeight() / (float)ScreenWidth(), 0.1f, 1000.0f);
 
- 		// names.push_back("Sortowanie babelkowe");
-		// durations.push_back(100.0);
-		// names.push_back("Sortowanie przez wstawianie");
-		// durations.push_back(70.0);
-		// names.push_back("Sortowanie przez kopcowanie");
-		// durations.push_back(450.0);
-		// names.push_back("Quicksort");
-		// durations.push_back(20.0);
-		// names.push_back("Sortowanie przez scalanie");
-		// durations.push_back(350.0);
-
-		// names.push_back("std::sort");
-		// durations.push_back(10.0);
-
 		return true;
 	}
 
@@ -92,7 +83,8 @@ public:
 			DrawString(15, 60, "4. Quicksort", olc::GREEN);
 			DrawString(15, 75, "5. Sortowanie przez scalanie", olc::GREEN);
 			DrawString(15, 90, "6. Sortowanie przez zliczanie", olc::GREEN);
-
+			DrawString(15, 105, "7. Sortowanie pozycyjne", olc::GREEN);
+			DrawString(15, 120, "8. Sortowanie kubelkowe", olc::GREEN);
 
 			DrawString(15, 155, "T - Testowania wydajnosci", olc::CYAN);
             DrawString(15, 170, "Q - exit", olc::GREEN);
@@ -109,6 +101,10 @@ public:
                 mode = Mode::ALGORYTM_E;
             } else if (GetKey(olc::Key::K6).bPressed) {
                 mode = Mode::ALGORYTM_F;
+            } else if (GetKey(olc::Key::K7).bPressed) {
+                mode = Mode::ALGORYTM_G;
+            } else if (GetKey(olc::Key::K8).bPressed) {
+                mode = Mode::ALGORYTM_H;
             }
 			
 			
@@ -150,6 +146,7 @@ public:
 					{"Quicksort", testQuickSort},
 					{"Sortowanie przez scalanie", testMergeSort},
 					{"Sortowanie przez zliczanie", testCountingSort},
+					{"Sortowanie pozycyjne", testRadixSort},
 					{"std::sort", testStdSort}
 				};
 
@@ -157,6 +154,7 @@ public:
 					durations.push_back(testSortingAlgorithm(algorithm.second, triangles));
 					names.push_back(algorithm.first);
 				}
+				
 			} else if (GetKey(olc::Key::K2).bReleased) {
 				const int numTriangles = 5000; // 
 				durations.clear();
@@ -171,12 +169,15 @@ public:
 					{"Quicksort", testQuickSort},
 					{"Sortowanie przez scalanie", testMergeSort},
 					{"Sortowanie przez zliczanie", testCountingSort},
+					{"Sortowanie pozycyjne", testRadixSort},
 					{"std::sort", testStdSort}
 				};
 
 				for (auto& algorithm : sortingAlgorithms) {
-					durations.push_back(testSortingAlgorithm(algorithm.second, triangles));
-					names.push_back(algorithm.first);
+					if (algorithm.first.find("Sortowanie przez zliczanie") != std::string::npos) {
+						durations.push_back(testSortingAlgorithm(algorithm.second, triangles));
+						names.push_back(algorithm.first);
+					}
 				}				
 			}
 
@@ -198,6 +199,7 @@ public:
 					std::string label = std::to_string(i + 1) + "."  + names[i];
 					// Sformatowanie wartości czasowej do jednego miejsca po przecinku
             		std::ostringstream oss;
+					// mierzymy czas wykonania sortowania w mikrosekundach, przelicza go na milisekundy i zwraca tę wartość.
 					auto duration_ms = durations[i] / 1000.0;
             		oss << std::fixed << std::setprecision(1) << duration_ms;
 
@@ -227,17 +229,23 @@ public:
 
 		// Set up "World Tranmsform" though not updating theta 
 		// makes this a bit redundant
-		mat4x4 matRotZ, matRotX;
-		fTheta += 1.0f * fElapsedTime; // Uncomment to spin me right round baby right round
-		matRotZ = Matrix_MakeRotationZ(fTheta * 0.5f);
-		matRotX = Matrix_MakeRotationX(fTheta);
+		mat4x4 matRotY, matRotX;
+
+		if (GetKey(olc::Key::SPACE).bReleased) {
+			fTheta += 1.0f * fElapsedTime; // Uncomment to spin me right round baby right round
+
+			test = true;
+		}
+
+		matRotY = Matrix_MakeRotationY(fTheta * 0.5f);
+		matRotX = Matrix_MakeRotationX(0.0); //			fTheta);
 
 		mat4x4 matTrans;
 		matTrans = Matrix_MakeTranslation(0.0f, 0.0f, 5.0f);
 
 		mat4x4 matWorld;
 		matWorld = Matrix_MakeIdentity();	// Form World Matrix
-		matWorld = Matrix_MultiplyMatrix(matRotZ, matRotX); // Transform by rotation
+		matWorld = Matrix_MultiplyMatrix(matRotY, matRotX); // Transform by rotation
 		matWorld = Matrix_MultiplyMatrix(matWorld, matTrans); // Transform by translation
 
 		// Create "Point At" Matrix for camera
@@ -374,12 +382,19 @@ public:
 			using namespace std::chrono;
 			const auto start{std::chrono::steady_clock::now()};
 
-			DrawString(15, 30, "Sortowanie babelkowe", olc::YELLOW);
+			DrawString(15, 30, "Sortowanie babelkowe", olc::YELLOW);		
 			SortowanieBabelkowe(vecTrianglesToRaster);
+			if (test2) {
+				//SortowanieBabelkowe(vecTrianglesToRaster);
+				std::cout << "......" << std::endl;
+				for (const auto& triangle : vecTrianglesToRaster) {
+					std::cout << " trojkat " << ", z1:" << triangle.p[0].z << ", z2:" << triangle.p[1].z << ", z3:" << triangle.p[2].z << std::endl;
+				}
+				test2 = false;
+			}
 
 			const auto end{std::chrono::steady_clock::now()};
 			auto duration = duration_cast<microseconds>(end - start).count();
-			// durations.push_back(duration);
 
 			performanceMessage = "Czas: " + std::to_string(duration) + " us";
 			DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
@@ -448,7 +463,38 @@ public:
 			
 			performanceMessage = "Czas: " + std::to_string(duration) + " us";
 			DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
+		} else if (mode == Mode::ALGORYTM_G) { // Sortowanie pozycyjne
+			using namespace std::chrono;
+			const auto start{std::chrono::steady_clock::now()};
+
+			DrawString(15, 45, "Sortowanie pozycyjne", olc::YELLOW);
+			RadixSort(vecTrianglesToRaster);
+			
+			const auto end{std::chrono::steady_clock::now()};
+			auto duration = duration_cast<microseconds>(end - start).count();
+			
+			performanceMessage = "Czas: " + std::to_string(duration) + " us";
+			DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
+		} else if (mode == Mode::ALGORYTM_H) { // Sortowanie kubełkowe
+			using namespace std::chrono;
+			const auto start{std::chrono::steady_clock::now()};
+
+			DrawString(15, 45, "Sortowanie kubelkowe", olc::YELLOW);
+			//bucketSortTriangles(vecTrianglesToRaster);
+
+			if (test) {
+				bucketSortTriangles(vecTrianglesToRaster);
+				test = false;
+			}
+			const auto end{std::chrono::steady_clock::now()};
+			auto duration = duration_cast<microseconds>(end - start).count();
+			
+			performanceMessage = "Czas: " + std::to_string(duration) + " us";
+			DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
 		}
+
+
+		
 
 		// Loop through all transformed, viewed, projected, and sorted triangles
 		for (auto &triToRaster : vecTrianglesToRaster)

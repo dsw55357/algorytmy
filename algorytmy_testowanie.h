@@ -8,6 +8,15 @@
 #include "algorytmy_sortowania.h"
 #include "olcPixelGameEngine.h"
 
+void test_depth(std::vector<triangle>& tri, std::string method) {
+    int step = tri.size()/25;
+    // for (const auto& tri : triangles) {
+    for( int i=0; i < tri.size(); i+=step) {
+        float depth = (tri[i].p[0].z + tri[i].p[1].z + tri[i].p[2].z) / 3.0f;
+        std::cout << method << ": depth: " << depth << std::endl;
+    }
+}
+
 void generateRandomTriangles(std::vector<triangle>& triangles, int count) {
     for (int i = 0; i < count; ++i) {
         triangle t;
@@ -56,18 +65,27 @@ void testHeapSort(std::vector<triangle>& triangles) {
 void testQuickSort(std::vector<triangle>& triangles) {
 
     QuickSort(triangles, 0, triangles.size() - 1);
+    test_depth(triangles, "Sortowanie QuickSort");
 }
 
 
 void testMergeSort(std::vector<triangle>& triangles) {
 
     MergeSort(triangles, 0, triangles.size() - 1);
+    test_depth(triangles, "Sortowanie przez scalanie");
 }
 
 void testCountingSort(std::vector<triangle>& triangles) {
 
     CountingSort(triangles);
+    test_depth(triangles, "Sortowanie przez zliczanie");
 }
+
+void testRadixSort(std::vector<triangle>& triangles) {
+    RadixSort(triangles);
+    test_depth(triangles, "Sortowanie pozycyjne");
+}
+
 
 void testStdSort(std::vector<triangle>& triangles) {
 
