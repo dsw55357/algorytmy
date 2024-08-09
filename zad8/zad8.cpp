@@ -412,6 +412,27 @@ void PlaceTetrimino(int startX, int startY, Tetrimino& tetrimino)
     }
 }
 
+bool CanPlaceTetrimino(int startX, int startY, Tetrimino& tetrimino)
+{
+    for (auto& coord : tetrimino.shape)
+    {
+        int x = startX + coord.first;
+        int y = startY + coord.second;
+
+        // Sprawdzenie, czy węzeł jest w granicach mapy
+        if (x < 0 || x >= nMapWidth || y < 0 || y >= nMapHeight)
+            return false;
+
+        // Sprawdzenie, czy węzeł nie jest już przeszkodą
+        if (nodes[y * nMapWidth + x].bObstacle)
+            return false;
+    }
+
+    return true;
+}
+
+// GenerateRandomTetrisObstacles: Ta funkcja generuje losowo przeszkody w kształcie tetrimino. Przed umieszczeniem kształtu próbuje znaleźć odpowiednie miejsce bez kolizji, podejmując maksymalnie 10 prób.
+
 void GenerateRandomTetrisObstacles(float fObstacleDensity)
 {
     srand(time(nullptr)); // Inicjalizacja generatora liczb losowych
@@ -436,7 +457,22 @@ void GenerateRandomTetrisObstacles(float fObstacleDensity)
             {
                 Tetrimino& tetrimino = tetriminos[rand() % tetriminos.size()];
 				// Funkcja ta umieszcza tetrimino na mapie, ustawiając odpowiednie węzły jako przeszkody.
-                PlaceTetrimino(x, y, tetrimino);
+                //PlaceTetrimino(x, y, tetrimino);
+
+               	// Spróbuj znaleźć odpowiednie miejsce do umieszczenia tetrimino
+                for (int attempt = 0; attempt < 10; ++attempt) // Próbujemy maksymalnie 10 razy znaleźć odpowiednie miejsce
+                {
+                    int randomX = rand() % nMapWidth;
+                    int randomY = rand() % nMapHeight;
+
+					// CanPlaceTetrimino: Ta funkcja sprawdza, czy tetrimino może zostać umieszczone na danej pozycji (startX, startY) bez kolizji z istniejącymi przeszkodami i czy mieści się w granicach mapy.
+                    if (CanPlaceTetrimino(randomX, randomY, tetrimino))
+                    {
+						// PlaceTetrimino: Funkcja ta faktycznie umieszcza tetrimino na mapie, ustawiając odpowiednie węzły jako przeszkody, tylko jeśli CanPlaceTetrimino zwróci true.
+                        PlaceTetrimino(randomX, randomY, tetrimino);
+                        break;
+                    }
+                }
             }
         }
     }
