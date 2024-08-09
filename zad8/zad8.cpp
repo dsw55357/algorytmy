@@ -380,6 +380,8 @@ bool Solve_Dijkstra()
 }
 
 
+
+// Definjujemy przeszkody które mają kształty przypominające element te z gry Tetris
 struct Tetrimino
 {
     vector<pair<int, int>> shape; // Zawiera pary przesunięć (dx, dy) od punktu startowego
@@ -433,6 +435,7 @@ void GenerateRandomTetrisObstacles(float fObstacleDensity)
             if ((float)rand() / RAND_MAX < fObstacleDensity)
             {
                 Tetrimino& tetrimino = tetriminos[rand() % tetriminos.size()];
+				// Funkcja ta umieszcza tetrimino na mapie, ustawiając odpowiednie węzły jako przeszkody.
                 PlaceTetrimino(x, y, tetrimino);
             }
         }
@@ -459,7 +462,9 @@ void GenerateRandomTetrisObstacles(float fObstacleDensity)
 		if (GetKey(olc::Key::SPACE).bReleased) {
 			test = true;
 			// GenerateRandomObstacles(0.35f);
+			// losowo umieszcza kształty tetrimino na mapie na podstawie wskaźnika gęstości przeszkód.
 			GenerateRandomTetrisObstacles(0.05f);
+			// 
 			RandomizeStartAndEnd();
 			Solve_Dijkstra();
 			//Solve_AStar();
