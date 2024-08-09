@@ -109,11 +109,14 @@ public:
     	//GenerateRandomObstacles(0.35f);
 
 		// Manually positio the start and end markers so they are not nullptr
-		nodeStart = &nodes[(nMapHeight / 2) * nMapWidth + 1];
-		nodeEnd = &nodes[(nMapHeight / 2) * nMapWidth + nMapWidth-2];
+		// nodeStart = &nodes[(nMapHeight / 2) * nMapWidth + 1];
+		// nodeEnd = &nodes[(nMapHeight / 2) * nMapWidth + nMapWidth-2];
 
 		// Ustawienie losowych punktów startu i końca
 	    //RandomizeStartAndEnd(); 
+		GenerateRandomTetrisObstacles(0.05f);
+		RandomizeStartAndEnd();
+		Solve_Dijkstra();
 
 		return true;
 	}
