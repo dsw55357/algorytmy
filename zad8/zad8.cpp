@@ -106,13 +106,41 @@ public:
 		// Na przykład, jeśli fObstacleDensity wynosi 0.3f, to około 30% węzłów będzie przeszkodami.		
 		// Inicjalizacja generatora liczb losowych:
 		// że za każdym razem, gdy uruchomisz program, przeszkody będą rozmieszczane w sposób losowy.
-    	GenerateRandomObstacles(0.3f);
+    	//GenerateRandomObstacles(0.35f);
 
 		// Manually positio the start and end markers so they are not nullptr
 		nodeStart = &nodes[(nMapHeight / 2) * nMapWidth + 1];
 		nodeEnd = &nodes[(nMapHeight / 2) * nMapWidth + nMapWidth-2];
 
+		// Ustawienie losowych punktów startu i końca
+	    //RandomizeStartAndEnd(); 
+
 		return true;
+	}
+
+	void RandomizeStartAndEnd()
+	{
+		srand(time(nullptr)); // Ustawienie ziarenka dla generatora liczb losowych
+
+		// Definiujemy minimalną odległość, np. 5 jednostek
+		const float minimalnaOdległość = 5.0f;
+
+		// Losujemy punkt startowy, upewniając się, że nie jest to przeszkoda
+		do {
+			nodeStart = &nodes[(rand() % nMapHeight) * nMapWidth + (rand() % nMapWidth)];
+		} while (nodeStart->bObstacle);
+
+		// Losujemy punkt końcowy, upewniając się, że nie jest to przeszkoda ani punkt startowy
+		do {
+			nodeEnd = &nodes[(rand() % nMapHeight) * nMapWidth + (rand() % nMapWidth)];
+		} while (nodeEnd->bObstacle || nodeEnd == nodeStart);
+
+		// Sprawdzamy, czy odległość między punktem startowym a końcowym jest odpowiednia
+		while (sqrtf((nodeStart->x - nodeEnd->x) * (nodeStart->x - nodeEnd->x) + 
+					(nodeStart->y - nodeEnd->y) * (nodeStart->y - nodeEnd->y)) < minimalnaOdległość)
+		{
+			nodeEnd = &nodes[(rand() % nMapHeight) * nMapWidth + (rand() % nMapWidth)];
+		}
 	}
 
 	// GenerateRandomObstacles(float fObstacleDensity):
@@ -120,7 +148,7 @@ public:
 	// Dla każdego węzła losuje liczbę z przedziału od 0.0 do 1.0.
 	// Jeśli ta liczba jest mniejsza niż fObstacleDensity, węzeł zostaje oznaczony jako przeszkoda (bObstacle = true).
 	// W przeciwnym razie węzeł pozostaje wolny od przeszkód (bObstacle = false).
-	void GenerateRandomObstacles(float fObstacleDensity)
+	void GenerateRandomObstacles2(float fObstacleDensity)
 	{
 		// Ustawienie ziarenka dla generatora liczb 
 		// Inicjalizacja generatora liczb losowych:
@@ -141,6 +169,48 @@ public:
 				{
 					// Jeśli nie, to upewniamy się, że węzeł nie jest przeszkodą
 					nodes[y * nMapWidth + x].bObstacle = false;
+				}
+			}
+		}
+	}
+
+	void GenerateRandomObstacles(float fObstacleDensity)
+	{
+		// Ustawienie ziarenka dla generatora liczb 
+		srand(time(nullptr));
+
+		// Iterujemy po wszystkich węzłach na mapie
+		for (int x = 0; x < nMapWidth; x++)
+		{
+			for (int y = 0; y < nMapHeight; y++)
+			{
+				// Losujemy liczbę z przedziału 0.0 - 1.0 i sprawdzamy, czy jest mniejsza niż podany wskaźnik przeszkód
+				if ((float)rand() / RAND_MAX < fObstacleDensity)
+				{
+					// Ustawiamy dany węzeł jako przeszkodę
+					nodes[y * nMapWidth + x].bObstacle = true;
+				} 
+				else
+				{
+					// Jeśli nie, to upewniamy się, że węzeł nie jest przeszkodą
+					nodes[y * nMapWidth + x].bObstacle = false;
+				}
+
+				// Dla każdego węzła aktualizujemy listę sąsiadów
+				nodes[y * nMapWidth + x].vecNeighbours.clear();
+
+				// Jeżeli dany węzeł nie jest przeszkodą, dodajemy sąsiadów
+				if (!nodes[y * nMapWidth + x].bObstacle)
+				{
+					// Dodajemy sąsiadów tylko wtedy, gdy nie są przeszkodami
+					if (y > 0 && !nodes[(y - 1) * nMapWidth + x].bObstacle)
+						nodes[y * nMapWidth + x].vecNeighbours.push_back(&nodes[(y - 1) * nMapWidth + x]);
+					if (y < nMapHeight - 1 && !nodes[(y + 1) * nMapWidth + x].bObstacle)
+						nodes[y * nMapWidth + x].vecNeighbours.push_back(&nodes[(y + 1) * nMapWidth + x]);
+					if (x > 0 && !nodes[y * nMapWidth + (x - 1)].bObstacle)
+						nodes[y * nMapWidth + x].vecNeighbours.push_back(&nodes[y * nMapWidth + (x - 1)]);
+					if (x < nMapWidth - 1 && !nodes[y * nMapWidth + (x + 1)].bObstacle)
+						nodes[y * nMapWidth + x].vecNeighbours.push_back(&nodes[y * nMapWidth + (x + 1)]);
 				}
 			}
 		}
@@ -234,6 +304,142 @@ public:
 	}
 
 
+bool Solve_Dijkstra()
+{
+    // Reset Navigation Graph - default all node states
+    for (int x = 0; x < nMapWidth; x++)
+        for (int y = 0; y < nMapHeight; y++)
+        {
+            nodes[y*nMapWidth + x].bVisited = false;
+            nodes[y*nMapWidth + x].fGlobalGoal = INFINITY;
+            nodes[y*nMapWidth + x].fLocalGoal = INFINITY;
+            nodes[y*nMapWidth + x].parent = nullptr;    // No parents
+        }
+
+    auto distance = [](sNode* a, sNode* b) // For convenience
+    {
+        return sqrtf((a->x - b->x)*(a->x - b->x) + (a->y - b->y)*(a->y - b->y));
+    };
+
+    // Setup starting conditions
+    sNode *nodeCurrent = nodeStart;
+    nodeStart->fLocalGoal = 0.0f;
+    nodeStart->fGlobalGoal = nodeStart->fLocalGoal; // In Dijkstra, fGlobalGoal is the same as fLocalGoal
+
+    // Add start node to not tested list - this will ensure it gets tested.
+    list<sNode*> listNotTestedNodes;
+    listNotTestedNodes.push_back(nodeStart);
+
+    // if the not tested list contains nodes, there may be better paths
+    // which have not yet been explored. However, we will also stop 
+    // searching when we reach the target - there may well be better
+    // paths but this one will do - it wont be the longest.
+    while (!listNotTestedNodes.empty() && nodeCurrent != nodeEnd) // Find absolutely shortest path
+    {
+        // Sort Untested nodes by global goal, so lowest is first
+        listNotTestedNodes.sort([](const sNode* lhs, const sNode* rhs){ return lhs->fGlobalGoal < rhs->fGlobalGoal; } );
+        
+        // Front of listNotTestedNodes is potentially the lowest distance node. Our
+        // list may also contain nodes that have been visited, so ditch these...
+        while(!listNotTestedNodes.empty() && listNotTestedNodes.front()->bVisited)
+            listNotTestedNodes.pop_front();
+
+        // ...or abort because there are no valid nodes left to test
+        if (listNotTestedNodes.empty())
+            break;
+
+        nodeCurrent = listNotTestedNodes.front();
+        nodeCurrent->bVisited = true; // We only explore a node once
+                
+        // Check each of this node's neighbours...
+        for (auto nodeNeighbour : nodeCurrent->vecNeighbours)
+        {
+            // ... and only if the neighbour is not visited and is 
+            // not an obstacle, add it to NotTested List
+            if (!nodeNeighbour->bVisited && nodeNeighbour->bObstacle == 0)
+                listNotTestedNodes.push_back(nodeNeighbour);
+
+            // Calculate the neighbours potential lowest parent distance
+            float fPossiblyLowerGoal = nodeCurrent->fLocalGoal + distance(nodeCurrent, nodeNeighbour);
+
+            // If choosing to path through this node is a lower distance than what 
+            // the neighbour currently has set, update the neighbour to use this node
+            // as the path source, and set its distance scores as necessary
+            if (fPossiblyLowerGoal < nodeNeighbour->fLocalGoal)
+            {
+                nodeNeighbour->parent = nodeCurrent;
+                nodeNeighbour->fLocalGoal = fPossiblyLowerGoal;
+
+                // In Dijkstra's algorithm, there is no heuristic component, so global goal is just the local goal
+                nodeNeighbour->fGlobalGoal = nodeNeighbour->fLocalGoal;
+            }
+        }    
+    }
+
+    return true;
+}
+
+
+struct Tetrimino
+{
+    vector<pair<int, int>> shape; // Zawiera pary przesunięć (dx, dy) od punktu startowego
+
+    Tetrimino(initializer_list<pair<int, int>> coords) : shape(coords) {}
+};
+
+vector<Tetrimino> tetriminos = {
+    // Definicje tetrimino
+    {{0, 0}, {1, 0}, {2, 0}, {3, 0}}, // I-kształt
+    {{0, 0}, {1, 0}, {2, 0}, {1, 1}}, // T-kształt
+    {{0, 0}, {1, 0}, {0, 1}, {1, 1}}, // O-kształt
+    {{0, 0}, {0, 1}, {1, 1}, {2, 1}}, // L-kształt
+    {{0, 0}, {1, 0}, {1, 1}, {2, 1}}, // Z-kształt
+};
+
+void PlaceTetrimino(int startX, int startY, Tetrimino& tetrimino)
+{
+    for (auto& coord : tetrimino.shape)
+    {
+        int x = startX + coord.first;
+        int y = startY + coord.second;
+
+        if (x >= 0 && x < nMapWidth && y >= 0 && y < nMapHeight)
+        {
+            nodes[y * nMapWidth + x].bObstacle = true;
+        }
+    }
+}
+
+void GenerateRandomTetrisObstacles(float fObstacleDensity)
+{
+    srand(time(nullptr)); // Inicjalizacja generatora liczb losowych
+
+
+	for (int x = 0; x < nMapWidth; x++)
+		for (int y = 0; y < nMapHeight; y++)
+		{
+			nodes[y * nMapWidth + x].x = x; // ...because we give each node its own coordinates
+			nodes[y * nMapWidth + x].y = y;
+			nodes[y * nMapWidth + x].bObstacle = false;
+			nodes[y * nMapWidth + x].parent = nullptr;
+			nodes[y * nMapWidth + x].bVisited = false;
+		}
+
+
+    for (int x = 0; x < nMapWidth; x++)
+    {
+        for (int y = 0; y < nMapHeight; y++)
+        {
+            if ((float)rand() / RAND_MAX < fObstacleDensity)
+            {
+                Tetrimino& tetrimino = tetriminos[rand() % tetriminos.size()];
+                PlaceTetrimino(x, y, tetrimino);
+            }
+        }
+    }
+}
+
+
 
 	bool OnUserUpdate(float fElapsedTime) override
 	{
@@ -252,6 +458,11 @@ public:
 
 		if (GetKey(olc::Key::SPACE).bReleased) {
 			test = true;
+			// GenerateRandomObstacles(0.35f);
+			GenerateRandomTetrisObstacles(0.05f);
+			RandomizeStartAndEnd();
+			Solve_Dijkstra();
+			//Solve_AStar();
 		}
 
 		if (GetMouse(0).bReleased)
@@ -267,10 +478,10 @@ public:
 					else
 						nodes[nSelectedNodeY * nMapWidth + nSelectedNodeX].bObstacle = !nodes[nSelectedNodeY * nMapWidth + nSelectedNodeX].bObstacle;
 					
-					Solve_AStar(); // Solve in "real-time" gives a nice effect
+					//Solve_AStar(); // Solve in "real-time" gives a nice 
+					Solve_Dijkstra();
 				}			
 		}
-
 
 		// Draw Connections First - lines from this nodes position to its
 		// connected neighbour node positions
