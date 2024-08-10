@@ -20,8 +20,7 @@ https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/SmallerPro
 using namespace std;
 
 bool test {false};
-
-
+bool bMenu {false};
 
 class olcEngine : public olc::PixelGameEngine
 {
@@ -375,6 +374,14 @@ bool Solve_Dijkstra()
     return true;
 }
 
+	bool Menu()
+	{
+
+
+
+		return true;
+	}
+
 	bool OnUserUpdate(float fElapsedTime) override
 	{
 		// Clear Screen
@@ -391,7 +398,7 @@ bool Solve_Dijkstra()
         } 
 
 		if (GetKey(olc::Key::SPACE).bReleased) {
-			test = true;
+			bMenu = false;
 			// GenerateRandomObstacles(0.35f);
 			// losowo umieszcza kształty tetrimino na mapie na podstawie wskaźnika gęstości przeszkód.
 			// int nMapWidth = 16;
@@ -403,13 +410,17 @@ bool Solve_Dijkstra()
 			//Solve_AStar();
 		}
 
+		if (GetKey(olc::Key::F1).bReleased) {
+			bMenu = !bMenu;
+		}
+
 		if (GetMouse(0).bReleased)
 		{
+			bMenu = false;
 			if(nSelectedNodeX >=0 && nSelectedNodeX < nMapWidth)
 				if (nSelectedNodeY >= 0 && nSelectedNodeY < nMapHeight)
 				{
 					if (GetKey(olc::Key::SHIFT).bHeld)
-						// std::cout << "shift" << std::endl;
 						nodeStart = &nodes[nSelectedNodeY * nMapWidth + nSelectedNodeX];
 					else if (GetKey(olc::Key::CTRL).bHeld)
 						nodeEnd = &nodes[nSelectedNodeY * nMapWidth + nSelectedNodeX];
@@ -476,8 +487,18 @@ bool Solve_Dijkstra()
 
         }
 
-		DrawString(15, 15, std::to_string(GetMouseX()) + ", " + std::to_string(GetMouseY()) 
-			+ " [" + std::to_string(nSelectedNodeX) + ", " + std::to_string(nSelectedNodeY) + "]", olc::CYAN );
+		if(bMenu) {
+			DrawString(15, 15, "Menu", olc::RED);
+			DrawString(15, 30, "SHIFT + Left Mouse - new start position", olc::RED);
+			DrawString(15, 45, "CTRL + Left Mouse - new target position", olc::RED);
+			DrawString(15, 60, "Left Mouse - node obstacle", olc::RED);
+			DrawString(15, 75, "SPACE - generate random  obstacles", olc::RED);
+		}
+
+		DrawString(ScreenHeight()-50, 15, "[" + std::to_string(nSelectedNodeX) + ", " + std::to_string(nSelectedNodeY) + "]", olc::CYAN );
+
+
+		DrawString(8, ScreenHeight()-15, "ESC - exit / F1 - menu / ", olc::GREEN);
         DrawString(ScreenWidth()-300, ScreenHeight()-15, "Powered by olcPixelGameEngine, 2024(8)", olc::CYAN );
 
         return !quit;
