@@ -2,7 +2,7 @@
 
 ## Zadania
 
-1. <5> Zaprojektuj i zapisz w wybrany sposób algorytm znajdowania otoczki wypukłej dla skończonego zbioru punktów na płaszczyźnie, gdzie znane są współrzędne kartezjańskie punktów.
+1. <5> Zaprojektuj i zapisz w wybrany sposób algorytm znajdowania otoczki wypukłej dla skończonego zbioru punktów na płaszczyźnie, gdzie znane są współrzędne kartezjańskie punktów.[**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad1.cpp)**]
 2. Zaimplementuj w wybranym języku programowania następujące struktury danych omawiane na wykładzie:
    - a. <3> Tablicę
    - b. <3> Listę jedno- i dwukierunkową
@@ -11,7 +11,7 @@
    - e. <4> Stos (realizacja za pomocą tablicy i za pomocą listy)
    - f. <4> Kopiec
    - g. <5> Tablicę haszującą
-3. Zaimplementuj w wybranym języku programowania następujące algorytmy sortowania [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad8/zad8.cpp)**]:
+3. Zaimplementuj w wybranym języku programowania następujące algorytmy sortowania [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad3.cpp)**]:
    - a. <3> Sortowanie bąbelkowe
    - b. <3> Sortowanie przez wstawianie
    - c. <4> Sortowanie przez kopcowanie, <5> w miejscu
