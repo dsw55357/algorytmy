@@ -11,7 +11,7 @@
    - e. <4> Stos (realizacja za pomocą tablicy i za pomocą listy)
    - f. <4> Kopiec
    - g. <5> Tablicę haszującą
-3. Zaimplementuj w wybranym języku programowania następujące algorytmy sortowania:
+3. Zaimplementuj w wybranym języku programowania następujące algorytmy sortowania [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad8/zad8.cpp)**]:
    - a. <3> Sortowanie bąbelkowe
    - b. <3> Sortowanie przez wstawianie
    - c. <4> Sortowanie przez kopcowanie, <5> w miejscu
@@ -31,7 +31,7 @@
    - b. <4> Algorytm Prime’a
    - c. <5> Algorytm Prime’a z wykorzystaniem kopca
 8. <3> Zaimplementuj w wybranym języku programowania algorytm Dijsktry. Implementacja powinna zawierać funkcję, która dla danego wierzchołka wyświetli optymalną odległość oraz optymalną ścieżkę od wierzchołka początkowego.
-   **[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad8/zad8.cpp)**
+   [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad8/zad8.cpp)**]
 
 9. Zaimplementuj w wybranym języku programowania następujące algorytmy:
    - a. <3> BFS (Breadth-First Search – przeszukiwanie wszerz)
