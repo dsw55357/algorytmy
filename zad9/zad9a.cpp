@@ -30,6 +30,8 @@ private:
 
     // Parametry animacji
     int delayMilliseconds = 250;
+    bool searchCompleted = false; // Zmienna flagowa, czy przeszukiwanie zakończone
+
 public:
     bool OnUserCreate() override
     {
@@ -81,7 +83,13 @@ public:
     bool OnUserUpdate(float fElapsedTime) override
     {
         Clear(olc::BLACK);
+        bool quit =  false;
 
+        if (GetKey(olc::Key::ESCAPE).bPressed) {
+			quit = true;
+        } 
+
+        // Jeżeli kolejka nie jest pusta, pobieramy pierwszy węzeł z kolejki, oznaczamy go jako odwiedzony i dodajemy jego sąsiadów do kolejki, jeżeli nie byli jeszcze odwiedzeni.
         if (!nodeQueue.empty())
         {
             Node* currentNode = nodeQueue.front();
@@ -105,9 +113,17 @@ public:
                     }
                 }
             }
+        } else if (!searchCompleted)
+        {
+            // Gdy kolejka jest pusta, a przeszukiwanie się zakończyło, ustawiamy flagę
+            searchCompleted = true;
         }
 
         // Rysowanie węzłów
+        // Następnie rysujemy węzły i krawędzie na ekranie, zmieniając ich kolor w zależności od tego, czy zostały odwiedzone, czy są w kolejce.
+        // Niebieski (olc::BLUE): węzeł nieodwiedzony i nie w kolejce.
+        // Żółty (olc::YELLOW): węzeł w kolejce.
+        // Zielony (olc::GREEN): węzeł odwiedzony.
         for (auto& node : nodes)
         {
             olc::Pixel color = olc::BLUE;
@@ -128,7 +144,31 @@ public:
             }
         }
 
-        return true;
+        uint32_t scale = 3;
+        // Wyświetlenie komunikatu o zakończeniu przeszukiwania
+        if (searchCompleted)
+        {
+            // Get the size of the text
+            std::string text {"Search Completed!"};
+            olc::vi2d textSize = GetTextSize(text);
+            // Calculate the position to draw the text so that it is centered
+            int textX = ScreenWidth()/2 - (textSize.x * scale) / 2;
+            int textY = ScreenHeight()/2 - (textSize.y * scale) / 2;
+
+            DrawString(textX, textY, text, olc::RED, 3 );
+        }
+
+        // Get the size of the text
+        std::string text {"Powered by olcPixelGameEngine, 2024(8)"};
+        olc::vi2d textSize = GetTextSize(text);
+        // Calculate the position to draw the text so that it is centered
+        int textX = ScreenWidth() - (textSize.x);
+        int textY = ScreenHeight() - (textSize.y * scale) / 2;
+
+        DrawString(textX, textY, text, olc::CYAN );
+        DrawString(10, textY, "ESC - exit", olc::GREEN);
+
+        return !quit;
     }
 };
 
