@@ -34,5 +34,5 @@
    [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad8/zad8.cpp)**]
 
 9. Zaimplementuj w wybranym języku programowania następujące algorytmy [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/tree/main/zad9)**]:
-   - a. <3> BFS (Breadth-First Search – przeszukiwanie wszerz)
+   - a. <3> BFS (Breadth-First Search – przeszukiwanie wszerz) [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad9/zad9a.cpp)**]
    - b. <5> Forda-Fulkersona (operujący na sieci residualnej)
