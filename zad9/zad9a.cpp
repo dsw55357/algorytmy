@@ -161,7 +161,7 @@ public:
         // Get the size of the text
         std::string text {"Powered by olcPixelGameEngine, 2024(8)"};
         olc::vi2d textSize = GetTextSize(text);
-        // Calculate the position to draw the text so that it is centered
+        // Calculate the position to draw the text
         int textX = ScreenWidth() - (textSize.x);
         int textY = ScreenHeight() - (textSize.y * scale) / 2;
 
