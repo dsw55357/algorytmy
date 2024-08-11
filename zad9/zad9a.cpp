@@ -174,9 +174,9 @@ public:
 
 int main()
 {
-    BFS_Visualization demo;
-    if (demo.Construct(600, 600, 1, 1))
-        demo.Start();
+    BFS_Visualization app;
+    if (app.Construct(600, 600, 1, 1))
+        app.Start();
 
     return 0;
 }
