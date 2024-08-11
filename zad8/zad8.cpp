@@ -1,6 +1,6 @@
 /*
 
-Code is based  on work javidx9
+Code is based on work javidx9
 https://github.com/OneLoneCoder/Javidx9/blob/master/ConsoleGameEngine/SmallerProjects/OneLoneCoder_PathFinding_AStar.cpp#L90
 
 */
@@ -401,13 +401,10 @@ bool Solve_Dijkstra()
 			bMenu = false;
 			// GenerateRandomObstacles(0.35f);
 			// losowo umieszcza kształty tetrimino na mapie na podstawie wskaźnika gęstości przeszkód.
-			// int nMapWidth = 16;
-          	// int nMapHeight = 16;
 			GenerateRandomTetrisObstacles( nMapWidth, nMapHeight, nodes, 0.05f);
 			// 
 			RandomizeStartAndEnd();
 			Solve_Dijkstra();
-			//Solve_AStar();
 		}
 
 		if (GetKey(olc::Key::F1).bReleased) {
@@ -427,7 +424,6 @@ bool Solve_Dijkstra()
 					else
 						nodes[nSelectedNodeY * nMapWidth + nSelectedNodeX].bObstacle = !nodes[nSelectedNodeY * nMapWidth + nSelectedNodeX].bObstacle;
 					
-					//Solve_AStar(); // Solve in "real-time" gives a nice 
 					Solve_Dijkstra();
 				}			
 		}
@@ -450,7 +446,6 @@ bool Solve_Dijkstra()
 			{
 	            // Fills a rectangle at (x,y) to (x+w,y+h)
 				FillRect(x*nNodeSize + nNodeBorder, y*nNodeSize + nNodeBorder, 
-					//(x + 1)*nNodeSize - nNodeBorder, (y + 1)*nNodeSize - nNodeBorder, 
                     nNodeSize-nNodeBorder*2, nNodeSize-nNodeBorder*2,
 					nodes[y * nMapWidth + x].bObstacle ? olc::GREY : olc::BLUE);
 

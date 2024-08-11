@@ -26,10 +26,10 @@
    - c. <3> Przeanalizuj uzyskane wyniki.
 5. <4> Napisz algorytm wyszukiwania liniowego (zadanie 2.1-4 z rozdziału 2.1 pozycji [1]).
 6. <5> Udowodnij poprawność algorytmu wyszukiwania liniowego (zadanie 2.1-4 z rozdziału 2.1 pozycji [1]).
-7. Zaimplementuj w wybranym języku programowania następujące algorytmy:
-   - a. <3> Algorytm Kruskala
-   - b. <4> Algorytm Prime’a
-   - c. <5> Algorytm Prime’a z wykorzystaniem kopca
+7. Zaimplementuj w wybranym języku programowania następujące algorytmy [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/tree/main/zad7)**]:
+   - a. <3> Algorytm Kruskala [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad7/zad7a.py)**]
+   - b. <4> Algorytm Prime’a [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad7/zad7b.py)**]
+   - c. <5> Algorytm Prime’a z wykorzystaniem kopca [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad7/zad7c.py)**]
 8. <3> Zaimplementuj w wybranym języku programowania algorytm Dijsktry. Implementacja powinna zawierać funkcję, która dla danego wierzchołka wyświetli optymalną odległość oraz optymalną ścieżkę od wierzchołka początkowego.
    [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad8/zad8.cpp)**]
 

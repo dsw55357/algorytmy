@@ -216,8 +216,8 @@ public:
             DrawString(15, 90, "6. maxHeap", olc::GREEN);
             DrawString(15, 105, "7. Array Queue", olc::GREEN);
             DrawString(15, 120, "8. List Queue", olc::GREEN);
-            DrawString(15, 135, "9. Implementacja Stosu (realizacja za pomocą tablicy)", olc::GREEN);
-            DrawString(15, 150, "0. Implementacja Stosu (realizacja za pomocą listy)", olc::GREEN);
+            DrawString(15, 135, "9. Implementacja Stosu (realizacja za pomoca tablicy)", olc::GREEN);
+            DrawString(15, 150, "0. Implementacja Stosu (realizacja za pomoca listy)", olc::GREEN);
 
             DrawString(15, 170, "Q - exit", olc::GREEN);
             
