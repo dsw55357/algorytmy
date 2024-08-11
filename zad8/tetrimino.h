@@ -106,4 +106,81 @@ void GenerateRandomTetrisObstacles(int nMapWidth, int nMapHeight, sNode *nodes, 
     }
 }
 
+struct TetriminoInstance
+{
+    Tetrimino shape;
+    int posX;
+    int posY;
+};
+
+vector<TetriminoInstance> activeTetriminos;
+
+// void UpdateTetriminos()
+// {
+//     for (auto it = activeTetriminos.begin(); it != activeTetriminos.end();)
+//     {
+//         // Sprawdzamy, czy tetrimino może się przemieścić w dół
+//         bool canMoveDown = true;
+//         for (auto& coord : it->shape.shape)
+//         {
+//             int newX = it->posX + coord.first;
+//             int newY = it->posY + coord.second + 1;
+
+//             if (newY >= nMapHeight || nodes[newY * nMapWidth + newX].bObstacle)
+//             {
+//                 canMoveDown = false;
+//                 break;
+//             }
+//         }
+
+//         if (canMoveDown)
+//         {
+//             // Usuwamy tetrimino z poprzedniej pozycji
+//             for (auto& coord : it->shape.shape)
+//             {
+//                 int x = it->posX + coord.first;
+//                 int y = it->posY + coord.second;
+//                 nodes[y * nMapWidth + x].bObstacle = false;
+//             }
+
+//             // Przesuwamy tetrimino w dół
+//             it->posY += 1;
+
+//             // Aktualizujemy pozycję tetrimino na nowej pozycji
+//             for (auto& coord : it->shape.shape)
+//             {
+//                 int x = it->posX + coord.first;
+//                 int y = it->posY + coord.second;
+//                 nodes[y * nMapWidth + x].bObstacle = true;
+//             }
+
+//             ++it;
+//         }
+//         else
+//         {
+//             // Jeśli tetrimino osiągnie dolną krawędź, usuwamy je
+//             it = activeTetriminos.erase(it);
+//         }
+//     }
+// }
+
+// void GenerateAndMoveTetriminos()
+// {
+//     // Generowanie nowego tetrimino
+//     Tetrimino& tetrimino = tetriminos[rand() % tetriminos.size()];
+//     int startX = rand() % nMapWidth;
+//     int startY = 0;
+
+//     if (CanPlaceTetrimino(startX, startY, tetrimino))
+//     {
+//         PlaceTetrimino(startX, startY, tetrimino);
+//         activeTetriminos.push_back({tetrimino, startX, startY});
+//     }
+
+//     // Aktualizacja pozycji aktywnych tetriminos
+//     UpdateTetriminos();
+// }
+
+
+
 #endif // TETRIMINO_H
