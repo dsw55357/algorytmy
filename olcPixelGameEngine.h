@@ -421,6 +421,9 @@ int main()
 	#define OLC_KEYBOARD_UK
 #endif
 
+// #if !defined(OLC_KEYBOARD_PL)
+// 	#define OLC_KEYBOARD_PL
+// #endif
 
 #if defined(USE_EXPERIMENTAL_FS) || defined(FORCE_EXPERIMENTAL_FS)
 	// C++14

@@ -24,6 +24,19 @@
 
 #include "MaxHeap.h"
 
+// Użycie mapy znaków PL
+// std::wstring ProcessInput(const olc::PixelGameEngine& pge) {
+//     std::wstring input = L"";
+    
+//     for (const auto& [key, value] : vKeyboardMapPL) {
+//         if (pge.GetKey(key).bPressed) {
+//             input += value;
+//         }
+//     }
+    
+//     return input;
+// }
+
 /*
 
 class Array {
@@ -207,36 +220,44 @@ public:
         Clear(olc::BLACK);
         bool quit =  false;
 
-        if (mode == Mode::MENU) {
-            DrawString(15, 15, "1. Array", olc::GREEN);
-            DrawString(15, 30, "2. Singly Linked List", olc::GREEN);
-            DrawString(15, 45, "3. Doubly Linked List", olc::GREEN);
-            DrawString(15, 60, "4. Array Singly Linked List", olc::GREEN);
-            DrawString(15, 75, "5. Array Doubly Linked List", olc::GREEN);
-            DrawString(15, 90, "6. maxHeap", olc::GREEN);
-            DrawString(15, 105, "7. Array Queue", olc::GREEN);
-            DrawString(15, 120, "8. List Queue", olc::GREEN);
-            DrawString(15, 135, "9. Implementacja Stosu (realizacja za pomoca tablicy)", olc::GREEN);
-            DrawString(15, 150, "0. Implementacja Stosu (realizacja za pomoca listy)", olc::GREEN);
+        // std::wstring input = ProcessInput(*this);
+        
+        // if (!input.empty()) {
+        //     DrawString(15, ScreenHeight() - 10, input, olc::WHITE);
+        // }
 
-            DrawString(15, 170, "Q - exit", olc::GREEN);
+        if (mode == Mode::MENU) {
+            int i = 15;
+            // Struktury danych
+            DrawString(15, i, "Struktury danych:", olc::GREEN, 2);
+            DrawString(15, 10+i*2, "A >> Tablica", olc::GREEN);
+            DrawString(15, 10+i*3, "B >> Lista jednokierunkowa", olc::GREEN);
+            DrawString(15, 10+i*4, "B + CTRL >> Lista dwukierunkowa", olc::GREEN);
+            DrawString(15, 10+i*5, "C >> Lista jednokierunkowa (realizacja za pomoca tablicy)", olc::GREEN);
+            DrawString(15, 10+i*6, "C + CTRL >> Lista dwukierunkowa (realizacja za pomoca tablicy)", olc::GREEN);
+            DrawString(15, 10+i*8, "D >> Kolejka (realizacja za pomoc tablicy)", olc::GREEN);
+            DrawString(15, 10+i*9, "D + CTRL >> Kolejka (realizacja za pomoca listy)", olc::GREEN);
+            DrawString(15, 10+i*10, "E >> Stos (realizacja za pomoca tablicy)", olc::GREEN);
+            DrawString(15, 10+i*11, "E + CTRL >> Stos (realizacja za pomoca listy)", olc::GREEN);
+            DrawString(15, 10+i*7, "F >> Kopiec", olc::GREEN);
+            DrawString(15, 10+i*12, "Q >> exit", olc::GREEN);
             
-            if (GetKey(olc::Key::K1).bPressed) {
+            if (GetKey(olc::Key::A).bPressed) {
                 mode = Mode::ARRAY;
                 initCircles();
-            } else if (GetKey(olc::Key::K2).bPressed) {
-                mode = Mode::SINGLY_LINKED_LIST;
-                initCircles();
-            } else if (GetKey(olc::Key::K3).bPressed) {
+            } else if (GetKey(olc::Key::CTRL).bHeld && GetKey(olc::Key::B).bPressed) {
                 mode = Mode::DOUBLY_LINKED_LIST;
                 initCircles();
-            } else if (GetKey(olc::Key::K4).bPressed) {
-                mode = Mode::ARRAY_LINKED_LIST;
+            } else if (GetKey(olc::Key::B).bPressed) {
+                mode = Mode::SINGLY_LINKED_LIST;
                 initCircles();
-            }  else if (GetKey(olc::Key::K5).bPressed) {
+            } else if (GetKey(olc::Key::CTRL).bHeld && GetKey(olc::Key::C).bPressed) {
                 mode = Mode::ARRAY_DOUBLY_LINKED_LIST;
                 initCircles();
-            } else if (GetKey(olc::Key::K6).bPressed) {
+            } else if (GetKey(olc::Key::C).bPressed) {
+                mode = Mode::ARRAY_LINKED_LIST;
+                initCircles();
+            } else if (GetKey(olc::Key::F).bPressed) {
                 mode = Mode::MAX_HEAP;
                 maxHeap = MaxHeap();
                 originalCircles.clear();
@@ -246,20 +267,20 @@ public:
                 while (!maxHeap.isEmpty()) {
                     sortedCircles.push_back(maxHeap.extractMax());
                 }     
-            } else if (GetKey(olc::Key::K7).bPressed) {
+            } else if (GetKey(olc::Key::CTRL).bHeld &&  GetKey(olc::Key::D).bPressed) {
+                mode = Mode::LIST_QUEUE;
+                initCircles();             
+            } else if (GetKey(olc::Key::D).bPressed) {
                 mode = Mode::ARRAY_QUEUE;
                 //arrayQueue = CircleQueue(100); // Resetowanie kolejki
                 initCircles();             
-            } else if (GetKey(olc::Key::K8).bPressed) {
-                mode = Mode::LIST_QUEUE;
-                initCircles();             
-            } else if (GetKey(olc::Key::K9).bPressed) {
-                mode = Mode::STACK;
-                arrayStack.clear(); // Resetowanie stosu
-                initCircles();      
-            } else if (GetKey(olc::Key::K0).bPressed) {
+            } else if (GetKey(olc::Key::CTRL).bHeld && GetKey(olc::Key::E).bPressed) {
                 mode = Mode::STACK_LIST;
                 listStack.clear(); // Resetowanie stosu
+                initCircles();      
+            } else if (GetKey(olc::Key::E).bPressed) {
+                mode = Mode::STACK;
+                arrayStack.clear(); // Resetowanie stosu
                 initCircles();      
             } else if (GetKey(olc::Key::Q).bReleased) {
 			    quit = true;
@@ -378,8 +399,8 @@ public:
             
             auto end = high_resolution_clock::now();
             auto duration = duration_cast<microseconds>(end - start).count();
-            performanceMessage = "Singly Linked List insertions took " + std::to_string(duration) + " us";
-            std::cout << duration << std::endl;
+            performanceMessage = "Lista jednokierunkowa [" + std::to_string(duration) + "] us";
+            // std::cout << duration << std::endl;
             DrawString(15, 45, performanceMessage, olc::YELLOW);
             // Wyświetlenie liczby aktualnie wyświetlanych obiektów
             DrawString(10, ScreenWidth()-50, "Number of Circles: " + std::to_string(singlyLinkedList.getSize()), olc::CYAN);
@@ -425,7 +446,7 @@ public:
             const auto end{std::chrono::steady_clock::now()};
             //const std::chrono::duration<double> elapsed_seconds{end - start};
             auto duration = duration_cast<microseconds>(end - start).count();
-            performanceMessage = "Doubly Linked List insertions took " + std::to_string(duration) + " us";
+            performanceMessage = "Lista dwukierunkowa [" + std::to_string(duration) + "] us";
             DrawString(15, 45, performanceMessage, olc::YELLOW);
             // Wyświetlenie liczby aktualnie wyświetlanych obiektów
             DrawString(10, ScreenWidth()-50, "Number of Circles: " + std::to_string(doublyLinkedList.getSize()), olc::CYAN);
@@ -462,7 +483,7 @@ public:
             const auto end{std::chrono::steady_clock::now()};
             //const std::chrono::duration<double> elapsed_seconds{end - start};
             auto duration = duration_cast<microseconds>(end - start).count();
-            performanceMessage = "Array insertions took " + std::to_string(duration) + " us";
+            performanceMessage = "Tablica [" + std::to_string(duration) + "] us";
             DrawString(15, 45, performanceMessage, olc::YELLOW);
             // Wyświetlenie liczby aktualnie wyświetlanych obiektów
             DrawString(10, ScreenWidth()-50, "Number of Circles: " + std::to_string(circleArray.getSize()), olc::CYAN);
@@ -498,7 +519,7 @@ public:
             }
             const auto end{std::chrono::steady_clock::now()};
             auto duration = duration_cast<microseconds>(end - start).count();
-            performanceMessage = "ARRAY LINKED LIST insertions took " + std::to_string(duration) + " us";
+            performanceMessage = "Lista jednokierunkowa (realizacja za pomoca tablicy) [" + std::to_string(duration) + "] us";
             DrawString(15, 45, performanceMessage, olc::YELLOW);
             // Wyświetlenie liczby aktualnie wyświetlanych obiektów
             DrawString(10, ScreenWidth()-50, "Number of Circles: " + std::to_string(arrayLinkedList.getSize()), olc::CYAN);
@@ -534,22 +555,22 @@ public:
 
             const auto end{std::chrono::steady_clock::now()};
             auto duration = duration_cast<microseconds>(end - start).count();
-            performanceMessage = "ARRAY DOUBLY LINKED LIST insertions took " + std::to_string(duration) + " us";
+            performanceMessage = "Lista dwukierunkowa (realizacja za pomoca tablicy) [" + std::to_string(duration) + "] us";
             DrawString(15, 45, performanceMessage, olc::YELLOW);
 
             // Wyświetlenie liczby aktualnie wyświetlanych obiektów
             DrawString(10, ScreenWidth()-50, "Number of Circles: " + std::to_string(arrayDoublyLinkedList.getSize()), olc::CYAN);
 
-        } else if (mode == Mode::ARRAY_QUEUE) {
-            // Kolejka - realizacja za pomocą tablicy
-            // std::cout << "updateCircles() " << std::endl;
+        } else if (mode == Mode::ARRAY_QUEUE) { // Kolejka - realizacja za pomocą tablicy
+            using namespace std::chrono;
+            const auto start{std::chrono::steady_clock::now()};             
+
             // Aktualizacja kółek w kolejce
             arrayQueue.forEach([fElapsedTime](Circle& circle) {
                 if (circle.active) {                  
                     circle.update(fElapsedTime);
                 }
             });
-
 
             arrayQueue.forEach([this](Circle& circle1) {
                 arrayQueue.forEach([&circle1](Circle& circle2) {
@@ -564,8 +585,17 @@ public:
                 return !circle.active;
             });    
 
-        } else if (mode == Mode::LIST_QUEUE) {
-           // Aktualizacja kółek w kolejce
+            const auto end {std::chrono::steady_clock::now()};
+            auto duration = duration_cast<microseconds>(end - start).count();
+            performanceMessage = "Kolejka (realizacja za pomoca tablicy) [" + std::to_string(duration) + "] us";
+            DrawString(15, 45, performanceMessage, olc::YELLOW);
+
+        } else if (mode == Mode::LIST_QUEUE) { // Kolejka (realizacja za pomoca listy)
+            
+            using namespace std::chrono;
+            const auto start{std::chrono::steady_clock::now()};   
+
+            // Aktualizacja kółek w kolejce
             listQueue.forEach([fElapsedTime](Circle& circle) {
                 if (circle.active) {
                     circle.update(fElapsedTime);
@@ -587,7 +617,13 @@ public:
                 return !circle.active;
             });
 
-        } else if (mode == Mode::STACK) {
+            const auto end {std::chrono::steady_clock::now()};
+            auto duration = duration_cast<microseconds>(end - start).count();
+            performanceMessage = "Kolejka (realizacja za pomoca listy) [" + std::to_string(duration) + "] us";
+            DrawString(15, 45, performanceMessage, olc::YELLOW);
+
+
+        } else if (mode == Mode::STACK) { // Stos (realizacja za pomoca tablicy)
             try {
                 // Obsługa klawisza R do dodania losowych punktów
                 if (GetKey(olc::A).bPressed) {
@@ -600,12 +636,22 @@ public:
                     arrayStack.pop();
                 }
                 DrawString(15, ScreenHeight()-15, "A - dodaj / D - zdejmij ze stosu", olc::GREY, 1);
+
+                using namespace std::chrono;
+                const auto start{std::chrono::steady_clock::now()};   
+
                 // Aktualizacja kółek w stosie
                 arrayStack.forEach([fElapsedTime](Circle& circle) {
                     if (circle.active) {
                         circle.update(fElapsedTime);
                     }
                 });
+
+                const auto end {std::chrono::steady_clock::now()};
+                auto duration = duration_cast<microseconds>(end - start).count();
+                performanceMessage = "Stos (realizacja za pomoca tablicy) [" + std::to_string(duration) + "] us";
+                DrawString(15, 45, performanceMessage, olc::YELLOW);
+
             } catch (const std::runtime_error& e) {
                 errorMessage = e.what(); // Przechwycenie wyjątku i zapisanie komunikatu
             }
@@ -629,7 +675,7 @@ public:
                 }
             }
 
-        } else if (mode == Mode::STACK_LIST) {
+        } else if (mode == Mode::STACK_LIST) { // Stos (realizacja za pomoca listy)
             try {
                 // Obsługa klawisza R do dodania losowych punktów
                 if (GetKey(olc::A).bPressed) {
@@ -642,13 +688,26 @@ public:
                     // Usuń punkt
                     listStack.pop();
                 }
+
+                // Stos (realizacja za pomoca listy)
+
                 DrawString(15, ScreenHeight()-15, "A - dodaj / D - zdejmij ze stosu", olc::GREY, 1);
+
+                using namespace std::chrono;
+                const auto start{std::chrono::steady_clock::now()};  
+
                 // Aktualizacja kółek w stosie
                 listStack.forEach([fElapsedTime](Circle& circle) {
                     if (circle.active) {
                         circle.update(fElapsedTime);
                     }
                 });
+
+                const auto end {std::chrono::steady_clock::now()};
+                auto duration = duration_cast<microseconds>(end - start).count();
+                performanceMessage = "Stos (realizacja za pomoca listy) [" + std::to_string(duration) + "] us";
+                DrawString(15, 45, performanceMessage, olc::YELLOW);
+
             } catch (const std::runtime_error& e) {
                 errorMessage = e.what(); // Przechwycenie wyjątku i zapisanie komunikatu
             }
