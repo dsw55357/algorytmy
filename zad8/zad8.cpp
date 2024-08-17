@@ -376,9 +376,11 @@ bool Solve_Dijkstra()
 
 	bool Menu()
 	{
-
-
-
+		DrawString(15, 15, "Menu", olc::RED);
+		DrawString(15, 30, "SHIFT + Left Mouse - new start position", olc::RED);
+		DrawString(15, 45, "CTRL + Left Mouse - new target position", olc::RED);
+		DrawString(15, 60, "Left Mouse - node obstacle", olc::RED);
+		DrawString(15, 75, "SPACE - generate random  obstacles", olc::RED);
 		return true;
 	}
 
@@ -483,11 +485,7 @@ bool Solve_Dijkstra()
         }
 
 		if(bMenu) {
-			DrawString(15, 15, "Menu", olc::RED);
-			DrawString(15, 30, "SHIFT + Left Mouse - new start position", olc::RED);
-			DrawString(15, 45, "CTRL + Left Mouse - new target position", olc::RED);
-			DrawString(15, 60, "Left Mouse - node obstacle", olc::RED);
-			DrawString(15, 75, "SPACE - generate random  obstacles", olc::RED);
+			Menu();
 		}
 
 		DrawString(ScreenHeight()-50, 15, "[" + std::to_string(nSelectedNodeX) + ", " + std::to_string(nSelectedNodeY) + "]", olc::CYAN );
