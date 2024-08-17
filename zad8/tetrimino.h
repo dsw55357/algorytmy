@@ -6,25 +6,41 @@
 #include <ctime>
 #include <iostream>
 
+#include "../olcPixelGameEngine.h"
+
 #include "common.h"
 
 using namespace std;
+
+struct RGB {
+    int r;
+    int g;
+    int b;
+
+    RGB(int red, int green, int blue) : r(red), g(green), b(blue) {}
+};
+
 
 // Definjujemy przeszkody które mają kształty przypominające element te z gry Tetris
 struct Tetrimino
 {
     vector<pair<int, int>> shape; // Zawiera pary przesunięć (dx, dy) od punktu startowego
-
-    Tetrimino(initializer_list<pair<int, int>> coords) : shape(coords) {}
+    RGB color; // Kolor kształtu
+    Tetrimino(initializer_list<pair<int, int>> coords, RGB c) : shape(coords), color(c) {}
 };
 
 vector<Tetrimino> tetriminos = {
     // Definicje tetrimino
-    {{0, 0}, {1, 0}, {2, 0}, {3, 0}}, // I-kształt
-    {{0, 0}, {1, 0}, {2, 0}, {1, 1}}, // T-kształt
-    {{0, 0}, {1, 0}, {0, 1}, {1, 1}}, // O-kształt
-    {{0, 0}, {0, 1}, {1, 1}, {2, 1}}, // L-kształt
-    {{0, 0}, {1, 0}, {1, 1}, {2, 1}}, // Z-kształt
+    // Tetrimino({{0, 0}, {1, 0}, {2, 0}, {3, 0}}, 1), // I-kształt
+    // Tetrimino({{0, 0}, {1, 0}, {2, 0}, {1, 1}}, 2), // T-kształt
+    // Tetrimino({{0, 0}, {1, 0}, {0, 1}, {1, 1}}, 3), // O-kształt
+    // Tetrimino({{0, 0}, {0, 1}, {1, 1}, {2, 1}}, 4), // L-kształt
+    // Tetrimino({{0, 0}, {1, 0}, {1, 1}, {2, 1}}, 5) // Z-kształt
+    Tetrimino({{0, 0}, {1, 0}, {2, 0}, {3, 0}}, RGB(0, 255, 255)), // I-kształt
+    Tetrimino({{0, 0}, {1, 0}, {2, 0}, {1, 1}}, RGB(128, 0, 128)), // T-kształt
+    Tetrimino({{0, 0}, {1, 0}, {0, 1}, {1, 1}}, RGB(255, 255, 0)), // O-kształt
+    Tetrimino({{0, 0}, {0, 1}, {1, 1}, {2, 1}}, RGB(255, 165, 0)), // L-kształt
+    Tetrimino({{0, 0}, {1, 0}, {1, 1}, {2, 1}}, RGB(255, 0, 0))    // Z-kształt
 };
 
 void PlaceTetrimino(int nMapWidth, int nMapHeight, sNode *nodes, int startX, int startY, Tetrimino& tetrimino)
@@ -37,6 +53,7 @@ void PlaceTetrimino(int nMapWidth, int nMapHeight, sNode *nodes, int startX, int
         if (x >= 0 && x < nMapWidth && y >= 0 && y < nMapHeight)
         {
             nodes[y * nMapWidth + x].bObstacle = true;
+            nodes[y * nMapWidth + x].color = olc::Pixel(tetrimino.color.r, tetrimino.color.g, tetrimino.color.b); // Przypisanie koloru do węzła
         }
     }
 }

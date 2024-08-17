@@ -449,7 +449,8 @@ bool Solve_Dijkstra()
 	            // Fills a rectangle at (x,y) to (x+w,y+h)
 				FillRect(x*nNodeSize + nNodeBorder, y*nNodeSize + nNodeBorder, 
                     nNodeSize-nNodeBorder*2, nNodeSize-nNodeBorder*2,
-					nodes[y * nMapWidth + x].bObstacle ? olc::GREY : olc::BLUE);
+					nodes[y * nMapWidth + x].bObstacle ? nodes[y * nMapWidth + x].color : olc::BLUE);
+					// nodes[y * nMapWidth + x].bObstacle ? olc::GREY : olc::BLUE);
 
                 // DrawLine(x*nNodeSize + nNodeSize / 2, y*nNodeSize + nNodeSize / 2, x*nNodeSize + nNodeSize, y*nNodeSize + nNodeSize,
                 	// olc::YELLOW);
@@ -462,7 +463,6 @@ bool Solve_Dijkstra()
 		FillCircle(nodeStart->x*nNodeSize + nNodeSize / 2, nodeStart->y*nNodeSize + nNodeSize / 2, 2, olc::RED);
 		FillCircle(nodeEnd->x*nNodeSize + nNodeSize / 2, nodeEnd->y*nNodeSize + nNodeSize / 2, 2, olc::GREEN);
 
-		//std::cout << p->x*nNodeSize << ", " << p->y*nNodeSize << std::endl;
 		// Draw Path by starting ath the end, and following the parent node trail
 		// back to the start - the start node will not have a parent path to follow
 		if (nodeEnd != nullptr)
@@ -489,8 +489,6 @@ bool Solve_Dijkstra()
 		}
 
 		DrawString(ScreenHeight()-50, 15, "[" + std::to_string(nSelectedNodeX) + ", " + std::to_string(nSelectedNodeY) + "]", olc::CYAN );
-
-
 		DrawString(8, ScreenHeight()-15, "ESC - exit / F1 - menu / ", olc::GREEN);
         DrawString(ScreenWidth()-300, ScreenHeight()-15, "Powered by olcPixelGameEngine, 2024(8)", olc::CYAN );
 
