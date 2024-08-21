@@ -17,7 +17,7 @@ struct sNode
     int y;
     vector<sNode*> vecNeighbours;	// Connections to neighbours
     sNode* parent;					// Node connecting to this node that offers shortest parent
-    olc::Pixel color; // Kolor węzła
+    olc::Pixel color;               // Kolor węzła
 };
 
 #endif

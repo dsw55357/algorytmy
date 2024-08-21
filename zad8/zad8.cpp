@@ -376,11 +376,16 @@ bool Solve_Dijkstra()
 
 	bool Menu()
 	{
+		// wybieramy najdluższy łańcuch
+		olc::vi2d textSize = GetTextSize("SHIFT + Left Mouse - new start position");
+		FillRect(10, 10, textSize.x+10, 90, olc::GREEN);
+
 		DrawString(15, 15, "Menu", olc::RED);
 		DrawString(15, 30, "SHIFT + Left Mouse - new start position", olc::RED);
 		DrawString(15, 45, "CTRL + Left Mouse - new target position", olc::RED);
 		DrawString(15, 60, "Left Mouse - node obstacle", olc::RED);
 		DrawString(15, 75, "SPACE - generate random  obstacles", olc::RED);
+
 		return true;
 	}
 
@@ -423,8 +428,10 @@ bool Solve_Dijkstra()
 						nodeStart = &nodes[nSelectedNodeY * nMapWidth + nSelectedNodeX];
 					else if (GetKey(olc::Key::CTRL).bHeld)
 						nodeEnd = &nodes[nSelectedNodeY * nMapWidth + nSelectedNodeX];
-					else
+					else {
 						nodes[nSelectedNodeY * nMapWidth + nSelectedNodeX].bObstacle = !nodes[nSelectedNodeY * nMapWidth + nSelectedNodeX].bObstacle;
+						nodes[nSelectedNodeY * nMapWidth + nSelectedNodeX].color = olc::GREY;
+					}
 					
 					Solve_Dijkstra();
 				}			
@@ -481,7 +488,6 @@ bool Solve_Dijkstra()
 				// Set next node to this node's parent
 				p = p->parent;
 			}
-
         }
 
 		if(bMenu) {
