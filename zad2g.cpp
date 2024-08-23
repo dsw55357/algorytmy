@@ -96,58 +96,6 @@ struct NodePairHash {
     */
 };
 
-// // Graf reprezentowany jako lista sąsiedztwa
-// class Graph2 {
-// public:
-//     std::vector<std::vector<Edge>> adjList;
-
-//     Graph(int numNodes) : adjList(numNodes) {}
-
-//     void addEdge(int from, int to, int weight) {
-//         adjList[from].push_back({to, weight});
-//         adjList[to].push_back({from, weight});  // zakładając, że graf jest nieskierowany
-//     }
-
-//     std::vector<int> shortestPath(int start, int end) {
-//         std::vector<int> dist(adjList.size(), std::numeric_limits<int>::max());
-//         std::vector<int> prev(adjList.size(), -1);
-//         dist[start] = 0;
-
-//         std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<>> pq;
-//         pq.push({0, start});
-
-//         while (!pq.empty()) {
-//             int current = pq.top().second;
-//             pq.pop();
-
-//             for (const auto& edge : adjList[current]) {
-//                 int next = edge.to;
-//                 int newDist = dist[current] + edge.weight;
-
-//                 if (newDist < dist[next]) {
-//                     dist[next] = newDist;
-//                     prev[next] = current;
-//                     pq.push({newDist, next});
-//                 }
-//             }
-//         }
-
-//         // Odtworzenie ścieżki
-//         std::vector<int> path;
-//         for (int at = end; at != -1; at = prev[at]) {
-//             path.push_back(at);
-//         }
-//         std::reverse(path.begin(), path.end());
-
-//         // Sprawdzamy, czy istnieje droga
-//         if (path[0] != start) path.clear();
-
-//         return path;
-//     }
-// };
-
-
-
 // Graf reprezentowany jako lista sąsiedztwa
 class Graph {
 public:
@@ -334,6 +282,7 @@ public:
         // graph = new Graph(6);
 
         // Inicjalizacja grafu w konstruktorze lub w metodzie OnUserCreate
+        // Ustawiamy pozycje węzłów na ekranie
         graph.addNode(100, 100);
         graph.addNode(200, 50);
         graph.addNode(200, 150);
@@ -341,16 +290,6 @@ public:
         graph.addNode(400, 100);
         graph.addNode(150, 200);
 
-        // Dodajemy krawędzie do grafu
-        // graph->addEdge(0, 1, 7);
-        // graph->addEdge(0, 2, 9);
-        // graph->addEdge(0, 5, 14);
-        // graph->addEdge(1, 2, 10);
-        // graph->addEdge(1, 3, 15);
-        // graph->addEdge(2, 3, 11);
-        // graph->addEdge(2, 5, 2);
-        // graph->addEdge(3, 4, 6);
-        // graph->addEdge(4, 5, 9);
 
         // Dodajemy krawędzie do grafu
         graph.addEdge(0, 1, 7);
@@ -363,17 +302,7 @@ public:
         graph.addEdge(3, 4, 6);
         graph.addEdge(4, 5, 9);
 
-
-        // // Ustawiamy pozycje węzłów na ekranie
-        // graph->setNodePosition(0, 100, 100);
-        // graph->setNodePosition(1, 200, 50);
-        // graph->setNodePosition(2, 200, 150);
-        // graph->setNodePosition(3, 300, 100);
-        // graph->setNodePosition(4, 400, 100);
-        // graph->setNodePosition(5, 150, 200);
-
         // Obliczenie najkrótszej ścieżki
-        // path = cache.getShortestPath(*graph, startNode, endNode);
         path = cache.getShortestPath(graph, startNode, endNode);
 
         return true;
@@ -406,17 +335,9 @@ public:
         // Obsługa dodawania nowego węzła po kliknięciu LMB
         else if (GetMouse(0).bPressed) {  // Jeśli lewy przycisk myszy został kliknięty
             olc::vf2d mousePos = { float(GetMouseX()), float(GetMouseY()) };
-            //newNodeIndex = graph->positions.size();
-            // graph.positions.push_back(mousePos);
             graph.addNode(mousePos.x, mousePos.y);  // Dodaje nowy węzeł
-            //graph->setNodePosition(newNodeIndex, mousePos.x, mousePos.y);
-            // graph->adjList.push_back(std::vector<Edge>()); // Dodaj nowy węzeł do listy sąsiedztwa
-
-            // Dodaj krawędzie do istniejących węzłów (opcjonalne)
-            // Można użyć heurystyki do automatycznego tworzenia krawędzi lub dodać UI do ręcznego tworzenia krawędzi
 
             newNodeIndex = graph.positions.size()-1;
-            // connectToClosestNodes(*graph, newNodeIndex, 1);
             connectToClosestNodes(graph, newNodeIndex);
 
             // Obliczenie najkrótszej ścieżki
@@ -475,8 +396,6 @@ public:
         }
 
         if (selectedStartNode != -1 && GetMouse(0).bHeld) {
-            // olc::vf2d(GetMouseX(), GetMouseY())
-            // graph.moveNode(selectedNode, );
             DrawCircle(graph.positions[selectedStartNode].x, graph.positions[selectedStartNode].y, 10.0f, olc::CYAN);
             startNode = selectedStartNode;
             // Obliczenie najkrótszej ścieżki
@@ -484,8 +403,6 @@ public:
             path = cache.getShortestPath(graph, startNode, endNode);
         }
         if (selectedEndNode != -1 && GetMouse(0).bHeld) {
-            // olc::vf2d(GetMouseX(), GetMouseY())
-            // graph.moveNode(selectedNode, );
             DrawCircle(graph.positions[selectedEndNode].x, graph.positions[selectedEndNode].y, 10.0f, olc::BLUE);
             endNode = selectedEndNode;
             // Obliczenie najkrótszej ścieżki
@@ -509,11 +426,8 @@ public:
 
         // Rysowanie najkrótszej ścieżki
         if (!path.empty()) {
-            int c = {0};
             for (size_t i = 0; i < path.size() - 1; i++) {
                 DrawLine(graph.positions[path[i]], graph.positions[path[i + 1]], olc::GREEN);
-                // c = i;
-                // DrawString(15, 15+i*15, std::to_string(c), olc::GREEN);
             }
         }
 
@@ -545,271 +459,42 @@ int main() {
     return 0;
 }
 
-// g++ -o start tablica_haszująca.cpp  -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++20
+/*
 
+Ten kod w C++ jest przykładem implementacji aplikacji do zarządzania grafami i ścieżkami w kontekście gier komputerowych, przy użyciu biblioteki **olcPixelGameEngine**. Oto podsumowanie, co robi i jak działa ten kod:
 
+### Podstawowe elementy:
 
-/* 
-Połączenie nowo dodanego węzła z istniejącymi węzłami w grafie może być wyzwaniem, szczególnie jeśli chcesz uniknąć "zamieszania" i nadmiernego zagęszczenia krawędzi na ekranie. Oto kilka strategii, które można zastosować, aby w sposób kontrolowany i przejrzysty połączyć nowy węzeł z istniejącymi:
+1. **olcPixelGameEngine**:
+   - Jest to biblioteka używana do tworzenia prostych gier i symulacji 2D. Umożliwia ona łatwe rysowanie grafiki, obsługę wejść od użytkownika, i zarządzanie czasem.
 
-### 1. **Łączenie z najbliższymi węzłami:**
-   - **Opis:** Łącz nowy węzeł tylko z jednym lub kilkoma najbliższymi węzłami. Możesz użyć prostej odległości euklidesowej do znalezienia najbliższych sąsiadów.
-   - **Zaleta:** Unikasz tworzenia nadmiarowych połączeń i przecięcia wielu krawędzi, co pozwala utrzymać przejrzystość.
+2. **Graf (Graph)**:
+   - Graf jest reprezentowany jako lista sąsiedztwa (`adjList`), gdzie każdy węzeł ma listę krawędzi (obiektów `Edge`) prowadzących do innych węzłów.
+   - Węzły w grafie mają przypisane pozycje na płaszczyźnie 2D (`positions`), co umożliwia ich wizualne przedstawienie.
 
-   **Implementacja:**
-   ```cpp
-   void connectToClosestNodes(Graph& graph, int newNodeIndex, int maxConnections = 3) {
-       std::vector<std::pair<float, int>> distances;
+3. **Tablica haszująca (PathCache)**:
+   - Tablica haszująca jest używana do przechowywania wcześniej obliczonych najkrótszych ścieżek między parami węzłów. Kluczem jest para węzłów (start, end), a wartością jest wektor węzłów reprezentujący najkrótszą ścieżkę.
+   - Dzięki temu, jeśli użytkownik zapyta ponownie o ścieżkę między tymi samymi węzłami, wynik zostanie pobrany z cache, bez potrzeby ponownego obliczania.
 
-       for (int i = 0; i < newNodeIndex; i++) {
-           float distance = (graph.positions[newNodeIndex] - graph.positions[i]).mag();
-           distances.push_back({distance, i});
-       }
+4. **Algorytm Dijkstry (shortestPath)**:
+   - Używany jest do znajdowania najkrótszej ścieżki w grafie między dwoma węzłami. Wynik jest przechowywany w tablicy haszującej, aby zoptymalizować przyszłe zapytania o tę samą ścieżkę.
 
-       // Sortuj węzły według odległości od nowego węzła
-       std::sort(distances.begin(), distances.end());
+5. **Interakcja użytkownika**:
+   - Użytkownik może dodawać nowe węzły (punkty) na ekranie, łączyć je z istniejącymi węzłami oraz przesuwać istniejące węzły. Wszystko to jest wizualizowane na ekranie.
+   - Można również ustawić węzły startowe i końcowe, a aplikacja automatycznie znajdzie i wyświetli najkrótszą ścieżkę między nimi.
 
-       // Połącz z najbliższymi węzłami
-       for (int i = 0; i < std::min(maxConnections, (int)distances.size()); i++) {
-           int nearestNodeIndex = distances[i].second;
-           int weight = distances[i].first;  // Możesz ustalić wagę jako odległość, lub inny parametr
-           graph.addEdge(newNodeIndex, nearestNodeIndex, weight);
-       }
-   }
-   ```
+6. **Wyświetlanie grafiki i ścieżek**:
+   - Węzły i krawędzie są rysowane na ekranie, a także wyświetlana jest najkrótsza ścieżka jako zielona linia.
+   - Użytkownik może otworzyć menu pomocy (`Menu`) z instrukcjami dotyczącymi sterowania.
 
-   **Użycie po dodaniu nowego węzła:**
-   ```cpp
-   int newNodeIndex = graph->positions.size() - 1;
-   connectToClosestNodes(*graph, newNodeIndex);
-   ```
+### Jak to działa?
 
-### 2. **Łączenie tylko z węzłami w obrębie określonego promienia:**
-   - **Opis:** Połącz nowy węzeł tylko z węzłami, które znajdują się w określonym promieniu od niego. Dzięki temu unikniesz tworzenia zbyt długich i niepotrzebnych krawędzi.
-   - **Zaleta:** Zapobiegasz tworzeniu krawędzi, które przebiegają przez cały obszar rysowania, co może zaburzać czytelność grafu.
+- **Tworzenie grafu**: Na początku aplikacja tworzy graf z kilkoma węzłami i krawędziami.
+- **Interakcja**: Użytkownik może dodawać nowe węzły, przesuwać istniejące węzły i ustawiać węzły startowe i końcowe. Przy każdej modyfikacji grafu, najkrótsza ścieżka jest obliczana na nowo i wyświetlana.
+- **Cache'owanie ścieżek**: Jeśli najkrótsza ścieżka między dwoma węzłami była już wcześniej obliczona, jest ona pobierana z cache, co oszczędza czas.
+- **Rysowanie**: Aplikacja rysuje węzły, krawędzie, i ścieżki na ekranie, a także reaguje na wejścia użytkownika.
 
-   **Implementacja:**
-   ```cpp
-   void connectToNodesWithinRadius(Graph& graph, int newNodeIndex, float radius) {
-       for (int i = 0; i < newNodeIndex; i++) {
-           float distance = (graph.positions[newNodeIndex] - graph.positions[i]).mag();
-           if (distance <= radius) {
-               int weight = distance;  // Możesz ustalić wagę jako odległość, lub inny parametr
-               graph.addEdge(newNodeIndex, i, weight);
-           }
-       }
-   }
-   ```
-
-   **Użycie po dodaniu nowego węzła:**
-   ```cpp
-   int newNodeIndex = graph->positions.size() - 1;
-   float connectionRadius = 100.0f;  // Przykładowy promień
-   connectToNodesWithinRadius(*graph, newNodeIndex, connectionRadius);
-   ```
-
-### 3. **Ręczne łączenie węzłów:**
-   - **Opis:** Umożliw użytkownikowi ręczne wskazanie, z którymi węzłami ma być połączony nowy węzeł. Można to zrobić poprzez kliknięcie na istniejący węzeł po dodaniu nowego.
-   - **Zaleta:** Daje pełną kontrolę nad tym, jak graf jest tworzony, co może być przydatne w bardziej skomplikowanych lub specjalistycznych aplikacjach.
-
-   **Implementacja:**
-   - Dodaj funkcjonalność pozwalającą użytkownikowi kliknąć na węzeł, aby wybrać, z którym ma zostać połączony nowy węzeł. Po wybraniu dwóch węzłów automatycznie dodaj krawędź między nimi.
-
-### 4. **Połączenie węzłów na podstawie minimalnej liczby krawędzi:**
-   - **Opis:** Połącz nowy węzeł z tymi istniejącymi, które mają najmniej połączeń. To pozwala na równomierne rozłożenie połączeń między węzłami.
-   - **Zaleta:** Utrzymuje równowagę w grafie, co może być przydatne, gdy chcesz uniknąć sytuacji, gdzie jeden węzeł ma zbyt wiele połączeń, a inne zbyt mało.
-
-   **Implementacja:**
-   ```cpp
-   void connectToNodesWithFewestEdges(Graph& graph, int newNodeIndex, int maxConnections = 3) {
-       std::vector<std::pair<int, int>> edgeCounts;
-
-       for (int i = 0; i < newNodeIndex; i++) {
-           edgeCounts.push_back({graph.adjList[i].size(), i});
-       }
-
-       // Sortuj węzły według liczby połączeń (rosnąco)
-       std::sort(edgeCounts.begin(), edgeCounts.end());
-
-       // Połącz z węzłami mającymi najmniej połączeń
-       for (int i = 0; i < std::min(maxConnections, (int)edgeCounts.size()); i++) {
-           int nodeIndex = edgeCounts[i].second;
-           float distance = (graph.positions[newNodeIndex] - graph.positions[nodeIndex]).mag();
-           graph.addEdge(newNodeIndex, nodeIndex, distance);
-       }
-   }
-   ```
-
-   **Użycie po dodaniu nowego węzła:**
-   ```cpp
-   int newNodeIndex = graph->positions.size() - 1;
-   connectToNodesWithFewestEdges(*graph, newNodeIndex);
-   ```
-
-### Wnioski:
-
-Każda z tych metod ma swoje zalety i zastosowanie zależy od konkretnego przypadku użycia:
-
-- **Łączenie z najbliższymi węzłami** i **łączenie w obrębie promienia** są najbardziej automatyczne i łatwe do zaimplementowania, ale mogą prowadzić do tworzenia wielu krótkich krawędzi.
-- **Ręczne łączenie** daje największą kontrolę użytkownikowi, ale wymaga dodatkowego interfejsu i interakcji użytkownika.
-- **Łączenie na podstawie minimalnej liczby krawędzi** pozwala równoważyć połączenia w grafie.
-
-Wybór metody zależy od tego, jak dynamiczny ma być graf i jak dużą kontrolę chcesz dać użytkownikowi nad jego kształtowaniem. Każda z tych metod może być także łączona z innymi, aby uzyskać optymalne rezultaty.
-
-!! 21-08-2024 !!
-
-Dodanie funkcji wprowadzającej nowy węzeł między dwoma istniejącymi węzłami w grafie z możliwością ustawienia wagi nowej krawędzi wymaga kilku kroków. W skrócie, gdy użytkownik zdecyduje się dodać nowy węzeł między dwoma już istniejącymi, musimy:
-
-1. **Wprowadzić nowy węzeł do grafu.**
-2. **Podzielić istniejącą krawędź na dwie nowe krawędzie,** które połączą istniejące węzły z nowym węzłem.
-3. **Umożliwić ustawienie wagi dla nowych krawędzi** w zakresie od 0 do wartości oryginalnej krawędzi.
-
-### Przykład implementacji
-
-Poniżej przedstawiam zaktualizowany kod w C++, który implementuje tę funkcjonalność:
-
-```cpp
-#include <iostream>
-#include <vector>
-#include <unordered_map>
-#include <cmath>
-#include <algorithm>
-#include "olcPixelGameEngine.h"
-
-// Struktura reprezentująca krawędź w grafie
-struct Edge {
-    int to;
-    float weight;
-};
-
-// Klasa reprezentująca graf jako listę sąsiedztwa
-class Graph {
-public:
-    std::vector<std::vector<Edge>> adjList;
-    std::vector<olc::vf2d> positions;
-
-    Graph(int numNodes) : adjList(numNodes), positions(numNodes) {}
-
-    // Dodaj węzeł z jego pozycją na mapie
-    void addNode(int node, float x, float y) {
-        if (node >= positions.size()) {
-            positions.resize(node + 1);
-            adjList.resize(node + 1);
-        }
-        positions[node] = {x, y};
-    }
-
-    // Dodaj krawędź między węzłami, obliczając jej wagę na podstawie odległości euklidesowej
-    void addEdge(int from, int to) {
-        float weight = calculateDistance(from, to);
-        adjList[from].push_back({to, weight});
-        adjList[to].push_back({from, weight});  // Zakładamy, że graf jest nieskierowany
-    }
-
-    // Dodaj krawędź między węzłami z określoną wagą
-    void addEdge(int from, int to, float weight) {
-        adjList[from].push_back({to, weight});
-        adjList[to].push_back({from, weight});
-    }
-
-    // Funkcja do obliczania odległości euklidesowej między dwoma węzłami
-    float calculateDistance(int node1, int node2) {
-        return (positions[node2] - positions[node1]).mag();
-    }
-
-    // Przesuń węzeł do nowej pozycji i zaktualizuj odległości krawędzi
-    void moveNode(int node, const olc::vf2d& newPosition) {
-        positions[node] = newPosition;
-        updateEdges(node);
-    }
-
-    // Dodaj nowy węzeł pomiędzy dwa istniejące z możliwością ustawienia wagi nowej krawędzi
-    void addNodeBetween(int from, int to, int newNode, float weightFromToNew, float weightNewToTo) {
-        // Dodaj nowy węzeł w połowie drogi między istniejącymi
-        olc::vf2d newPosition = (positions[from] + positions[to]) * 0.5f;
-        addNode(newNode, newPosition.x, newPosition.y);
-
-        // Usuń starą krawędź między from a to
-        removeEdge(from, to);
-
-        // Dodaj nowe krawędzie
-        addEdge(from, newNode, weightFromToNew);
-        addEdge(newNode, to, weightNewToTo);
-    }
-
-    // Usuń krawędź między dwoma węzłami
-    void removeEdge(int from, int to) {
-        adjList[from].erase(std::remove_if(adjList[from].begin(), adjList[from].end(),
-            [to](const Edge& edge) { return edge.to == to; }), adjList[from].end());
-
-        adjList[to].erase(std::remove_if(adjList[to].begin(), adjList[to].end(),
-            [from](const Edge& edge) { return edge.to == from; }), adjList[to].end());
-    }
-
-    // Aktualizuj odległości krawędzi związanych z danym węzłem
-    void updateEdges(int node) {
-        for (auto& edge : adjList[node]) {
-            edge.weight = calculateDistance(node, edge.to);
-            for (auto& reverseEdge : adjList[edge.to]) {
-                if (reverseEdge.to == node) {
-                    reverseEdge.weight = edge.weight;
-                    break;
-                }
-            }
-        }
-    }
-
-    // Funkcja do wypisania grafu
-    void printGraph() {
-        for (int i = 0; i < adjList.size(); ++i) {
-            std::cout << "Node " << i << " at position (" 
-                      << positions[i].x << ", " 
-                      << positions[i].y << "):\n";
-            for (const Edge& edge : adjList[i]) {
-                std::cout << "  -> " << edge.to << " (weight: " << edge.weight << ")\n";
-            }
-        }
-    }
-};
-
-int main() {
-    Graph graph(3);
-    graph.addNode(0, 0.0f, 0.0f);
-    graph.addNode(1, 10.0f, 0.0f);
-    graph.addNode(2, 20.0f, 0.0f);
-
-    graph.addEdge(0, 1);
-    graph.addEdge(1, 2);
-
-    // Przykład dodania nowego węzła między węzłami 0 i 1
-    int newNode = 3;
-    float maxWeight = graph.calculateDistance(0, 1);
-    graph.addNodeBetween(0, 1, newNode, maxWeight * 0.5f, maxWeight * 0.5f);
-
-    graph.printGraph();
-
-    return 0;
-}
-```
-
-### Wyjaśnienie kodu:
-
-1. **Dodawanie nowego węzła między istniejącymi węzłami:**
-   - Metoda `addNodeBetween(int from, int to, int newNode, float weightFromToNew, float weightNewToTo)` pozwala na dodanie nowego węzła pomiędzy dwoma istniejącymi węzłami.
-   - Nowy węzeł jest umieszczany w połowie odległości między dwoma wybranymi węzłami.
-   - Stara krawędź jest usuwana, a następnie tworzone są dwie nowe krawędzie z określonymi wagami, podzielonymi według podanych wartości.
-
-2. **Usuwanie krawędzi:**
-   - Metoda `removeEdge(int from, int to)` usuwa krawędź między dwoma węzłami.
-
-3. **Waga krawędzi:**
-   - Wagi nowych krawędzi mogą być ustawione w przedziale od 0 do wartości oryginalnej krawędzi, podzielone proporcjonalnie na dwie nowe krawędzie. W przykładzie zastosowano podział na pół.
-
-4. **Przykład użycia:**
-   - W przykładzie, po dodaniu nowego węzła pomiędzy węzły `0` i `1`, węzeł `3` zostaje dodany w połowie drogi, a krawędź `0-1` jest zastępowana krawędziami `0-3` i `3-1`.
-
-### Korzyści:
-Takie podejście pozwala na dynamiczne modyfikowanie grafu w sposób bardziej złożony, co może być przydatne w różnych zastosowaniach, takich jak rozbudowa sieci dróg, dynamiczne aktualizacje tras w czasie rzeczywistym w grach, lub modelowanie zmian w strukturze połączeń między różnymi punktami w aplikacjach symulacyjnych.
-
+### Zastosowanie w rzeczywistości:
+Tego typu implementacja może być przydatna w grach komputerowych, gdzie postacie muszą poruszać się po złożonych mapach, a optymalizacja trasy jest kluczowa. Dzięki zastosowaniu tablicy haszującej, aplikacja może szybciej reagować na zapytania o najkrótsze ścieżki, co jest istotne w dynamicznych środowiskach gier.
 
 */
