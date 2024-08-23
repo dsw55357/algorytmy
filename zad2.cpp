@@ -360,7 +360,7 @@ public:
     void updateCircles(float fElapsedTime) {
         using namespace std::chrono;
 
-        if (mode == Mode::SINGLY_LINKED_LIST) {
+        if (mode == Mode::SINGLY_LINKED_LIST) { // Lista jednokierunkowa
 
             auto start = high_resolution_clock::now();
 
@@ -406,8 +406,8 @@ public:
             DrawString(10, ScreenWidth()-50, "Number of Circles: " + std::to_string(singlyLinkedList.getSize()), olc::CYAN);
 
 
-        } else if (mode == Mode::DOUBLY_LINKED_LIST) {
-            using namespace std::chrono;
+        } else if (mode == Mode::DOUBLY_LINKED_LIST) { // Lista dwukierunkowa
+            using namespace std::chrono; 
             const auto start{std::chrono::steady_clock::now()};
 
             DNode* current = doublyLinkedList.getHead();
@@ -452,7 +452,7 @@ public:
             DrawString(10, ScreenWidth()-50, "Number of Circles: " + std::to_string(doublyLinkedList.getSize()), olc::CYAN);
 
 
-        } else if (mode == Mode::ARRAY) {
+        } else if (mode == Mode::ARRAY) { // Tablica
 
             using namespace std::chrono;
             const auto start{std::chrono::steady_clock::now()};
@@ -490,7 +490,7 @@ public:
 
 
 
-    } else if (mode == Mode::ARRAY_LINKED_LIST) {
+    } else if (mode == Mode::ARRAY_LINKED_LIST) { // Lista jednokierunkowa (realizacja za pomoca tablicy)
 
             using namespace std::chrono;
             const auto start{std::chrono::steady_clock::now()};    
@@ -525,7 +525,7 @@ public:
             DrawString(10, ScreenWidth()-50, "Number of Circles: " + std::to_string(arrayLinkedList.getSize()), olc::CYAN);
 
 
-    } else if (mode == Mode::ARRAY_DOUBLY_LINKED_LIST) {
+    } else if (mode == Mode::ARRAY_DOUBLY_LINKED_LIST) { // Lista dwukierunkowa (realizacja za pomoca tablicy)
 
             using namespace std::chrono;
             const auto start{std::chrono::steady_clock::now()};    
