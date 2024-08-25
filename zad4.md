@@ -47,38 +47,38 @@ Powyższy wykres przedstawia zależność czasu realizacji różnych algorytmów
 Na podstawie wyników czasowych, można przybliżyć formuły na czas realizacji algorytmów sortowania w zależności od rozmiaru danych wejściowych. Przyjęto, że średni przypadek odpowiada typowej wydajności algorytmu, a najgorszy przypadek jest dla najbardziej niekorzystnego ułożenia danych.
 
 - **Sortowanie bąbelkowe:**
-  - Średni przypadek: \( T(n) \approx O(n^2) \)
-  - Najgorszy przypadek: \( T(n) \approx O(n^2) \)
+  - Średni przypadek: T(n) ≈ O(n²)
+  - Najgorszy przypadek: T(n) ≈ O(n²)
 
 - **Sortowanie przez wstawianie:**
-  - Średni przypadek: \( T(n) \approx O(n^2) \)
-  - Najlepszy przypadek: \( T(n) \approx O(n) \)
-  - Najgorszy przypadek: \( T(n) \approx O(n^2) \)
+  - Średni przypadek: T(n) ≈ O(n²)
+  - Najlepszy przypadek: T(n) ≈ O(n)
+  - Najgorszy przypadek: T(n) ≈ O(n²)
 
 - **Sortowanie przez kopcowanie:**
-  - Średni przypadek: \( T(n) \approx O(n \log n) \)
-  - Najgorszy przypadek: \( T(n) \approx O(n \log n) \)
+  - Średni przypadek: T(n) ≈ O(n log n)
+  - Najgorszy przypadek: T(n) ≈ O(n log n)
 
 - **Quicksort:**
-  - Średni przypadek: \( T(n) \approx O(n \log n) \)
-  - Najlepszy przypadek: \( T(n) \approx O(n \log n) \)
-  - Najgorszy przypadek: \( T(n) \approx O(n^2) \)
+  - Średni przypadek: T(n) ≈ O(n log n)
+  - Najlepszy przypadek: T(n) ≈ O(n log n)
+  - Najgorszy przypadek: T(n) ≈ O(n²)
 
 - **Sortowanie przez scalanie:**
-  - Średni przypadek: \( T(n) \approx O(n \log n) \)
-  - Najgorszy przypadek: \( T(n) \approx O(n \log n) \)
+  - Średni przypadek: T(n) ≈ O(n log n)
+  - Najgorszy przypadek: T(n) ≈ O(n log n)
 
 - **Sortowanie przez zliczanie:**
-  - Średni przypadek: \( T(n) \approx O(n + k) \) (k - zakres wartości)
-  - Najgorszy przypadek: \( T(n) \approx O(n + k) \)
+  - Średni przypadek: T(n) ≈ O(n + k) (k - zakres wartości)
+  - Najgorszy przypadek: T(n) ≈ O(n + k)
 
 - **Sortowanie pozycyjne:**
-  - Średni przypadek: \( T(n) \approx O(d \times (n + k)) \) (d - liczba cyfr, k - zakres wartości)
-  - Najgorszy przypadek: \( T(n) \approx O(d \times (n + k)) \)
+  - Średni przypadek: T(n) ≈ O(d × (n + k)) (d - liczba cyfr, k - zakres wartości)
+  - Najgorszy przypadek: T(n) ≈ O(d × (n + k))
 
 - **Sortowanie kubełkowe:**
-  - Średni przypadek: \( T(n) \approx O(n) \) (przy idealnym rozkładzie)
-  - Najgorszy przypadek: \( T(n) \approx O(n^2) \)
+  - Średni przypadek: T(n) ≈ O(n) (przy idealnym rozkładzie)
+  - Najgorszy przypadek: T(n) ≈ O(n²)
 
 #### 5. **Analiza Uzyskanych Wyników**
 
@@ -100,4 +100,271 @@ Wnioskując, dobór algorytmu sortowania powinien być uzależniony od specyfiki
 
 
 
+
+Sortowanie bąbelkowe:
+
+Średni przypadek: 
+𝑇
+(
+𝑛
+)
+≈
+𝑂
+(
+𝑛
+2
+)
+T(n)≈O(n 
+2
+ )
+Najgorszy przypadek: 
+𝑇
+(
+𝑛
+)
+≈
+𝑂
+(
+𝑛
+2
+)
+T(n)≈O(n 
+2
+ )
+Sortowanie przez wstawianie:
+
+Średni przypadek: 
+𝑇
+(
+𝑛
+)
+≈
+𝑂
+(
+𝑛
+2
+)
+T(n)≈O(n 
+2
+ )
+Najlepszy przypadek: 
+𝑇
+(
+𝑛
+)
+≈
+𝑂
+(
+𝑛
+)
+T(n)≈O(n)
+Najgorszy przypadek: 
+𝑇
+(
+𝑛
+)
+≈
+𝑂
+(
+𝑛
+2
+)
+T(n)≈O(n 
+2
+ )
+Sortowanie przez kopcowanie:
+
+Średni przypadek: 
+𝑇
+(
+𝑛
+)
+≈
+𝑂
+(
+𝑛
+log
+⁡
+𝑛
+)
+T(n)≈O(nlogn)
+Najgorszy przypadek: 
+𝑇
+(
+𝑛
+)
+≈
+𝑂
+(
+𝑛
+log
+⁡
+𝑛
+)
+T(n)≈O(nlogn)
+Quicksort:
+
+Średni przypadek: 
+𝑇
+(
+𝑛
+)
+≈
+𝑂
+(
+𝑛
+log
+⁡
+𝑛
+)
+T(n)≈O(nlogn)
+Najlepszy przypadek: 
+𝑇
+(
+𝑛
+)
+≈
+𝑂
+(
+𝑛
+log
+⁡
+𝑛
+)
+T(n)≈O(nlogn)
+Najgorszy przypadek: 
+𝑇
+(
+𝑛
+)
+≈
+𝑂
+(
+𝑛
+2
+)
+T(n)≈O(n 
+2
+ )
+Sortowanie przez scalanie:
+
+Średni przypadek: 
+𝑇
+(
+𝑛
+)
+≈
+𝑂
+(
+𝑛
+log
+⁡
+𝑛
+)
+T(n)≈O(nlogn)
+Najgorszy przypadek: 
+𝑇
+(
+𝑛
+)
+≈
+𝑂
+(
+𝑛
+log
+⁡
+𝑛
+)
+T(n)≈O(nlogn)
+Sortowanie przez zliczanie:
+
+Średni przypadek: 
+𝑇
+(
+𝑛
+)
+≈
+𝑂
+(
+𝑛
++
+𝑘
+)
+T(n)≈O(n+k) (k - zakres wartości)
+Najgorszy przypadek: 
+𝑇
+(
+𝑛
+)
+≈
+𝑂
+(
+𝑛
++
+𝑘
+)
+T(n)≈O(n+k)
+Sortowanie pozycyjne:
+
+Średni przypadek: 
+𝑇
+(
+𝑛
+)
+≈
+𝑂
+(
+𝑑
+×
+(
+𝑛
++
+𝑘
+)
+)
+T(n)≈O(d×(n+k)) (d - liczba cyfr, k - zakres wartości)
+Najgorszy przypadek: 
+𝑇
+(
+𝑛
+)
+≈
+𝑂
+(
+𝑑
+×
+(
+𝑛
++
+𝑘
+)
+)
+T(n)≈O(d×(n+k))
+Sortowanie kubełkowe:
+
+Średni przypadek: 
+𝑇
+(
+𝑛
+)
+≈
+𝑂
+(
+𝑛
+)
+T(n)≈O(n) (przy idealnym rozkładzie)
+Najgorszy przypadek: 
+𝑇
+(
+𝑛
+)
+≈
+𝑂
+(
+𝑛
+2
+)
+T(n)≈O(n 
+2
+ )
 
