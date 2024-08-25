@@ -128,78 +128,74 @@ public:
 		if ((mode == Mode::ALGORYTM_TEST)) {
 
 			DrawString(15, 15, "ESC - back to main menu", olc::GREEN);
-			DrawString(15, 45, "Porownanie wydajnosci roznych algorytmow sortowania", olc::YELLOW);
-			DrawString(15, 60, "1. 250 trojkatow", olc::CYAN);
-			DrawString(15, 75, "2. 1000 trojkatow", olc::CYAN);
-			DrawString(15, 90, "3. 5000 trojkatow", olc::CYAN);
+			DrawString(15, 35, "Porownanie wydajnosci roznych algorytmow sortowania", olc::YELLOW);
+			DrawString(15, 45, "1. 250 trojkatow", olc::CYAN);
+			DrawString(15, 60, "2. 1000 trojkatow", olc::CYAN);
+			DrawString(15, 75, "3. 5000 trojkatow", olc::CYAN);
+			DrawString(15, 90, "4. 15000 trojkatow", olc::CYAN);
+
+			std::vector<std::pair<std::string, std::function<void(std::vector<triangle>&)>>> sortingAlgorithms = {
+				{"Sortowanie babelkowe", testSortowanieBabelkowe},
+				{"Sortowanie przez wstawianie", testSortowaniePrzezWstawianie},
+				{"Sortowanie przez kopcowanie", testHeapSort},
+				{"Quicksort", testQuickSort},
+				{"Sortowanie przez scalanie", testMergeSort},
+				{"Sortowanie przez zliczanie", testCountingSort},
+				{"Sortowanie pozycyjne", testRadixSort},
+				{"Sortowanie kubelkowe", testBucketSortTriangles},
+				{"std::sort", testStdSort}
+			};
+
+			auto l_duration_ms = [&](auto durations) {
+					// Sformatowanie wartości czasowej do jednego miejsca po przecinku
+            		std::ostringstream oss;
+					// mierzymy czas wykonania sortowania w mikrosekundach, przelicza go na milisekundy i zwraca tę wartość.
+					auto duration_ms = durations / 1000.0;
+            		oss << std::fixed << std::setprecision(1) << duration_ms;
+					return oss.str();
+			};
 
 			if (GetKey(olc::Key::K1).bReleased) {
 				const int numTriangles = 250; // 
+				std::cout << "Test z ilością trojkatow : " << numTriangles << std::endl;
 				durations.clear();
 				names.clear();
 
         		std::vector<triangle> triangles;
-        		generateRandomTriangles(triangles, numTriangles);
-
-				std::vector<std::pair<std::string, std::function<void(std::vector<triangle>&)>>> sortingAlgorithms = {
-					{"Sortowanie babelkowe", testSortowanieBabelkowe},
-					{"Sortowanie przez wstawianie", testSortowaniePrzezWstawianie},
-					{"Sortowanie przez kopcowanie", testHeapSort},
-					{"Quicksort", testQuickSort},
-					{"Sortowanie przez scalanie", testMergeSort},
-					{"Sortowanie przez zliczanie", testCountingSort},
-					{"Sortowanie pozycyjne", testRadixSort},
-					{"Sortowanie kubelkowe", testBucketSortTriangles},
-					{"std::sort", testStdSort}
-				};
+        		generateRandomTriangles(triangles, numTriangles);		
 
 				for (auto& algorithm : sortingAlgorithms) {
-					durations.push_back(testSortingAlgorithm(algorithm.second, triangles));
+					auto duration_ms = testSortingAlgorithm(algorithm.second, triangles);
+					durations.push_back(duration_ms);
 					names.push_back(algorithm.first);
+					
+					std::cout << algorithm.first << ", czas : " << l_duration_ms(duration_ms) << std::endl;
 				}
+
 			} else if (GetKey(olc::Key::K2).bReleased) {
 				const int numTriangles = 1000; // 
+				std::cout << "Test z ilością trojkatow : " << numTriangles << std::endl;
 				durations.clear();
 				names.clear();
 
         		std::vector<triangle> triangles;
         		generateRandomTriangles(triangles, numTriangles);
 
-				std::vector<std::pair<std::string, std::function<void(std::vector<triangle>&)>>> sortingAlgorithms = {
-					{"Sortowanie babelkowe", testSortowanieBabelkowe},
-					{"Sortowanie przez wstawianie", testSortowaniePrzezWstawianie},
-					{"Sortowanie przez kopcowanie", testHeapSort},
-					{"Quicksort", testQuickSort},
-					{"Sortowanie przez scalanie", testMergeSort},
-					{"Sortowanie przez zliczanie", testCountingSort},
-					{"Sortowanie pozycyjne", testRadixSort},
-					{"Sortowanie kubelkowe", testBucketSortTriangles},
-					{"std::sort", testStdSort}
-				};
-
 				for (auto& algorithm : sortingAlgorithms) {
-					durations.push_back(testSortingAlgorithm(algorithm.second, triangles));
+					auto duration_ms = testSortingAlgorithm(algorithm.second, triangles);
+					durations.push_back(duration_ms);
 					names.push_back(algorithm.first);
+
+					std::cout << algorithm.first << ", czas : " << l_duration_ms(duration_ms) << std::endl;
 				}
 				
 			} else if (GetKey(olc::Key::K3).bReleased) {
 				const int numTriangles = 5000; // 
+				std::cout << "Test z ilością trojkatow : " << numTriangles << std::endl;
 				durations.clear();
 				names.clear();
         		std::vector<triangle> triangles;
         		generateRandomTriangles(triangles, numTriangles);
-
-				std::vector<std::pair<std::string, std::function<void(std::vector<triangle>&)>>> sortingAlgorithms = {
-					{"Sortowanie babelkowe", testSortowanieBabelkowe},
-					{"Sortowanie przez wstawianie", testSortowaniePrzezWstawianie},
-					{"Sortowanie przez kopcowanie", testHeapSort},
-					{"Quicksort", testQuickSort},
-					{"Sortowanie przez scalanie", testMergeSort},
-					{"Sortowanie przez zliczanie", testCountingSort},
-					{"Sortowanie pozycyjne", testRadixSort},
-					{"Sortowanie kubelkowe", testBucketSortTriangles},
-					{"std::sort", testStdSort}
-				};
 
 				// for (auto& algorithm : sortingAlgorithms) {
 				// 	if (algorithm.first.find("Sortowanie przez zliczanie") != std::string::npos) {
@@ -208,14 +204,40 @@ public:
 				// 	}
 				// }				
 				for (auto& algorithm : sortingAlgorithms) {
-					durations.push_back(testSortingAlgorithm(algorithm.second, triangles));
+					auto duration_ms = testSortingAlgorithm(algorithm.second, triangles);
+					durations.push_back(duration_ms);
 					names.push_back(algorithm.first);
+
+					std::cout << algorithm.first << ", czas : " << l_duration_ms(duration_ms) << std::endl;
 				}
+
+			} else if (GetKey(olc::Key::K4).bReleased) {
+				const int numTriangles = 15000; // 
+				std::cout << "Test z ilością trojkatow : " << numTriangles << std::endl;
+				durations.clear();
+				names.clear();
+        		std::vector<triangle> triangles;
+        		generateRandomTriangles(triangles, numTriangles);
+
+				// for (auto& algorithm : sortingAlgorithms) {
+				// 	if (algorithm.first.find("Sortowanie przez zliczanie") != std::string::npos) {
+				// 		durations.push_back(testSortingAlgorithm(algorithm.second, triangles));
+				// 		names.push_back(algorithm.first);
+				// 	}
+				// }				
+				for (auto& algorithm : sortingAlgorithms) {
+					auto duration_ms = testSortingAlgorithm(algorithm.second, triangles);
+					durations.push_back(duration_ms);
+					names.push_back(algorithm.first);
+
+					std::cout << algorithm.first << ", czas : " << l_duration_ms(duration_ms) << std::endl;
+				}
+				
 			}
 
 			if (durations.size() > 0) {
 
-				const float margin = 50.0f; // Margines od krawędzi okna
+				const float margin = 25.0f; // Margines od krawędzi okna
 				float barWidth = (ScreenWidth() - 2 * margin) / (durations.size() * 2);
 				float maxDuration = *std::max_element(durations.begin(), durations.end());
 		        float spacing = (ScreenHeight() - 2 * margin) / 0.5 * durations.size(); // Odstęp między opisami
@@ -229,19 +251,19 @@ public:
 					// DrawString(barX, barY - 10, names[i], olc::WHITE);
 					// Rysowanie etykiet obok słupków z numeracją
 					std::string label = std::to_string(i + 1) + "."  + names[i];
-					// Sformatowanie wartości czasowej do jednego miejsca po przecinku
-            		std::ostringstream oss;
-					// mierzymy czas wykonania sortowania w mikrosekundach, przelicza go na milisekundy i zwraca tę wartość.
-					auto duration_ms = durations[i] / 1000.0;
-            		oss << std::fixed << std::setprecision(1) << duration_ms;
+					// // Sformatowanie wartości czasowej do jednego miejsca po przecinku
+            		// std::ostringstream oss;
+					// // mierzymy czas wykonania sortowania w mikrosekundach, przelicza go na milisekundy i zwraca tę wartość.
+					// auto duration_ms = durations[i] / 1000.0;
+            		// oss << std::fixed << std::setprecision(1) << duration_ms;
 
 					DrawString(barX, barY - 10, std::to_string(i + 1), olc::WHITE);
-					DrawString(barX, ScreenHeight() - margin/2, oss.str(), olc::WHITE);
+					DrawString(barX, ScreenHeight() - margin/2, l_duration_ms(durations[i]), olc::WHITE);
 					if (i == durations.size()-1) {
 						DrawString(barX + barWidth, ScreenHeight() - margin/2, "ms", olc::WHITE);
 					}
 					float labelY = 2 * margin + i * 15; //spacing;
-					DrawString(ScreenWidth()/2, labelY, label, olc::WHITE);					
+					DrawString(ScreenWidth()/2, labelY, label, olc::WHITE);		
 				}
 			} else {
                     uint32_t scale = 2;

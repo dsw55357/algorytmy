@@ -1,67 +1,70 @@
+### Sprawozdanie z Analizy Algorytmów Sortowania
 
-### Sprawozdanie z realizacji punktu 3).
+#### 1. **Przegląd Algorytmów Sortowania**
 
-### 1. **Przegląd Algorytmów Sortowania**
-
-- **Sortowanie bąbelkowe (Bubble Sort):** Algorytm prosty, o złożoności O(n²) w najgorszym i średnim przypadku oraz O(n) w najlepszym przypadku, gdy dane są już posortowane.
+- **Sortowanie bąbelkowe (Bubble Sort):** Algorytm o złożoności O(n²) w najgorszym i średnim przypadku oraz O(n) w najlepszym przypadku, gdy dane są już posortowane.
   
-- **Sortowanie przez wstawianie (Insertion Sort):** Podobnie jak bąbelkowe, ma złożoność O(n²) w najgorszym i średnim przypadku oraz O(n) w najlepszym przypadku.
+- **Sortowanie przez wstawianie (Insertion Sort):** Ma złożoność O(n²) w najgorszym i średnim przypadku oraz O(n) w najlepszym przypadku. Efektywny dla małych zbiorów danych lub wstępnie posortowanych danych.
   
-- **Sortowanie przez kopcowanie (Heapsort):** Algorytm złożony, o złożoności O(n log n) w najgorszym, średnim i najlepszym przypadku. Wymaga przestrzeni O(1) (jest to sortowanie w miejscu).
+- **Sortowanie przez kopcowanie (Heapsort):** Algorytm o złożoności O(n log n) w najgorszym, średnim i najlepszym przypadku. Jest to algorytm sortujący w miejscu, co oznacza, że nie wymaga dodatkowej przestrzeni pamięci.
   
-- **Quicksort:** Bardzo efektywny w praktyce, o złożoności O(n log n) w średnim i najlepszym przypadku, ale w najgorszym przypadku O(n²).
+- **Quicksort:** Algorytm o złożoności O(n log n) w średnim i najlepszym przypadku, jednak w najgorszym przypadku może osiągnąć O(n²). Jest szybki w praktyce, ale zależy od wyboru pivotu.
   
-- **Sortowanie przez scalanie (Mergesort):** Złożoność O(n log n) w każdym przypadku, jednakże wymaga dodatkowej przestrzeni O(n).
+- **Sortowanie przez scalanie (Mergesort):** Algorytm o złożoności O(n log n) w każdym przypadku, ale wymaga dodatkowej przestrzeni O(n), ponieważ nie działa w miejscu.
   
-- **Sortowanie przez zliczanie (Counting Sort):** O(k + n) w każdym przypadku, gdzie k to zakres danych. Efektywny tylko dla danych o ograniczonym zakresie.
+- **Sortowanie przez zliczanie (Counting Sort):** Algorytm o złożoności O(n + k), gdzie k to zakres danych. Jest szybki, ale efektywny tylko dla danych o ograniczonym zakresie.
   
-- **Sortowanie pozycyjne (Radix Sort):** O(d*(n + k)), gdzie d to liczba cyfr maksymalnej liczby, a k to zakres cyfr.
+- **Sortowanie pozycyjne (Radix Sort):** Algorytm o złożoności O(d*(n + k)), gdzie d to liczba cyfr maksymalnej liczby, a k to zakres cyfr. Efektywny dla liczb całkowitych o ustalonym zakresie.
   
-- **Sortowanie kubełkowe (Bucket Sort):** Efektywność zależy od rozkładu danych, w najlepszym przypadku O(n+k), w najgorszym O(n²).
+- **Sortowanie kubełkowe (Bucket Sort):** Efektywność zależy od rozkładu danych. W najlepszym przypadku O(n+k), w najgorszym O(n²).
 
-### 2. **Tabela Czasów Realizacji dla Przypadku Średniego, Najgorszego i Najlepszego**
+#### 2. **Tabela Czasów Realizacji dla Przypadku Średniego, Najgorszego i Najlepszego**
 
-| Algorytm                 | Najlepszy Przypadek | Średni Przypadek | Najgorszy Przypadek |
-|--------------------------|---------------------|------------------|---------------------|
-| Sortowanie bąbelkowe      | O(n)                | O(n²)            | O(n²)               |
-| Sortowanie przez wstawianie | O(n)              | O(n²)            | O(n²)               |
-| Sortowanie przez kopcowanie | O(n log n)        | O(n log n)       | O(n log n)          |
-| Quicksort                | O(n log n)          | O(n log n)       | O(n²)               |
-| Sortowanie przez scalanie | O(n log n)         | O(n log n)       | O(n log n)          |
-| Sortowanie przez zliczanie | O(k + n)          | O(k + n)         | O(k + n)            |
-| Sortowanie pozycyjne     | O(d*(n+k))          | O(d*(n+k))       | O(d*(n+k))          |
-| Sortowanie kubełkowe     | O(n+k)              | O(n+k)           | O(n²)               |
+Na podstawie dostarczonych wyników testów, poniżej znajduje się tabela z czasem realizacji dla różnych algorytmów sortowania w zależności od rozmiaru danych.
 
-### 3. **Wykres Czasu Realizacji od Rozmiaru Danych**
+| Algorytm                 | 250 trójkątów (ms) | 1000 trójkątów (ms) | 5000 trójkątów (ms) | 15000 trójkątów (ms) |
+|--------------------------|--------------------|---------------------|---------------------|----------------------|
+| Sortowanie bąbelkowe      | 1.6                | 26.3                | 687.2               | 6028.3               |
+| Sortowanie przez wstawianie | 0.5              | 7.5                 | 186.2               | 1650.3               |
+| Sortowanie przez kopcowanie | 0.2              | 0.9                 | 5.0                 | 17.4                 |
+| Quicksort                | 0.1                | 0.5                 | 2.9                 | 10.4                 |
+| Sortowanie przez scalanie | 0.2               | 1.3                 | 6.9                 | 23.4                 |
+| Sortowanie przez zliczanie | 0.1              | 0.2                 | 0.9                 | 4.3                  |
+| Sortowanie pozycyjne     | 0.2                | 0.7                 | 3.6                 | 14.5                 |
+| Sortowanie kubełkowe     | 1.3                | 1.5                 | 2.3                 | 5.3                  |
+| std::sort                | 0.1                | 0.4                 | 2.7                 | 9.8                  |
 
-Na wykresie można przedstawić zależność czasu realizacji od rozmiaru danych dla różnych algorytmów.
+#### 3. **Wykres Czasu Realizacji od Rozmiaru Danych**
 
-### 4. **Przybliżona Formuła na Czas Realizacji**
+Poniżej znajduje się wykres przedstawiający zależność czasu realizacji od rozmiaru danych dla różnych algorytmów sortowania.
 
-- **Średni Przypadek:**
-  - Dla algorytmów takich jak Quicksort, Heapsort, i Mergesort czas realizacji można przybliżyć jako \( T(n) = O(n \log n) \).
-  - Dla prostszych algorytmów, takich jak Bubble Sort i Insertion Sort, czas realizacji to \( T(n) = O(n^2) \).
+![Wykres czasu realizacji](wykres.png)
+
+Powyższy wykres przedstawia zależność czasu realizacji różnych algorytmów sortowania od rozmiaru danych, czyli liczby trójkątów do posortowania. Jak widać, algorytmy różnią się znacząco pod względem wydajności, szczególnie przy większych ilościach danych.
+
+#### 4. **Przybliżona Formuła na Czas Realizacji**
+
+Na podstawie powyższych wyników można przybliżyć formuły na czas realizacji algorytmów w zależności od rozmiaru danych wejściowych.
+
+- **Sortowanie bąbelkowe:** \( T(n) \approx O(n^2) \)
+- **Sortowanie przez wstawianie:** \( T(n) \approx O(n^2) \)
+- **Sortowanie przez kopcowanie:** \( T(n) \approx O(n \log n) \)
+- **Quicksort:** \( T(n) \approx O(n \log n) \) (z ryzykiem \( O(n^2) \) w najgorszym przypadku)
+- **Sortowanie przez scalanie:** \( T(n) \approx O(n \log n) \)
+- **Sortowanie przez zliczanie:** \( T(n) \approx O(n + k) \) (k - zakres wartości)
+- **Sortowanie pozycyjne:** \( T(n) \approx O(d \times (n + k)) \) (d - liczba cyfr, k - zakres wartości)
+- **Sortowanie kubełkowe:** \( T(n) \approx O(n) \) (przy idealnym rozkładzie, ale może osiągnąć \( O(n^2) \) w najgorszym przypadku)
+
+#### 5. **Analiza Uzyskanych Wyników**
+
+- **Proste algorytmy sortowania, takie jak Bubble Sort i Insertion Sort, wykazują bardzo słabą wydajność przy rosnącej liczbie danych, co jest widoczne na wykresie.** Czas ich realizacji rośnie wykładniczo wraz z liczbą trójkątów, co jest zgodne z ich złożonością \( O(n^2) \).
   
-- **Najgorszy Przypadek:**
-  - Dla Quicksortu w najgorszym przypadku \( T(n) = O(n^2) \).
-  - Dla pozostałych algorytmów (oprócz sortowania kubełkowego) złożoność najgorszego przypadku to \( T(n) = O(n \log n) \) (dla Heapsortu i Mergesortu) lub \( O(n^2) \) (dla prostych algorytmów).
+- **Heapsort, Quicksort, oraz Mergesort wykazują znacznie lepszą wydajność, osiągając czas rzędu \( O(n \log n) \)**. Są one znacznie bardziej skalowalne i nadają się do sortowania większych zbiorów danych.
 
-### 5. **Analiza Uzyskanych Wyników**
+- **Algorytmy takie jak Counting Sort i Radix Sort są bardzo szybkie, ale ich wydajność zależy od specyficznych warunków, takich jak zakres danych.** Sprawdzają się szczególnie dobrze, gdy zakres danych jest ograniczony.
 
-Na podstawie przedstawionych danych można wyciągnąć następujące wnioski:
-- **Quicksort** jest jednym z najszybszych algorytmów w praktyce, jednak jego wydajność zależy od wyboru pivotu. W najgorszym przypadku może działać znacznie wolniej niż Heapsort czy Mergesort.
-- **Heapsort** i **Mergesort** mają stabilną wydajność O(n log n) we wszystkich przypadkach, przy czym Mergesort wymaga dodatkowej przestrzeni, podczas gdy Heapsort działa w miejscu.
-- **Proste algorytmy** jak Bubble Sort i Insertion Sort są stosunkowo nieefektywne dla dużych zbiorów danych, jednak są łatwe do zaimplementowania i mogą być szybkie dla małych zbiorów danych.
-- **Sortowanie przez zliczanie i pozycyjne** są bardzo efektywne dla danych o ograniczonym zakresie, jednak ich zastosowanie jest ograniczone do specyficznych przypadków.
+- **Sortowanie kubełkowe** wykazuje zmienną wydajność, co może być efektem zależności od rozkładu danych. W najlepszym przypadku działa dobrze, ale przy większych danych może być mniej efektywne.
 
-Wykres dla wybranych algorytmów.
+- **std::sort (oparte na introsort, które jest połączeniem Quicksortu, Heapsortu i sortowania przez wstawianie)** okazało się być bardzo efektywne, osiągając najlepsze wyniki czasowe, co czyni je jednym z najlepszych wyborów w praktycznych zastosowaniach.
 
-![Wykres czasu realizacji](output.png)
-
-Wykres przedstawiający szacunkowy czas realizacji różnych algorytmów sortowania w zależności od rozmiaru danych. Oś X (logarytmiczna) reprezentuje rozmiar danych, natomiast oś Y (również logarytmiczna) pokazuje czas realizacji.
-
-### Analiza wykresu:
-
-- **Bubble Sort i Insertion Sort** wykazują gwałtowny wzrost czasu realizacji wraz ze wzrostem rozmiaru danych, co odpowiada ich złożoności \( O(n^2) \).
-- **Heapsort, Quicksort, Mergesort** mają znacznie lepsze czasy realizacji, które rosną logarytmicznie z rozmiarem danych.
-- **Counting Sort, Radix Sort i Bucket Sort** mają różne charakterystyki, ale w większości przypadków działają szybciej przy odpowiednich danych, choć ich złożoność zależy od specyfiki danych (np. zakresu k, liczby cyfr d).
+Podsumowując, wybór algorytmu sortowania powinien zależeć od specyfiki danych oraz wymagań dotyczących wydajności i pamięci. Dla małych zbiorów danych, prostsze algorytmy mogą być wystarczające, ale dla dużych zbiorów lepiej sprawdzają się algorytmy o złożoności \( O(n \log n) \).
