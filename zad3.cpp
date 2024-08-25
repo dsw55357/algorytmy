@@ -20,8 +20,9 @@ dostępnego na github: https://github.com/OneLoneCoder/Javidx9/tree/master/Conso
 
 using namespace std;
 
-bool test {false};
 bool test2 {false};
+
+bool bRot {false};
 
 enum class Mode {
     MENU,
@@ -128,10 +129,35 @@ public:
 
 			DrawString(15, 15, "ESC - back to main menu", olc::GREEN);
 			DrawString(15, 45, "Porownanie wydajnosci roznych algorytmow sortowania", olc::YELLOW);
-			DrawString(15, 60, "1. 1000 trojkatow", olc::CYAN);
-			DrawString(15, 75, "2. 5000 trojkatow", olc::CYAN);
+			DrawString(15, 60, "1. 250 trojkatow", olc::CYAN);
+			DrawString(15, 75, "2. 1000 trojkatow", olc::CYAN);
+			DrawString(15, 90, "3. 5000 trojkatow", olc::CYAN);
 
 			if (GetKey(olc::Key::K1).bReleased) {
+				const int numTriangles = 250; // 
+				durations.clear();
+				names.clear();
+
+        		std::vector<triangle> triangles;
+        		generateRandomTriangles(triangles, numTriangles);
+
+				std::vector<std::pair<std::string, std::function<void(std::vector<triangle>&)>>> sortingAlgorithms = {
+					{"Sortowanie babelkowe", testSortowanieBabelkowe},
+					{"Sortowanie przez wstawianie", testSortowaniePrzezWstawianie},
+					{"Sortowanie przez kopcowanie", testHeapSort},
+					{"Quicksort", testQuickSort},
+					{"Sortowanie przez scalanie", testMergeSort},
+					{"Sortowanie przez zliczanie", testCountingSort},
+					{"Sortowanie pozycyjne", testRadixSort},
+					{"Sortowanie kubelkowe", testBucketSortTriangles},
+					{"std::sort", testStdSort}
+				};
+
+				for (auto& algorithm : sortingAlgorithms) {
+					durations.push_back(testSortingAlgorithm(algorithm.second, triangles));
+					names.push_back(algorithm.first);
+				}
+			} else if (GetKey(olc::Key::K2).bReleased) {
 				const int numTriangles = 1000; // 
 				durations.clear();
 				names.clear();
@@ -156,7 +182,7 @@ public:
 					names.push_back(algorithm.first);
 				}
 				
-			} else if (GetKey(olc::Key::K2).bReleased) {
+			} else if (GetKey(olc::Key::K3).bReleased) {
 				const int numTriangles = 5000; // 
 				durations.clear();
 				names.clear();
@@ -238,9 +264,11 @@ public:
 		mat4x4 matRotY, matRotX;
 
 		if (GetKey(olc::Key::SPACE).bReleased) {
-			fTheta += 1.0f * fElapsedTime; // Uncomment to spin me right round baby right round
+			bRot = !bRot;
+		}
 
-			test = true;
+		if(bRot) { 
+			fTheta += 1.0f * fElapsedTime; // Uncomment to spin me right round baby right round
 		}
 
 		matRotY = Matrix_MakeRotationY(fTheta * 0.5f);
@@ -390,14 +418,15 @@ public:
 
 			DrawString(15, 30, "Sortowanie babelkowe", olc::YELLOW);		
 			SortowanieBabelkowe(vecTrianglesToRaster);
-			if (test2) {
-				//SortowanieBabelkowe(vecTrianglesToRaster);
-				std::cout << "......" << std::endl;
-				for (const auto& triangle : vecTrianglesToRaster) {
-					std::cout << " trojkat " << ", z1:" << triangle.p[0].z << ", z2:" << triangle.p[1].z << ", z3:" << triangle.p[2].z << std::endl;
-				}
-				test2 = false;
-			}
+
+			// if (test2) {
+			// 	//SortowanieBabelkowe(vecTrianglesToRaster);
+			// 	std::cout << "......" << std::endl;
+			// 	for (const auto& triangle : vecTrianglesToRaster) {
+			// 		std::cout << " trojkat " << ", z1:" << triangle.p[0].z << ", z2:" << triangle.p[1].z << ", z3:" << triangle.p[2].z << std::endl;
+			// 	}
+			// 	test2 = false;
+			// }
 
 			const auto end{std::chrono::steady_clock::now()};
 			auto duration = duration_cast<microseconds>(end - start).count();
@@ -488,20 +517,12 @@ public:
 			DrawString(15, 45, "Sortowanie kubelkowe", olc::YELLOW);
 			bucketSortTriangles(vecTrianglesToRaster);
 
-			// if (test) {
-			// 	bucketSortTriangles(vecTrianglesToRaster);
-			// 	test = false;
-			// }
-
 			const auto end{std::chrono::steady_clock::now()};
 			auto duration = duration_cast<microseconds>(end - start).count();
 			
 			performanceMessage = "Czas: " + std::to_string(duration) + " us";
 			DrawString(15, ScreenHeight() - 15, performanceMessage, olc::YELLOW);
 		}
-
-
-		
 
 		// Loop through all transformed, viewed, projected, and sorted triangles
 		for (auto &triToRaster : vecTrianglesToRaster)
@@ -581,6 +602,7 @@ public:
 	if ((mode != Mode::ALGORYTM_TEST)) {
 		DrawString(ScreenWidth()-300, ScreenHeight()-15, "Powered by olcPixelGameEngine, 2024(7)", olc::CYAN );
 	}
+
 		return !quit;
 	}
 

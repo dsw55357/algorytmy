@@ -34,7 +34,7 @@
 
 ### 3. **Wykres Czasu Realizacji od Rozmiaru Danych**
 
-Na wykresie można przedstawić zależność czasu realizacji od rozmiaru danych dla różnych algorytmów. Stworzę teraz przykładowy wykres.
+Na wykresie można przedstawić zależność czasu realizacji od rozmiaru danych dla różnych algorytmów.
 
 ### 4. **Przybliżona Formuła na Czas Realizacji**
 
