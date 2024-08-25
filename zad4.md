@@ -56,7 +56,7 @@ Na podstawie przedstawionych danych można wyciągnąć następujące wnioski:
 
 Wykres dla wybranych algorytmów.
 
-![Wykres czasu realizacji](output.png )
+![Wykres czasu realizacji](output.png)
 
 Wykres przedstawiający szacunkowy czas realizacji różnych algorytmów sortowania w zależności od rozmiaru danych. Oś X (logarytmiczna) reprezentuje rozmiar danych, natomiast oś Y (również logarytmiczna) pokazuje czas realizacji.
 

@@ -20,7 +20,7 @@
    - f. <3> Sortowanie przez zliczanie
    - g. <4> Sortowanie pozycyjne
    - h. <3> Sortowanie kubełkowe
-4. Wykonaj sprawozdanie z realizacji punktu 3). W sprawozdaniu przedstaw:
+4. Wykonaj sprawozdanie z realizacji punktu 3). W sprawozdaniu przedstaw: [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad4.md)**]
    - a. <3> Czas realizacji poszczególnych algorytmów dla danych o różnym rozmiarze (dla przypadku średniego, najgorszego i najlepszego) – tabelarycznie i w formie wykresu od rozmiaru danych.
    - b. <4> Na podstawie powyższych wyników przybliż formułę przedstawiającą czas realizacji algorytmu w zależności od rozmiaru danych wejściowych (dla przypadku średniego i najgorszego).
    - c. <3> Przeanalizuj uzyskane wyniki.
