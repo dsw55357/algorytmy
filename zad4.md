@@ -42,29 +42,62 @@ Poniżej znajduje się wykres przedstawiający zależność czasu realizacji od 
 
 Powyższy wykres przedstawia zależność czasu realizacji różnych algorytmów sortowania od rozmiaru danych, czyli liczby trójkątów do posortowania. Jak widać, algorytmy różnią się znacząco pod względem wydajności, szczególnie przy większych ilościach danych.
 
-#### 4. **Przybliżona Formuła na Czas Realizacji**
+#### 3. **Przybliżone Formuły na Czas Realizacji Algorytmów**
 
-Na podstawie powyższych wyników można przybliżyć formuły na czas realizacji algorytmów w zależności od rozmiaru danych wejściowych.
+Na podstawie wyników czasowych, można przybliżyć formuły na czas realizacji algorytmów sortowania w zależności od rozmiaru danych wejściowych. Przyjęto, że średni przypadek odpowiada typowej wydajności algorytmu, a najgorszy przypadek jest dla najbardziej niekorzystnego ułożenia danych.
 
-- **Sortowanie bąbelkowe:** \( T(n) \approx O(n^2) \)
-- **Sortowanie przez wstawianie:** \( T(n) \approx O(n^2) \)
-- **Sortowanie przez kopcowanie:** \( T(n) \approx O(n \log n) \)
-- **Quicksort:** \( T(n) \approx O(n \log n) \) (z ryzykiem \( O(n^2) \) w najgorszym przypadku)
-- **Sortowanie przez scalanie:** \( T(n) \approx O(n \log n) \)
-- **Sortowanie przez zliczanie:** \( T(n) \approx O(n + k) \) (k - zakres wartości)
-- **Sortowanie pozycyjne:** \( T(n) \approx O(d \times (n + k)) \) (d - liczba cyfr, k - zakres wartości)
-- **Sortowanie kubełkowe:** \( T(n) \approx O(n) \) (przy idealnym rozkładzie, ale może osiągnąć \( O(n^2) \) w najgorszym przypadku)
+- **Sortowanie bąbelkowe:**
+  - Średni przypadek: \( T(n) \approx O(n^2) \)
+  - Najgorszy przypadek: \( T(n) \approx O(n^2) \)
+
+- **Sortowanie przez wstawianie:**
+  - Średni przypadek: \( T(n) \approx O(n^2) \)
+  - Najlepszy przypadek: \( T(n) \approx O(n) \)
+  - Najgorszy przypadek: \( T(n) \approx O(n^2) \)
+
+- **Sortowanie przez kopcowanie:**
+  - Średni przypadek: \( T(n) \approx O(n \log n) \)
+  - Najgorszy przypadek: \( T(n) \approx O(n \log n) \)
+
+- **Quicksort:**
+  - Średni przypadek: \( T(n) \approx O(n \log n) \)
+  - Najlepszy przypadek: \( T(n) \approx O(n \log n) \)
+  - Najgorszy przypadek: \( T(n) \approx O(n^2) \)
+
+- **Sortowanie przez scalanie:**
+  - Średni przypadek: \( T(n) \approx O(n \log n) \)
+  - Najgorszy przypadek: \( T(n) \approx O(n \log n) \)
+
+- **Sortowanie przez zliczanie:**
+  - Średni przypadek: \( T(n) \approx O(n + k) \) (k - zakres wartości)
+  - Najgorszy przypadek: \( T(n) \approx O(n + k) \)
+
+- **Sortowanie pozycyjne:**
+  - Średni przypadek: \( T(n) \approx O(d \times (n + k)) \) (d - liczba cyfr, k - zakres wartości)
+  - Najgorszy przypadek: \( T(n) \approx O(d \times (n + k)) \)
+
+- **Sortowanie kubełkowe:**
+  - Średni przypadek: \( T(n) \approx O(n) \) (przy idealnym rozkładzie)
+  - Najgorszy przypadek: \( T(n) \approx O(n^2) \)
 
 #### 5. **Analiza Uzyskanych Wyników**
 
-- **Proste algorytmy sortowania, takie jak Bubble Sort i Insertion Sort, wykazują bardzo słabą wydajność przy rosnącej liczbie danych, co jest widoczne na wykresie.** Czas ich realizacji rośnie wykładniczo wraz z liczbą trójkątów, co jest zgodne z ich złożonością \( O(n^2) \).
+Na podstawie przeprowadzonych testów oraz uzyskanych wyników można sformułować następujące wnioski:
+
+- **Sortowanie bąbelkowe i sortowanie przez wstawianie** są najmniej wydajne, szczególnie przy większych rozmiarach danych. Czas realizacji rośnie wykładniczo, co czyni te algorytmy nieodpowiednimi dla dużych zbiorów danych.
   
-- **Heapsort, Quicksort, oraz Mergesort wykazują znacznie lepszą wydajność, osiągając czas rzędu \( O(n \log n) \)**. Są one znacznie bardziej skalowalne i nadają się do sortowania większych zbiorów danych.
+- **Heapsort, Quicksort, oraz Mergesort** wykazują znacząco lepsze wyniki, zwłaszcza przy większych rozmiarach danych. Ich czas realizacji rośnie logarytmicznie względem liczby elementów, co jest zgodne z ich teoretyczną złożonością.
 
-- **Algorytmy takie jak Counting Sort i Radix Sort są bardzo szybkie, ale ich wydajność zależy od specyficznych warunków, takich jak zakres danych.** Sprawdzają się szczególnie dobrze, gdy zakres danych jest ograniczony.
+- **Sortowanie przez zliczanie i sortowanie pozycyjne** osiągają bardzo dobre wyniki przy specyficznych typach danych, zwłaszcza gdy zakres wartości jest ograniczony. Są to algorytmy bardzo wydajne w takich sytuacjach.
 
-- **Sortowanie kubełkowe** wykazuje zmienną wydajność, co może być efektem zależności od rozkładu danych. W najlepszym przypadku działa dobrze, ale przy większych danych może być mniej efektywne.
+- **Sortowanie kubełkowe** charakteryzuje się zmienną wydajnością. Przy idealnym rozkładzie danych jest bardzo szybkie, jednak w niekorzystnych sytuacjach może działać znacznie wolniej.
 
-- **std::sort (oparte na introsort, które jest połączeniem Quicksortu, Heapsortu i sortowania przez wstawianie)** okazało się być bardzo efektywne, osiągając najlepsze wyniki czasowe, co czyni je jednym z najlepszych wyborów w praktycznych zastosowaniach.
+- **std::sort (introsort)**, które łączy różne techniki sortowania, okazało się być jednym z najbardziej efektywnych algorytmów w praktyce, osiągając czas realizacji bliski optymalnemu dla różnych zbiorów danych.
 
-Podsumowując, wybór algorytmu sortowania powinien zależeć od specyfiki danych oraz wymagań dotyczących wydajności i pamięci. Dla małych zbiorów danych, prostsze algorytmy mogą być wystarczające, ale dla dużych zbiorów lepiej sprawdzają się algorytmy o złożoności \( O(n \log n) \).
+Wnioskując, dobór algorytmu sortowania powinien być uzależniony od specyfiki danych oraz wymagań dotyczących wydajności. Dla małych zbiorów danych proste algorytmy mogą być wystarczające, jednak dla większych i bardziej złożonych zbiorów danych, bardziej zaawansowane algorytmy, takie jak Heapsort, Quicksort czy Mergesort, będą znacznie lepszym wyborem.
+
+
+
+
+
+
