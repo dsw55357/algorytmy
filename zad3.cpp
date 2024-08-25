@@ -15,14 +15,25 @@ dostępnego na github: https://github.com/OneLoneCoder/Javidx9/tree/master/Conso
 #include <strstream>
 #include <algorithm>
 #include <chrono>
+#include <thread>
+
 #include "algorytmy_sortowania.h"
 #include "algorytmy_testowanie.h"
 
 using namespace std;
 
-bool test2 {false};
+bool bprocess {false};
 
-bool bRot {false};
+bool bRot {true};
+
+std::atomic<bool> finished(false);  // Flaga sygnalizująca zakończenie
+
+// Definicja funkcji opakowującej
+void generateTriangles(std::vector<triangle>& triangles, int numTriangles) {
+    generateRandomTriangles(triangles, numTriangles);
+    finished = true;  // Ustawienie flagi po zakończeniu pracy
+	bprocess = false;
+}
 
 enum class Mode {
     MENU,
@@ -58,8 +69,23 @@ private:
 
 	std::vector<double> durations;
     std::vector<std::string> names;
+	int numTriangles = {0}; // 
 
 public:
+	void show_text(std::string Message )  {
+
+		uint32_t scale = 2;
+		// Get the size of the text
+		olc::vi2d textSize = GetTextSize(Message);
+
+		// Calculate the position to draw the text so that it is centered
+		int textX = ScreenWidth()/2 - (textSize.x * scale) / 2;
+		int textY = ScreenHeight()/2 - (textSize.y * scale) / 2;
+
+		// Draw the text
+		DrawString(textX, textY, Message, olc::RED, scale);
+	}
+
 	bool OnUserCreate() override
 	{
 		// Load object file
@@ -108,9 +134,10 @@ public:
                 mode = Mode::ALGORYTM_H;
             }
 			
-			
 			else if (GetKey(olc::Key::T).bPressed) {
 				mode = Mode::ALGORYTM_TEST;
+				durations.clear();
+				names.clear();
             } else if (GetKey(olc::Key::Q).bPressed) {
 				quit = true;
             } 
@@ -121,14 +148,13 @@ public:
 			} 
 		}
 
-
 /*
 		Zebrać wyniki do tablicy, a następnie przedstawić je w postaci wykresu słupkowego 
 */
 		if ((mode == Mode::ALGORYTM_TEST)) {
 
 			DrawString(15, 15, "ESC - back to main menu", olc::GREEN);
-			DrawString(15, 35, "Porownanie wydajnosci roznych algorytmow sortowania", olc::YELLOW);
+			DrawString(15, 30, "Porownanie wydajnosci algorytmow sortowania:", olc::YELLOW);
 			DrawString(15, 45, "1. 250 trojkatow", olc::CYAN);
 			DrawString(15, 60, "2. 1000 trojkatow", olc::CYAN);
 			DrawString(15, 75, "3. 5000 trojkatow", olc::CYAN);
@@ -156,13 +182,15 @@ public:
 			};
 
 			if (GetKey(olc::Key::K1).bReleased) {
-				const int numTriangles = 250; // 
+				numTriangles = 250; // 
 				std::cout << "Test z ilością trojkatow : " << numTriangles << std::endl;
 				durations.clear();
 				names.clear();
 
         		std::vector<triangle> triangles;
         		generateRandomTriangles(triangles, numTriangles);		
+
+				bprocess = false;	
 
 				for (auto& algorithm : sortingAlgorithms) {
 					auto duration_ms = testSortingAlgorithm(algorithm.second, triangles);
@@ -173,13 +201,15 @@ public:
 				}
 
 			} else if (GetKey(olc::Key::K2).bReleased) {
-				const int numTriangles = 1000; // 
+				numTriangles = 1000; // 
 				std::cout << "Test z ilością trojkatow : " << numTriangles << std::endl;
 				durations.clear();
 				names.clear();
 
         		std::vector<triangle> triangles;
         		generateRandomTriangles(triangles, numTriangles);
+
+				bprocess = false;	
 
 				for (auto& algorithm : sortingAlgorithms) {
 					auto duration_ms = testSortingAlgorithm(algorithm.second, triangles);
@@ -190,7 +220,7 @@ public:
 				}
 				
 			} else if (GetKey(olc::Key::K3).bReleased) {
-				const int numTriangles = 5000; // 
+				numTriangles = 5000; // 
 				std::cout << "Test z ilością trojkatow : " << numTriangles << std::endl;
 				durations.clear();
 				names.clear();
@@ -202,7 +232,10 @@ public:
 				// 		durations.push_back(testSortingAlgorithm(algorithm.second, triangles));
 				// 		names.push_back(algorithm.first);
 				// 	}
-				// }				
+				// }	
+
+				bprocess = false;	
+
 				for (auto& algorithm : sortingAlgorithms) {
 					auto duration_ms = testSortingAlgorithm(algorithm.second, triangles);
 					durations.push_back(duration_ms);
@@ -212,19 +245,27 @@ public:
 				}
 
 			} else if (GetKey(olc::Key::K4).bReleased) {
-				const int numTriangles = 15000; // 
+				numTriangles = 15000; // 
 				std::cout << "Test z ilością trojkatow : " << numTriangles << std::endl;
 				durations.clear();
 				names.clear();
-        		std::vector<triangle> triangles;
-        		generateRandomTriangles(triangles, numTriangles);
+        		std::vector<triangle> triangles;	
 
+				// Uruchomienie funkcji generateRandomTriangles w osobnym wątku
+				std::thread t(generateTriangles, std::ref(triangles), numTriangles);
+        		// generateRandomTriangles(triangles, numTriangles);
+
+				// Poczekaj, aż wątek zakończy działanie
+				t.join();
+				
 				// for (auto& algorithm : sortingAlgorithms) {
 				// 	if (algorithm.first.find("Sortowanie przez zliczanie") != std::string::npos) {
 				// 		durations.push_back(testSortingAlgorithm(algorithm.second, triangles));
 				// 		names.push_back(algorithm.first);
 				// 	}
-				// }				
+				// }
+				bprocess = false;	
+			
 				for (auto& algorithm : sortingAlgorithms) {
 					auto duration_ms = testSortingAlgorithm(algorithm.second, triangles);
 					durations.push_back(duration_ms);
@@ -232,8 +273,7 @@ public:
 
 					std::cout << algorithm.first << ", czas : " << l_duration_ms(duration_ms) << std::endl;
 				}
-				
-			}
+			}			
 
 			if (durations.size() > 0) {
 
@@ -266,17 +306,31 @@ public:
 					DrawString(ScreenWidth()/2, labelY, label, olc::WHITE);		
 				}
 			} else {
-                    uint32_t scale = 2;
-					std::string Message {"Wybierz 1, 2.."};
-                    // Get the size of the text
-                    olc::vi2d textSize = GetTextSize(Message);
+				if(bprocess) {
+					show_text("Trwaja obliczenia..");
+				} else {
+					show_text("Wybierz 1,2,...");
+				}
+			}
 
-                    // Calculate the position to draw the text so that it is centered
-                    int textX = ScreenWidth()/2 - (textSize.x * scale) / 2;
-                    int textY = ScreenHeight()/2 - (textSize.y * scale) / 2;
+			if (GetKey(olc::Key::K1).bPressed) {
+				bprocess = true;
+				durations.clear();
+			}
 
-                    // Draw the text
-                    DrawString(textX, textY, Message, olc::RED, scale);
+			if (GetKey(olc::Key::K2).bPressed) {
+				bprocess = true;
+				durations.clear();
+			}
+
+			if (GetKey(olc::Key::K3).bPressed) {
+				bprocess = true;
+				durations.clear();
+			}
+
+			if (GetKey(olc::Key::K4).bPressed) {
+				bprocess = true;
+				durations.clear();
 			}
 
 		} else {
