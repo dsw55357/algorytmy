@@ -147,6 +147,7 @@ public:
 					{"Sortowanie przez scalanie", testMergeSort},
 					{"Sortowanie przez zliczanie", testCountingSort},
 					{"Sortowanie pozycyjne", testRadixSort},
+					{"Sortowanie kubelkowe", testBucketSortTriangles},
 					{"std::sort", testStdSort}
 				};
 
@@ -170,15 +171,20 @@ public:
 					{"Sortowanie przez scalanie", testMergeSort},
 					{"Sortowanie przez zliczanie", testCountingSort},
 					{"Sortowanie pozycyjne", testRadixSort},
+					{"Sortowanie kubelkowe", testBucketSortTriangles},
 					{"std::sort", testStdSort}
 				};
 
+				// for (auto& algorithm : sortingAlgorithms) {
+				// 	if (algorithm.first.find("Sortowanie przez zliczanie") != std::string::npos) {
+				// 		durations.push_back(testSortingAlgorithm(algorithm.second, triangles));
+				// 		names.push_back(algorithm.first);
+				// 	}
+				// }				
 				for (auto& algorithm : sortingAlgorithms) {
-					if (algorithm.first.find("Sortowanie przez zliczanie") != std::string::npos) {
-						durations.push_back(testSortingAlgorithm(algorithm.second, triangles));
-						names.push_back(algorithm.first);
-					}
-				}				
+					durations.push_back(testSortingAlgorithm(algorithm.second, triangles));
+					names.push_back(algorithm.first);
+				}
 			}
 
 			if (durations.size() > 0) {
@@ -480,12 +486,13 @@ public:
 			const auto start{std::chrono::steady_clock::now()};
 
 			DrawString(15, 45, "Sortowanie kubelkowe", olc::YELLOW);
-			//bucketSortTriangles(vecTrianglesToRaster);
+			bucketSortTriangles(vecTrianglesToRaster);
 
-			if (test) {
-				bucketSortTriangles(vecTrianglesToRaster);
-				test = false;
-			}
+			// if (test) {
+			// 	bucketSortTriangles(vecTrianglesToRaster);
+			// 	test = false;
+			// }
+
 			const auto end{std::chrono::steady_clock::now()};
 			auto duration = duration_cast<microseconds>(end - start).count();
 			

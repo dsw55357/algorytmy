@@ -65,27 +65,31 @@ void testHeapSort(std::vector<triangle>& triangles) {
 void testQuickSort(std::vector<triangle>& triangles) {
 
     QuickSort(triangles, 0, triangles.size() - 1);
-    test_depth(triangles, "Sortowanie QuickSort");
+    //test_depth(triangles, "Sortowanie QuickSort");
 }
 
 
 void testMergeSort(std::vector<triangle>& triangles) {
 
     MergeSort(triangles, 0, triangles.size() - 1);
-    test_depth(triangles, "Sortowanie przez scalanie");
+    //test_depth(triangles, "Sortowanie przez scalanie");
 }
 
 void testCountingSort(std::vector<triangle>& triangles) {
 
     CountingSort(triangles);
-    test_depth(triangles, "Sortowanie przez zliczanie");
+    //test_depth(triangles, "Sortowanie przez zliczanie");
 }
 
 void testRadixSort(std::vector<triangle>& triangles) {
     RadixSort(triangles);
-    test_depth(triangles, "Sortowanie pozycyjne");
+    //test_depth(triangles, "Sortowanie pozycyjne");
 }
 
+void testBucketSortTriangles(std::vector<triangle>& triangles) {
+    bucketSortTriangles(triangles);
+    //test_depth(triangles, "Sortowanie kubelkowe");
+}
 
 void testStdSort(std::vector<triangle>& triangles) {
 

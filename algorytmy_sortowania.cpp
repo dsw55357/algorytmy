@@ -524,8 +524,8 @@ void bucketSortTriangles(std::vector<triangle>& triangles) {
         float depth = calculateAverageDepth(tri);
         if (depth < minDepth) minDepth = depth;
         if (depth > maxDepth) maxDepth = depth;
-        std::cout << " trojkat >> " << ", minDepth:" << minDepth << ", maxDepth:" << maxDepth << std::endl;
-        std::cout << " trojkat >> " << ", z1:" << tri.p[0].z << ", z2:" << tri.p[1].z << ", z3:" << tri.p[2].z << std::endl;
+        // std::cout << " trojkat >> " << ", minDepth:" << minDepth << ", maxDepth:" << maxDepth << std::endl;
+        // std::cout << " trojkat >> " << ", z1:" << tri.p[0].z << ", z2:" << tri.p[1].z << ", z3:" << tri.p[2].z << std::endl;
     }
 
     // Przeskalowanie głębokości do zakresu całkowitego
