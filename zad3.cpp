@@ -181,11 +181,14 @@ public:
 					return oss.str();
 			};
 
+			auto clear_vectors = [&]() {
+				durations.clear();
+				names.clear();
+			};
+
 			if (GetKey(olc::Key::K1).bReleased) {
 				numTriangles = 250; // 
 				std::cout << "Test z ilością trojkatow : " << numTriangles << std::endl;
-				durations.clear();
-				names.clear();
 
         		std::vector<triangle> triangles;
         		generateRandomTriangles(triangles, numTriangles);		
@@ -203,8 +206,6 @@ public:
 			} else if (GetKey(olc::Key::K2).bReleased) {
 				numTriangles = 1000; // 
 				std::cout << "Test z ilością trojkatow : " << numTriangles << std::endl;
-				durations.clear();
-				names.clear();
 
         		std::vector<triangle> triangles;
         		generateRandomTriangles(triangles, numTriangles);
@@ -222,8 +223,7 @@ public:
 			} else if (GetKey(olc::Key::K3).bReleased) {
 				numTriangles = 5000; // 
 				std::cout << "Test z ilością trojkatow : " << numTriangles << std::endl;
-				durations.clear();
-				names.clear();
+
         		std::vector<triangle> triangles;
         		generateRandomTriangles(triangles, numTriangles);
 
@@ -247,8 +247,7 @@ public:
 			} else if (GetKey(olc::Key::K4).bReleased) {
 				numTriangles = 15000; // 
 				std::cout << "Test z ilością trojkatow : " << numTriangles << std::endl;
-				durations.clear();
-				names.clear();
+
         		std::vector<triangle> triangles;	
 
 				// Uruchomienie funkcji generateRandomTriangles w osobnym wątku
@@ -315,22 +314,22 @@ public:
 
 			if (GetKey(olc::Key::K1).bPressed) {
 				bprocess = true;
-				durations.clear();
+				clear_vectors();
 			}
 
 			if (GetKey(olc::Key::K2).bPressed) {
 				bprocess = true;
-				durations.clear();
+				clear_vectors();
 			}
 
 			if (GetKey(olc::Key::K3).bPressed) {
 				bprocess = true;
-				durations.clear();
+				clear_vectors();
 			}
 
 			if (GetKey(olc::Key::K4).bPressed) {
 				bprocess = true;
-				durations.clear();
+				clear_vectors();
 			}
 
 		} else {
