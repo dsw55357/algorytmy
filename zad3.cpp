@@ -136,8 +136,6 @@ public:
 			
 			else if (GetKey(olc::Key::T).bPressed) {
 				mode = Mode::ALGORYTM_TEST;
-				durations.clear();
-				names.clear();
             } else if (GetKey(olc::Key::Q).bPressed) {
 				quit = true;
             } 
