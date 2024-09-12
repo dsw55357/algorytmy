@@ -126,6 +126,9 @@ public:
         // Obsługa klawisza R do dodania losowych punktów
         if (GetKey(olc::R).bPressed) {
             addRandomPoints(5); // Dodaj 5 losowych punktów
+
+            std::cout << "Otoczka wypukła składa się z punktów: " << points.size() << std::endl;
+
         }
 
         // Rysuj punkty
@@ -166,8 +169,6 @@ public:
 };
 
 int main() {
-
-    std::cout << "Otoczka wypukła składa się z punktów: \n";
 
     ConvexHullVisualizer demo;
     if (demo.Construct(600, 600, 1, 1))
