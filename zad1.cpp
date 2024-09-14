@@ -125,10 +125,24 @@ public:
 
         // Obsługa klawisza R do dodania losowych punktów
         if (GetKey(olc::R).bPressed) {
-            addRandomPoints(5); // Dodaj 5 losowych punktów
+            // addRandomPoints(5); // Dodaj 5 losowych punktów
 
-            std::cout << "Otoczka wypukła składa się z punktów: " << points.size() << std::endl;
-
+           try {
+                addRandomPoints(5); // Dodaj 5 losowych punktów
+                std::cout << "Dodano 5 punktów. Aktualny rozmiar wektora: " << points.size() << std::endl;
+            }
+            catch(const std::bad_alloc& e) {
+                std::cerr << "Błąd alokacji pamięci: " << e.what() << std::endl;
+                // Dodatkowe kroki naprawcze, np. zakończenie programu lub oczekiwanie
+            }
+            catch(const std::length_error& e) {
+                std::cerr << "Przekroczono maksymalną pojemność wektora: " << e.what() << std::endl;
+                // Dodatkowe kroki naprawcze
+            }
+            catch(const std::exception& e) {
+                std::cerr << "Nieoczekiwany błąd: " << e.what() << std::endl;
+                // Dodatkowe kroki naprawcze
+            }
         }
 
         // Rysuj punkty
@@ -156,22 +170,47 @@ public:
 
         show_menu();
 
+        show_count();
+
         return !quit;
     }
 
 	void show_menu() {
-
+        uint32_t scale = 3;
         DrawString(8, ScreenHeight()-30, "R - add new random points", olc::GREEN);
         DrawString(8, ScreenHeight()-15, "ESC - exit", olc::GREEN);
-		DrawString(15, 15, "Znajdowania otoczki wypuklej", olc::WHITE );
-		DrawString(ScreenWidth()-300, ScreenHeight()-15, "Powered by olcPixelGameEngine, 2024(7)", olc::CYAN );
+		DrawString(15, 15, "Znajdowanie otoczki wypuklej", olc::WHITE );
+
+        // Get the size of the text
+        std::string text {"Powered by olcPixelGameEngine, 2024(7)"};
+        olc::vi2d textSize = GetTextSize(text);
+        // Calculate the position to draw the text
+        int textX = ScreenWidth() - (textSize.x);
+        int textY = ScreenHeight() - (textSize.y * scale) / 2;
+
+        DrawString(textX, textY, text, olc::CYAN );
 	}    
+
+    void show_count() {
+        uint32_t scale = 3;
+        // Get the size of the text
+        std::string text {"Count: "};
+        text += std::to_string(points.size());
+        olc::vi2d textSize = GetTextSize(text);
+        // Calculate the position to draw the text
+        int textX = ScreenWidth() - (textSize.x);
+        int textY = (textSize.y * scale) / 2;
+
+        DrawString(textX-15, textY, text, olc::CYAN );
+    }
+
+
 };
 
 int main() {
 
     ConvexHullVisualizer demo;
-    if (demo.Construct(600, 600, 1, 1))
+    if (demo.Construct(800, 600, 1, 1))
         demo.Start();
 
     return 0;
