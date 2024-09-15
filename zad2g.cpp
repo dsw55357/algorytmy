@@ -271,8 +271,8 @@ public:
 		DrawString(15, 15, "Menu", olc::RED);
         DrawString(15, 30, "Left Mouse - add new node", olc::RED);
         DrawString(15, 45, "SHIFT + Left Mouse - set start node", olc::RED);
-		DrawString(15, 60, "SHIFT + Right Mouse - set end node", olc::RED);
-		DrawString(15, 75, "CTRL + Right Mouse - new target position", olc::RED);
+		DrawString(15, 60, "CTRL + Left Mouse - set end node", olc::RED);
+		DrawString(15, 75, "SHIFT + Right Mouse - new node position", olc::RED);
 
 		return true;
 	}
