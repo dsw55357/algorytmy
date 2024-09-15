@@ -33,5 +33,5 @@
 8. <3> Zaimplementuj w wybranym języku programowania algorytm Dijsktry. Implementacja powinna zawierać funkcję, która dla danego wierzchołka wyświetli optymalną odległość oraz optymalną ścieżkę od wierzchołka początkowego. [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad8/zad8.cpp)**], [**[WASM](https://ambrogio.pl/dsw/algorytmy/zad8.html)**]
 
 9. Zaimplementuj w wybranym języku programowania następujące algorytmy [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/tree/main/zad9)**]:
-   - a. <3> BFS (Breadth-First Search – przeszukiwanie wszerz) [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad9/zad9a.cpp)**]
+   - a. <3> BFS (Breadth-First Search – przeszukiwanie wszerz) [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad9/zad9a.cpp)**], [**[WASM](https://ambrogio.pl/dsw/algorytmy/zad2.html)**]
    - b. <5> Forda-Fulkersona (operujący na sieci residualnej)
