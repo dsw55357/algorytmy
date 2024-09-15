@@ -99,7 +99,7 @@ void GenerateRandomTetrisObstacles(int nMapWidth, int nMapHeight, sNode *nodes, 
     {
         for (int y = 0; y < nMapHeight; y++)
         {
-            if ((float)rand() / RAND_MAX < fObstacleDensity)
+            if ((float)rand() / (float)RAND_MAX < fObstacleDensity)
             {
                 Tetrimino& tetrimino = tetriminos[rand() % tetriminos.size()];
 				// Funkcja ta umieszcza tetrimino na mapie, ustawiając odpowiednie węzły jako przeszkody.

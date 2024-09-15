@@ -48,7 +48,7 @@ public:
         nMapWidth = ScreenWidth() / nNodeSize;
         nMapHeight = ScreenHeight() / nNodeSize;  
 
-	std::cout << "nMapWidth: " << nMapWidth << ", nMapHeight: " << nMapHeight << std::endl;
+	// std::cout << "nMapWidth: " << nMapWidth << ", nMapHeight: " << nMapHeight << std::endl;
 
     // Create a 2D array of nodes - this is for convenience of rendering and construction
     // and is not required for the algorithm to work - the nodes could be placed anywhere
@@ -156,7 +156,7 @@ public:
 			for (int y = 0; y < nMapHeight; y++)
 			{
 				// Losujemy liczbę z przedziału 0.0 - 1.0 i sprawdzamy, czy jest mniejsza niż podany wskaźnik przeszkód
-				if ((float)rand() / RAND_MAX < fObstacleDensity)
+				if ((float)rand() / (float)RAND_MAX < fObstacleDensity)
 				{
 					// Ustawiamy dany węzeł jako przeszkodę
 					nodes[y * nMapWidth + x].bObstacle = true;
@@ -180,7 +180,7 @@ public:
 			for (int y = 0; y < nMapHeight; y++)
 			{
 				// Losujemy liczbę z przedziału 0.0 - 1.0 i sprawdzamy, czy jest mniejsza niż podany wskaźnik przeszkód
-				if ((float)rand() / RAND_MAX < fObstacleDensity)
+				if ((float)rand() / (float)RAND_MAX < fObstacleDensity)
 				{
 					// Ustawiamy dany węzeł jako przeszkodę
 					nodes[y * nMapWidth + x].bObstacle = true;
@@ -504,6 +504,8 @@ bool Solve_Dijkstra()
 };
 
 int main() {
+
+	std::cout << "Implementacja algorytmu Dijsktry" << std::endl;
 
 	olcEngine app;
 	if (app.Construct(512, 480, 2, 2))
