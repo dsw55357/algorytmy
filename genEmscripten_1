@@ -1,7 +1,7 @@
 
 clear
 
-#old rev Emscripten: source "/home/bogdan/Dokumenty/develop/c++/olcPixelGameEngine/Emscripten/emsdk/emsdk_env.sh"
+rm -f /html/*.*
 
 source "/home/bogu/Dokumenty/dev/emsdk/emsdk_env.sh"
 

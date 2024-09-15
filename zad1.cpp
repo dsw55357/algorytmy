@@ -129,7 +129,6 @@ public:
 
            try {
                 addRandomPoints(5); // Dodaj 5 losowych punktów
-                std::cout << "Dodano 5 punktów. Aktualny rozmiar wektora: " << points.size() << std::endl;
             }
             catch(const std::bad_alloc& e) {
                 std::cerr << "Błąd alokacji pamięci: " << e.what() << std::endl;
@@ -203,11 +202,11 @@ public:
 
         DrawString(textX-15, textY, text, olc::CYAN );
     }
-
-
 };
 
 int main() {
+
+    std::cout << "Algorytm znajdowania otoczki wypukłej dla skończonego zbioru punktów na płaszczyźnie, gdzie znane są współrzędne kartezjańskie punktów." <<std::endl;
 
     ConvexHullVisualizer demo;
     if (demo.Construct(800, 600, 1, 1))

@@ -731,8 +731,6 @@ public:
                 }
             }
 
-
-
         } else if (mode == Mode::MAX_HEAP) {
             DrawLine(ScreenWidth() / 2, 0, ScreenWidth() / 2, ScreenHeight(), olc::GREEN);
         }
