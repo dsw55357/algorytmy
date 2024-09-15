@@ -11,7 +11,7 @@
    - e. <4> Stos (realizacja za pomocą tablicy i za pomocą listy)
    - f. <4> Kopiec
    - g. <5> Tablicę haszującą [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad2g.cpp)**], [**[WASM](https://ambrogio.pl/dsw/algorytmy/zad2g.html)**]
-3. Zaimplementuj w wybranym języku programowania następujące algorytmy sortowania [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad3.cpp)**]:
+3. Zaimplementuj w wybranym języku programowania następujące algorytmy sortowania [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad3.cpp)**], [**[WASM](https://ambrogio.pl/dsw/algorytmy/zad3.html)**]:
    - a. <3> Sortowanie bąbelkowe
    - b. <3> Sortowanie przez wstawianie
    - c. <4> Sortowanie przez kopcowanie, <5> w miejscu

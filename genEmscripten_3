@@ -1,0 +1,10 @@
+
+clear
+
+rm -f /html/*.*
+
+source "/home/bogu/Dokumenty/dev/emsdk/emsdk_env.sh"
+
+em++ zad3.cpp matrix.cpp algorytmy_sortowania.cpp -std=c++20 -O2 -s ALLOW_MEMORY_GROWTH=1 -s MAX_WEBGL_VERSION=2 -s MIN_WEBGL_VERSION=2 -s USE_LIBPNG=1 -s STACK_SIZE=5MB -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -o html/zad3.html --preload-file prezent_light.obj
+
+emrun html/zad3.html

@@ -7,6 +7,8 @@
 #include <string>
 #include <fstream>
 #include <strstream>
+#include <sstream>
+
 
 struct vec3d
 {
@@ -41,7 +43,9 @@ struct mesh
             char line[128];
             f.getline(line, 128);
 
-            std::strstream s;
+            // std::strstream s; // depricated
+            std::stringstream s;
+            
             s << line;
 
             char junk;
@@ -59,7 +63,7 @@ struct mesh
                 s >> junk >> f[0] >> f[1] >> f[2];
                 tris.push_back({ verts[f[0] - 1], verts[f[1] - 1], verts[f[2] - 1] });
 
-                std::cout << "{{{" << tris[tris.size()-1].p[0].x << ", "<< tris[tris.size()-1].p[0].y << ", "<< tris[tris.size()-1].p[0].z << "}, {" << tris[tris.size()-1].p[1].x << ", "<< tris[tris.size()-1].p[1].y << ", "<< tris[tris.size()-1].p[1].z << "}, {" << tris[tris.size()-1].p[2].x << ", " << tris[tris.size()-1].p[2].y << ", " << tris[tris.size()-1].p[2].z << "}}}" << std::endl;
+                // std::cout << "{{{" << tris[tris.size()-1].p[0].x << ", "<< tris[tris.size()-1].p[0].y << ", "<< tris[tris.size()-1].p[0].z << "}, {" << tris[tris.size()-1].p[1].x << ", "<< tris[tris.size()-1].p[1].y << ", "<< tris[tris.size()-1].p[1].z << "}, {" << tris[tris.size()-1].p[2].x << ", " << tris[tris.size()-1].p[2].y << ", " << tris[tris.size()-1].p[2].z << "}}}" << std::endl;
             }
         }
 

@@ -149,7 +149,7 @@ public:
 /*
 		Zebrać wyniki do tablicy, a następnie przedstawić je w postaci wykresu słupkowego 
 */
-		if ((mode == Mode::ALGORYTM_TEST)) {
+		if (mode == Mode::ALGORYTM_TEST) {
 
 			DrawString(15, 15, "ESC - back to main menu", olc::GREEN);
 			DrawString(15, 30, "Porownanie wydajnosci algorytmow sortowania:", olc::YELLOW);
@@ -255,6 +255,17 @@ public:
 				// Poczekaj, aż wątek zakończy działanie
 				t.join();
 				
+				/*
+
+				Pamiętać aby dodać w ./genEmscripten_3 !!
+
+				Kompilacja z obsługą wielowątkowości:
+				Musisz dodać odpowiednie flagi podczas kompilacji, aby włączyć wsparcie dla wielowątkowości:
+
+				emcc main.cpp -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4 -o output.html
+
+				*/
+
 				// for (auto& algorithm : sortingAlgorithms) {
 				// 	if (algorithm.first.find("Sortowanie przez zliczanie") != std::string::npos) {
 				// 		durations.push_back(testSortingAlgorithm(algorithm.second, triangles));
@@ -469,7 +480,7 @@ public:
 
 		// Sortujesz trójkąty, różnymi algorytmami sortowania
 
-		if ((mode == Mode::MENU)) {
+		if (mode == Mode::MENU) {
 			using namespace std::chrono;
 			const auto start{std::chrono::steady_clock::now()};
 			// Sort triangles from back to front
