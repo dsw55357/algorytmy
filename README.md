@@ -2,8 +2,8 @@
 
 ## Zadania
 
-1. <5> Zaprojektuj i zapisz w wybrany sposób algorytm znajdowania otoczki wypukłej dla skończonego zbioru punktów na płaszczyźnie, gdzie znane są współrzędne kartezjańskie punktów.[**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad1.cpp)**], [**[WASM](https://ambrogio.pl/dsw/algorytmy/zad1.html)**]
-2. Zaimplementuj w wybranym języku programowania następujące struktury danych omawiane na wykładzie [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad2.cpp)**]:
+1. <5> Zaprojektuj i zapisz w wybrany sposób algorytm znajdowania otoczki wypukłej dla skończonego zbioru punktów na płaszczyźnie, gdzie znane są współrzędne kartezjańskie punktów.[**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad1.cpp)**], [**[WASM](https://ambrogio.pl/dsw/algorytmy/zad1.html)**]:
+2. Zaimplementuj w wybranym języku programowania następujące struktury danych omawiane na wykładzie [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad2.cpp)**], [**[WASM](https://ambrogio.pl/dsw/algorytmy/zad2g.html)**]:
    - a. <3> Tablicę
    - b. <3> Listę jedno- i dwukierunkową
    - c. <3> Listę jedno- i dwukierunkową zrealizowaną za pomocą tablicy
@@ -20,7 +20,7 @@
    - f. <3> Sortowanie przez zliczanie
    - g. <4> Sortowanie pozycyjne
    - h. <3> Sortowanie kubełkowe
-4. Wykonaj sprawozdanie z realizacji punktu 3). W sprawozdaniu przedstaw: [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad4.md)**]
+4. Wykonaj sprawozdanie z realizacji punktu 3). W sprawozdaniu przedstaw: [**[Rozwiązanie](https://github.com/dsw55357/algorytmy/blob/main/zad4.md)**]:
    - a. <3> Czas realizacji poszczególnych algorytmów dla danych o różnym rozmiarze (dla przypadku średniego, najgorszego i najlepszego) – tabelarycznie i w formie wykresu od rozmiaru danych.
    - b. <4> Na podstawie powyższych wyników przybliż formułę przedstawiającą czas realizacji algorytmu w zależności od rozmiaru danych wejściowych (dla przypadku średniego i najgorszego).
    - c. <3> Przeanalizuj uzyskane wyniki.
